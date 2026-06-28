@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F5F3FF">
+<title>NEXUS — The Love Brain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F3FF; --bg2:#EDE9FB; --bg3:#E3DDF7;
+  --surface:#FFFFFF; --surface2:#F2EFFE;
+  --border:rgba(100,70,200,.13); --border2:rgba(100,70,200,.22);
+  --txt:#1a1135; --txt2:#4a3a70; --txt3:#9080b8;
+  /* 脳部位カラー */
+  --amyg:#dc2626;   --amyg-l:#ef4444;  --amyg-xl:rgba(220,38,38,.09);
+  --hippo:#2563eb;  --hippo-l:#3b82f6; --hippo-xl:rgba(37,99,235,.09);
+  --hypo:#16a34a;   --hypo-l:#22c55e;  --hypo-xl:rgba(22,163,74,.09);
+  --nacc:#ea580c;   --nacc-l:#f97316;  --nacc-xl:rgba(234,88,12,.09);
+  --vta:#7c3aed;    --vta-l:#8b5cf6;   --vta-xl:rgba(124,58,237,.09);
+  --insula:#0f766e; --insula-l:#14b8a6;--insula-xl:rgba(15,118,110,.09);
+  --pfc:#1e40af;    --pfc-l:#3b82f6;   --pfc-xl:rgba(30,64,175,.09);
+  --acc:#be185d;    --acc-l:#ec4899;   --acc-xl:rgba(190,24,93,.09);
+  --cereb:#b45309;  --cereb-l:#f59e0b; --cereb-xl:rgba(180,83,9,.09);
+  --brain:#374151;  --brain-l:#6b7280; --brain-xl:rgba(55,65,81,.09);
+  /* アクセント */
+  --gold:#9333ea; --gold-l:#a855f7;
+  --fd:'Playfair Display',serif;
+  --fu:'DM Sans','Noto Sans JP',sans-serif;
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:24px; --r-full:9999px;
+  --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);font-family:var(--fu);overflow:hidden;height:100dvh}
+strong{color:var(--txt)}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:300;background:linear-gradient(135deg,#ede9fb,#e8f5f0);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;transition:opacity .45s}
+.sp-orbs{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.12}
+.sp-icon{font-size:4rem}
+.sp-title{font-family:var(--fd);font-size:2.8rem;font-weight:700;letter-spacing:.07em;background:linear-gradient(135deg,#7c3aed,#dc2626,#2563eb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sp-sub{font-family:var(--fu);font-size:.76rem;font-weight:600;letter-spacing:.16em;color:var(--txt3);text-transform:uppercase}
+.sp-tagline{font-family:var(--fd);font-size:.95rem;font-style:italic;color:var(--txt2);text-align:center;line-height:1.6;max-width:270px}
+.sp-btn{margin-top:.4rem;padding:.95rem 2.3rem;background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;border-radius:var(--r-full);font-family:var(--fu);font-size:.95rem;font-weight:700;color:#fff;cursor:pointer}
+
+/* APP */
+#app{display:none;flex-direction:column;height:100dvh}
+#app.on{display:flex}
+.pages{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow:hidden;display:none}
+.page.on{display:flex;flex-direction:column}
+.sb{flex:1;overflow-y:auto;padding:0 1.05rem 1rem;-webkit-overflow-scrolling:touch}
+.sb::-webkit-scrollbar{display:none}
+.spacer{height:1.2rem}
+
+/* NAV */
+.bnav{display:flex;background:#EDE9FB;border-top:1px solid var(--border);padding:0 .1rem calc(var(--sab)+.3rem);padding-top:.3rem}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.35rem .15rem;background:none;border:none;cursor:pointer;transition:all .15s}
+.bni-ico{font-size:1.2rem;line-height:1;transition:transform .15s}
+.bni-lbl{font-family:var(--fu);font-size:.5rem;font-weight:600;color:var(--txt3);letter-spacing:.02em;transition:color .15s}
+.bni-dot{width:4px;height:4px;border-radius:50%;background:transparent;margin-top:.1rem;transition:background .15s}
+.bni.on .bni-lbl{color:var(--vta)}
+.bni.on .bni-dot{background:var(--vta)}
+.bni.on .bni-ico{transform:scale(1.12)}
+
+/* HEADER */
+.pg-hd{padding:calc(var(--sat)+.85rem) 0 .5rem}
+.pg-title{font-family:var(--fd);font-size:1.4rem;font-weight:700;color:var(--txt)}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:.6rem}
+.card-hd{display:flex;align-items:center;gap:.7rem;padding:.85rem .95rem}
+.card-ico{width:34px;height:34px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0}
+.card-hd-title{font-family:var(--fu);font-size:.86rem;font-weight:700;color:var(--txt)}
+.card-hd-sub{font-family:var(--fu);font-size:.63rem;color:var(--txt3);margin-top:.1rem}
+.card-bd{padding:.1rem .95rem .95rem}
+
+/* HOME */
+.home-hero{background:linear-gradient(160deg,#EDE9FB 0%,#E8F0FC 100%);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.4rem 1.15rem;margin-bottom:.6rem;position:relative;overflow:hidden}
+.hs-row{display:flex;gap:.45rem;margin-bottom:.85rem}
+.hs{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.55rem .45rem;text-align:center}
+.hs-n{display:block;font-family:var(--fd);font-size:1.15rem;font-weight:700;color:var(--vta)}
+.hs-l{display:block;font-family:var(--fu);font-size:.5rem;color:var(--txt3);margin-top:.1rem;font-weight:600}
+.tip-box{background:linear-gradient(135deg,var(--surface),#EDE9FB);border:1px solid var(--border2);border-radius:var(--r-md);padding:.8rem;cursor:pointer;display:flex;gap:.6rem;align-items:flex-start}
+.tip-ico{font-size:1.1rem;flex-shrink:0;margin-top:.05rem}
+.tip-txt{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65;font-style:italic}
+
+/* BRAIN GRID */
+.brain-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-bottom:.6rem}
+.bc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem .8rem;cursor:pointer;transition:transform .12s,border-color .15s;display:flex;flex-direction:column;gap:.28rem}
+.bc:active{transform:scale(.97)}
+.bc-ico{font-size:1.3rem}
+.bc-name{font-family:var(--fd);font-size:.85rem;font-weight:700;color:var(--txt)}
+.bc-en{font-family:var(--fu);font-size:.55rem;color:var(--txt3);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.bc-badge{font-family:var(--fu);font-size:.52rem;font-weight:700;padding:.1rem .4rem;border-radius:var(--r-full);width:fit-content}
+
+/* MOD */
+.mod{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem .85rem;display:flex;align-items:center;gap:.7rem;cursor:pointer;transition:all .15s;margin-bottom:.45rem;position:relative;overflow:hidden}
+.mod:active{transform:scale(.98)}
+.mod-ac{position:absolute;left:0;top:0;bottom:0;width:3px}
+.mod-ico{width:34px;height:34px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0}
+.mod-name{font-family:var(--fu);font-size:.8rem;font-weight:700;color:var(--txt)}
+.mod-sub{font-family:var(--fu);font-size:.61rem;color:var(--txt3);margin-top:.1rem}
+.mod-arr{margin-left:auto;color:var(--txt3);font-size:1.1rem;flex-shrink:0}
+
+/* BRAIN PAGE */
+.brain-section{display:flex;flex-direction:column;gap:.55rem}
+.brain-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:.6rem}
+.brain-head{display:flex;align-items:center;gap:.7rem;padding:.85rem .95rem;cursor:pointer}
+.brain-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0}
+.brain-title{font-family:var(--fd);font-size:.98rem;font-weight:700;color:var(--txt)}
+.brain-en{font-family:var(--fu);font-size:.58rem;color:var(--txt3);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-top:.08rem}
+.brain-body{padding:0 .95rem .95rem;display:none}
+.brain-body.open{display:block}
+.brain-fact{background:var(--surface2);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.45rem}
+.brain-fact-title{font-family:var(--fu);font-size:.64rem;font-weight:700;color:var(--txt);margin-bottom:.2rem}
+.brain-fact-desc{font-family:var(--fu);font-size:.67rem;color:var(--txt2);line-height:1.65}
+.hormone-tags{display:flex;flex-wrap:wrap;gap:.28rem;margin-top:.4rem}
+.h-tag{font-family:var(--fu);font-size:.57rem;font-weight:600;padding:.13rem .48rem;border-radius:var(--r-full);background:var(--surface2);border:1px solid var(--border);color:var(--txt3)}
+
+/* HORMONE PAGE */
+.hormone-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:.55rem}
+.hc-head{display:flex;align-items:center;gap:.7rem;padding:.8rem .9rem;cursor:pointer}
+.hc-ico{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;color:#fff;font-weight:700}
+.hc-name{font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--txt)}
+.hc-en{font-family:var(--fu);font-size:.57rem;color:var(--txt3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-top:.08rem}
+.hc-body{padding:0 .9rem .9rem;display:none}
+.hc-body.open{display:block}
+.hc-row{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.45rem}
+.hc-stat{background:var(--surface2);border-radius:var(--r-sm);padding:.55rem .65rem}
+.hc-stat-label{font-family:var(--fu);font-size:.58rem;color:var(--txt3);font-weight:600;margin-bottom:.12rem}
+.hc-stat-value{font-family:var(--fu);font-size:.7rem;color:var(--txt);font-weight:700}
+
+/* CIRCUIT PAGE */
+.circuit-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:.55rem}
+.circ-head{display:flex;align-items:center;gap:.7rem;padding:.8rem .9rem;cursor:pointer}
+.circ-flow{display:flex;flex-wrap:wrap;gap:.25rem;align-items:center;margin-bottom:.45rem}
+.circ-node{font-family:var(--fu);font-size:.63rem;font-weight:600;padding:.2rem .55rem;border-radius:var(--r-full);color:#fff}
+.circ-arrow{color:var(--txt3);font-size:.8rem}
+.circ-body{padding:0 .9rem .9rem;display:none}
+.circ-body.open{display:block}
+
+/* PHASE PAGE */
+.phase-timeline{position:relative;padding-left:1.4rem;margin-bottom:.65rem}
+.phase-timeline::before{content:'';position:absolute;left:.45rem;top:.4rem;bottom:.4rem;width:2px;background:linear-gradient(180deg,var(--vta),var(--hippo),var(--hypo),var(--nacc));border-radius:1px}
+.phase-item{position:relative;margin-bottom:.8rem}
+.phase-dot{position:absolute;left:-1.2rem;width:14px;height:14px;border-radius:50%;border:2.5px solid #fff;top:.25rem;flex-shrink:0}
+.phase-label{font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem}
+.phase-title{font-family:var(--fd);font-size:.98rem;font-weight:700;color:var(--txt);margin-bottom:.25rem}
+.phase-desc{font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.65}
+.phase-chem{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.35rem}
+.phase-ch{font-family:var(--fu);font-size:.58rem;font-weight:600;padding:.13rem .45rem;border-radius:var(--r-full);background:var(--surface);border:1px solid var(--border);color:var(--txt3)}
+.phase-sense{background:var(--surface2);border-radius:var(--r-sm);padding:.55rem .65rem;margin-top:.4rem}
+.phase-sense-title{font-family:var(--fu);font-size:.6rem;font-weight:700;color:var(--vta);margin-bottom:.2rem}
+.phase-sense-desc{font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.6}
+
+/* LEARN */
+.learn-hd{padding:calc(var(--sat)+.7rem) 1.2rem .6rem;display:flex;align-items:center;justify-content:space-between}
+.deck-tabs{display:flex;gap:.38rem;overflow-x:auto;padding:0 1.2rem .6rem;scrollbar-width:none}
+.deck-tabs::-webkit-scrollbar{display:none}
+.dt{padding:.42rem .85rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.7rem;font-weight:600;color:var(--txt3);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.dt.on{background:var(--vta);border-color:var(--vta);color:#fff}
+.card-area{padding:0 1.2rem;flex:1;overflow-y:auto}
+.card-area::-webkit-scrollbar{display:none}
+.card-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;margin-bottom:.6rem}
+.card-face{padding:1.3rem 1.3rem;display:flex;flex-direction:column}
+.card-face.hidden{display:none}
+.card-face-back{background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(37,99,235,.04))}
+.cf-tag{font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--txt3);margin-bottom:.45rem}
+.cf-q{font-family:var(--fd);font-size:1rem;font-weight:600;color:var(--txt);line-height:1.45}
+.cf-a{font-family:var(--fu);font-size:.76rem;color:var(--txt2);line-height:1.7}
+.cf-src{font-family:var(--fu);font-size:.58rem;color:var(--txt3);margin-top:.45rem;font-weight:600;letter-spacing:.05em}
+.cf-frags{margin-top:.85rem;padding-top:.75rem;border-top:1px solid var(--border)}
+.cf-frags-lbl{font-family:var(--fu);font-size:.57rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--vta);margin-bottom:.4rem}
+.cf-frag-chips{display:flex;flex-wrap:wrap;gap:.28rem}
+.cf-frag-chip{font-family:var(--fu);font-size:.61rem;font-weight:600;padding:.22rem .6rem;border-radius:var(--r-full);background:var(--surface2);border:1px solid var(--border);color:var(--txt2);cursor:pointer}
+.flip-btn{width:100%;padding:.85rem;background:var(--bg2);border:none;border-top:1px solid var(--border);font-family:var(--fu);font-size:.8rem;font-weight:600;color:var(--vta);cursor:pointer}
+.card-ctrl{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1.2rem}
+.ctrl-btn{width:38px;height:38px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);font-size:1.05rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt2)}
+.ctrl-pg{font-family:var(--fu);font-size:.72rem;color:var(--txt3);font-weight:600}
+.dots{display:flex;gap:.28rem;justify-content:center;padding:.28rem 0}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--border2);transition:all .2s}
+.dot.on{background:var(--vta);width:13px;border-radius:3px}
+
+/* QUIZ */
+.quiz-wrap{padding:0 1.05rem;flex:1;overflow-y:auto}
+.quiz-wrap::-webkit-scrollbar{display:none}
+.qhd{display:flex;justify-content:space-between;align-items:center;padding:.65rem 0}
+.qsc{font-family:var(--fu);font-size:.76rem;font-weight:600;color:var(--vta)}
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.2rem 1.15rem;margin-bottom:.55rem}
+.qq{font-family:var(--fd);font-size:1rem;font-weight:600;color:var(--txt);line-height:1.5;margin-bottom:.9rem}
+.qopt{width:100%;text-align:left;padding:.75rem .85rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-md);font-family:var(--fu);font-size:.74rem;color:var(--txt2);cursor:pointer;margin-bottom:.4rem;transition:all .15s;line-height:1.5}
+.qopt:last-child{margin-bottom:0}
+.qopt.correct{background:rgba(22,163,74,.1);border-color:#16a34a;color:#15803d}
+.qopt.wrong{background:rgba(220,38,38,.08);border-color:#dc2626;color:#b91c1c}
+.qexp{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.7;padding:.75rem .85rem;background:var(--bg2);border-radius:var(--r-md);margin-top:.55rem;display:none}
+.qexp.show{display:block}
+.qnxt{width:100%;padding:.82rem;background:var(--vta);border:none;border-radius:var(--r-full);font-family:var(--fu);font-size:.83rem;font-weight:700;color:#fff;cursor:pointer;margin-top:.55rem;display:none}
+.qnxt.show{display:block}
+.qfin{text-align:center;padding:2rem 1rem}
+.qfin-score{font-family:var(--fd);font-size:2.4rem;font-weight:700;color:var(--vta)}
+.qfin-msg{font-family:var(--fu);font-size:.78rem;color:var(--txt2);margin:.45rem 0 1.3rem}
+.qrestart{padding:.85rem 1.8rem;background:var(--surface);border:1.5px solid var(--vta);border-radius:var(--r-full);font-family:var(--fu);font-size:.83rem;font-weight:700;color:var(--vta);cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-orbs">
+    <div class="orb" style="width:260px;height:260px;background:#7c3aed;top:-70px;left:-60px"></div>
+    <div class="orb" style="width:200px;height:200px;background:#2563eb;bottom:-50px;right:-50px"></div>
+    <div class="orb" style="width:140px;height:140px;background:#dc2626;top:40%;right:5%"></div>
+  </div>
+  <div class="sp-icon">🧠</div>
+  <div class="sp-title">NEXUS</div>
+  <div class="sp-sub">The Love Brain</div>
+  <div class="sp-tagline">「脳を知れば、恋愛の全てが<br>設計できる。」</div>
+  <button class="sp-btn" onclick="boot()">はじめる →</button>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="pages">
+
+    <!-- HOME -->
+    <div class="page on" id="pg-home">
+      <div class="sb">
+        <div class="home-hero">
+          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem">
+            <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--vta),var(--hippo));display:flex;align-items:center;justify-content:center;font-size:1.15rem;box-shadow:0 0 18px rgba(124,58,237,.25)">🧠</div>
+            <div><div style="font-family:var(--fd);font-size:1rem;font-weight:700">NEXUS</div><div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3);margin-top:.1rem">THE LOVE BRAIN</div></div>
+          </div>
+          <div style="font-family:var(--fd);font-size:1.3rem;line-height:1.45;margin-bottom:.8rem">脳を知れば、<em style="font-style:italic;background:linear-gradient(135deg,var(--vta-l),var(--hippo-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">恋愛の全てが<br>設計できる。</em></div>
+          <div class="hs-row">
+            <div class="hs"><span class="hs-n">10</span><span class="hs-l">脳部位</span></div>
+            <div class="hs"><span class="hs-n">10</span><span class="hs-l">ホルモン</span></div>
+            <div class="hs"><span class="hs-n">5</span><span class="hs-l">神経回路</span></div>
+            <div class="hs"><span class="hs-n">4</span><span class="hs-l">恋愛段階</span></div>
+          </div>
+          <div class="tip-box" onclick="rotateTip()">
+            <span class="tip-ico" id="tipIco">🧠</span>
+            <span class="tip-txt" id="tipTxt"></span>
+          </div>
+        </div>
+
+        <div style="font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin-bottom:.45rem">脳部位クイックアクセス</div>
+        <div class="brain-grid">
+          <div class="bc" onclick="nav('brain',1)" style="border-color:var(--amyg-l)30"><div class="bc-ico">🔴</div><div class="bc-name">扁桃体</div><div class="bc-en">Amygdala</div><div class="bc-badge" style="background:var(--amyg-xl);color:var(--amyg-l)">感情の関門</div></div>
+          <div class="bc" onclick="nav('brain',1)" style="border-color:var(--hippo-l)30"><div class="bc-ico">🔵</div><div class="bc-name">海馬</div><div class="bc-en">Hippocampus</div><div class="bc-badge" style="background:var(--hippo-xl);color:var(--hippo-l)">記憶の保存庫</div></div>
+          <div class="bc" onclick="nav('brain',1)" style="border-color:var(--hypo-l)30"><div class="bc-ico">🟢</div><div class="bc-name">視床下部</div><div class="bc-en">Hypothalamus</div><div class="bc-badge" style="background:var(--hypo-xl);color:var(--hypo-l)">ホルモンの司令塔</div></div>
+          <div class="bc" onclick="nav('brain',1)" style="border-color:var(--vta-l)30"><div class="bc-ico">🟣</div><div class="bc-name">腹側被蓋野</div><div class="bc-en">VTA</div><div class="bc-badge" style="background:var(--vta-xl);color:var(--vta-l)">恋愛のエンジン</div></div>
+        </div>
+
+        <div class="mod" onclick="nav('hormone',2)"><div class="mod-ac" style="background:var(--nacc)"></div><div class="mod-ico" style="background:var(--nacc-xl)">💊</div><div><div class="mod-name">ホルモン図鑑</div><div class="mod-sub">10種のホルモン×恋愛への完全解説</div></div><span class="mod-arr">›</span></div>
+        <div class="mod" onclick="nav('circuit',3)"><div class="mod-ac" style="background:var(--amyg)"></div><div class="mod-ico" style="background:var(--amyg-xl)">⚡</div><div><div class="mod-name">神経回路マップ</div><div class="mod-sub">恋愛行動を生む5つの回路</div></div><span class="mod-arr">›</span></div>
+        <div class="mod" onclick="nav('phase',4)"><div class="mod-ac" style="background:var(--hippo)"></div><div class="mod-ico" style="background:var(--hippo-xl)">📅</div><div><div class="mod-name">恋愛段階マップ</div><div class="mod-sub">脳の変化で見る4フェーズ</div></div><span class="mod-arr">›</span></div>
+        <div class="mod" onclick="nav('learn',5)"><div class="mod-ac" style="background:var(--vta)"></div><div class="mod-ico" style="background:var(--vta-xl)">📚</div><div><div class="mod-name">NEXUS Learn</div><div class="mod-sub">8デッキ 100+カード</div></div><span class="mod-arr">›</span></div>
+        <div class="mod" onclick="nav('quiz',6)"><div class="mod-ac" style="background:var(--acc)"></div><div class="mod-ico" style="background:var(--acc-xl)">🎯</div><div><div class="mod-name">脳科学クイズ</div><div class="mod-sub">恋愛脳専門 — 15問</div></div><span class="mod-arr">›</span></div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- BRAIN PAGE -->
+    <div class="page" id="pg-brain">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="background:linear-gradient(135deg,var(--vta),var(--amyg));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">🧠 恋愛脳の解剖</div><div style="font-family:var(--fu);font-size:.73rem;color:var(--txt3);margin-top:.2rem">10の脳部位が恋愛をどう作るか</div></div>
+        <div id="brainCards"></div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- HORMONE PAGE -->
+    <div class="page" id="pg-hormone">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="color:var(--nacc)">💊 ホルモン図鑑</div><div style="font-family:var(--fu);font-size:.73rem;color:var(--txt3);margin-top:.2rem">恋愛を動かす10種の化学物質</div></div>
+        <div id="hormoneCards"></div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- CIRCUIT PAGE -->
+    <div class="page" id="pg-circuit">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="color:var(--amyg)">⚡ 神経回路マップ</div><div style="font-family:var(--fu);font-size:.73rem;color:var(--txt3);margin-top:.2rem">恋愛行動を生む5つの回路</div></div>
+        <div id="circuitCards"></div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- PHASE PAGE -->
+    <div class="page" id="pg-phase">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="color:var(--hippo)">📅 恋愛段階マップ</div><div style="font-family:var(--fu);font-size:.73rem;color:var(--txt3);margin-top:.2rem">脳の変化で見る恋愛の4フェーズ</div></div>
+        <div class="phase-timeline" id="phaseTimeline"></div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- LEARN PAGE -->
+    <div class="page" id="pg-learn">
+      <div class="learn-hd"><div class="pg-title" style="font-size:1.15rem">NEXUS Learn</div><div style="font-family:var(--fu);font-size:.74rem;color:var(--txt3)" id="deckCnt"></div></div>
+      <div class="deck-tabs" id="deckTabs"></div>
+      <div class="card-area" id="cardArea">
+        <div class="card-wrap">
+          <div class="card-face" id="cardFront"><p class="cf-tag" id="cfTag"></p><p class="cf-q" id="cfQ"></p></div>
+          <div class="card-face card-face-back hidden" id="cardBack">
+            <p class="cf-tag" style="color:var(--vta)">ANSWER</p>
+            <p class="cf-a" id="cfA"></p>
+            <p class="cf-src" id="cfSrc"></p>
+            <div class="cf-frags" id="cfFrags" style="display:none"></div>
+          </div>
+          <button class="flip-btn" id="flipBtn" onclick="flipCard()">答えを見る 🧠</button>
+        </div>
+        <div class="dots" id="dots"></div>
+        <div class="card-ctrl">
+          <button class="ctrl-btn" onclick="prevCard()">‹</button>
+          <span class="ctrl-pg" id="ctrlPg"></span>
+          <button class="ctrl-btn" onclick="nextCard()">›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ PAGE -->
+    <div class="page" id="pg-quiz">
+      <div class="quiz-wrap">
+        <div class="qhd"><div style="font-family:var(--fd);font-size:.95rem;font-weight:700">恋愛脳クイズ</div><div class="qsc" id="qSc">0/0</div></div>
+        <div id="quizArea"></div>
+      </div>
+    </div>
+
+  </div>
+
+  
+    <div class="page" id="pg-ai">
+      <div class="sb">
+        <div class="pg-hd">
+          <div class="pg-title" style="color:#7c3aed">&#129302; AI コーチ</div>
+          <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt3);margin-top:.2rem">専門AIに相談</div>
+        </div>
+        <div id="aiMsgs_nexus" style="display:flex;flex-direction:column;gap:.65rem;margin-bottom:.6rem">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.82rem .92rem;font-family:var(--fu);font-size:.78rem;color:var(--txt);line-height:1.68">
+            こんにちは。専門AIコーチです。状況を入力してください。
+          </div>
+        </div>
+        <div id="aiQB_nexus" style="display:flex;gap:.38rem;flex-wrap:wrap;margin-bottom:.6rem"></div>
+        <div class="spacer"></div>
+      </div>
+      <div style="padding:.55rem .9rem calc(env(safe-area-inset-bottom)+4.2rem);background:var(--surface);border-top:1px solid var(--border);display:flex;gap:.45rem;align-items:flex-end;position:sticky;bottom:0">
+        <textarea id="aiInp_nexus" style="flex:1;background:var(--bg2,#f5f3ff);border:1.5px solid var(--border2);border-radius:var(--r-lg);padding:.6rem .75rem;font-family:var(--fu);font-size:.8rem;color:var(--txt);resize:none;min-height:42px;max-height:110px;outline:none;line-height:1.5" placeholder="状況を入力..." rows="1" oninput="this.style.height=&apos;auto&apos;;this.style.height=Math.min(this.scrollHeight,110)+&apos;px&apos;" onkeydown="if(event.key===&apos;Enter&apos;&&!event.shiftKey){event.preventDefault();aiSend_nexus();}"></textarea>
+        <button onclick="aiSend_nexus()" style="width:42px;height:42px;border-radius:50%;background:#7c3aed;border:none;color:#fff;font-size:1.05rem;cursor:pointer;flex-shrink:0">&#9658;</button>
+      </div>
+    </div>
+
+<nav class="bnav">
+    <button class="bni on" onclick="nav('home',0)"><span class="bni-ico">🧠</span><div class="bni-dot"></div><span class="bni-lbl">ホーム</span></button>
+    <button class="bni" onclick="nav('brain',1)"><span class="bni-ico">🔬</span><div class="bni-dot"></div><span class="bni-lbl">脳部位</span></button>
+    <button class="bni" onclick="nav('hormone',2)"><span class="bni-ico">💊</span><div class="bni-dot"></div><span class="bni-lbl">ホルモン</span></button>
+    <button class="bni" onclick="nav('circuit',3)"><span class="bni-ico">⚡</span><div class="bni-dot"></div><span class="bni-lbl">回路</span></button>
+    <button class="bni" onclick="nav('phase',4)"><span class="bni-ico">📅</span><div class="bni-dot"></div><span class="bni-lbl">段階</span></button>
+    <button class="bni" onclick="nav('learn',5)"><span class="bni-ico">📚</span><div class="bni-dot"></div><span class="bni-lbl">学習</span></button>
+    <button class="bni" onclick="nav('quiz',6)"><span class="bni-ico">🎯</span><div class="bni-dot"></div><span class="bni-lbl">クイズ</span></button>
+
+  <button class="bni" onclick="nav('ai',7)"><span class="bni-ico">&#129302;</span><div class="bni-dot"></div><span class="bni-lbl">AI</span></button>
+</nav>
+</div>
+
+<script>
+/* ════ TIPS ════ */
+const TIPS=[
+  {ico:'🔴',txt:'扁桃体は0.05秒で「好き/嫌い・安全/危険」を判定する。前頭前野（理性）より先に感情的判定が完了するため「第一印象は変えられない」という現象が起きる。これが服装・香り・声が最初の0.1秒で勝負を決める神経科学的根拠。'},
+  {ico:'🟣',txt:'腹側被蓋野（VTA）のドーパミン産生ニューロンが恋愛の「エンジン」。Helen Fisher（2005）のfMRI研究で恋愛中の人のVTAがコカイン使用時と同じパターンで活性化することを確認。「恋愛は一種の中毒」という表現の神経科学的根拠。'},
+  {ico:'🟢',txt:'視床下部の室傍核・視索上核がオキシトシンとバソプレシンを産生する。全ての五感経路の最終目的地がここ。「触れる・囁く・一緒に食べる・香りを嗅ぐ」という全ての行為がこの2つのニューロン群を活性化させるために設計されている。'},
+  {ico:'🔵',txt:'海馬は感情が強い状態（オキシトシン×バソプレシン×エンドルフィン分泌中）での体験を最高強度で保存する。「一生忘れられない体験」を意図的に作るには五感統合×最大ホルモン状態が必要。睡眠中のNREM波がこの固定化を完成させる。'},
+  {ico:'🧠',txt:'前頭前野（PFC）は恋愛初期に部分的に「シャットダウン」される（Bartels & Zeki 2004）。批判的思考・リスク評価・社会的判断が低下し「恋は盲目」状態になる。この抑制はオキシトシンとドーパミンが同時に作用した時に最も強く起きる。'},
+  {ico:'💜',txt:'島皮質は五感×第六感×第七感（内受容感覚×腸-脳軸×身体共鳴）の全ての最終統合センター。「体が反応する・胸キュン・なんとなく合う感覚・一体感」という全ての感覚がここで生成される。恋愛体験の「意識的な感情」の製造工場。'},
+  {ico:'❤️',txt:'帯状皮質（ACC）は社会的痛みと身体的痛みを同じ神経経路で処理する（Eisenberger 2003）。「振られると本当に心が痛い」は比喩ではなく神経学的事実。逆にACCが活性化した「共感」状態では相手の痛みを自分のことのように感じる。'},
+  {ico:'🟠',txt:'側坐核はドーパミン報酬の中枢で「また会いたい・また触れたい・もっと知りたい」という欲求の神経実体。恋愛初期の「会いたくて仕方がない」感覚がここから生まれる。強い恋愛感情がギャンブル・薬物と同じ報酬回路を使う理由。'},
+];
+let tipIdx=0;
+function rotateTip(){tipIdx=(tipIdx+1)%TIPS.length;document.getElementById('tipIco').textContent=TIPS[tipIdx].ico;document.getElementById('tipTxt').textContent=TIPS[tipIdx].txt;}
+
+/* ════ BRAIN DATA ════ */
+const BRAIN_DATA=[
+  {color:'var(--amyg)',name:'扁桃体',en:'Amygdala',ico:'🔴',
+    location:'側頭葉内側・海馬の前方・アーモンド形の核（左右一対）',
+    size:'約1.5cm・体積1〜2cm³',
+    connections:'視床（感覚入力）・海馬（記憶）・視床下部（ホルモン）・前頭前野（理性）・側坐核（報酬）',
+    love:'全ての感覚経路が最初に到達する感情的評価の関門。0.05秒で「好き/嫌い・安全/危険・魅力的/そうでない」を判定し視床下部へのホルモン産生指令を出す。扁桃体の判定をクリアしない限り次の恋愛段階（海馬への記憶保存・視床下部のオキシトシン分泌）が始まらない。',
+    science:'LeDoux（1996）の扁桃体研究：高速感情回路（視床→扁桃体：0.05秒）と低速認知回路（視床→皮質→扁桃体：0.1〜0.2秒）の並列処理。恋愛の「第一印象」が変えられない理由。',
+    protocol:'EIDOS（香り0.03秒直達）×FORMA（視覚0.1秒）×SONOS（声0.05秒）の三重刺激が扁桃体を最速でクリアする設計。',
+    hormones:['コルチゾール（適度な緊張）','ドーパミン（魅力的と判定）','CRH（興奮）']},
+  {color:'var(--hippo)',name:'海馬',en:'Hippocampus',ico:'🔵',
+    location:'側頭葉内側・扁桃体の隣・タツノオトシゴ形',
+    size:'約3.5cm・記憶の「索引」として機能',
+    connections:'扁桃体（感情記憶）・内嗅皮質（情報入力）・前頭前野（記憶検索）・嗅球（嗅覚直結）',
+    love:'陳述記憶（「あの時の体験」）の長期固定化を担当。オキシトシン+バソプレシンが分泌された状態での体験が海馬に最も強く保存される。嗅覚は海馬に直接接続しているためプルースト効果（香りで記憶が蘇る）の神経解剖学的根拠がここにある。睡眠中のNREMスロー波がこの固定化を完成させる。',
+    science:'Scoville & Milner（1957）H.M.症例：海馬を除去された患者が新しい記憶を形成できなくなった歴史的研究。現代神経科学の礎。',
+    protocol:'五感統合（特別な夜）×最大ホルモン状態×翌日の睡眠という三条件が「一生忘れられない記憶」を海馬に最高強度で保存する設計。',
+    hormones:['オキシトシン（記憶強化）','バソプレシン（感情記憶）','コルチゾール（適度に記憶強化）']},
+  {color:'var(--hypo)',name:'視床下部',en:'Hypothalamus',ico:'🟢',
+    location:'間脳・視床の下・脳の中央底部・わずか4g',
+    size:'約4g（脳全体の0.3%以下）',
+    connections:'下垂体（ホルモン分泌）・扁桃体（感情入力）・脳幹（自律神経）・腹側被蓋野（ドーパミン）',
+    love:'室傍核（PVN）と視索上核（SON）がオキシトシンとバソプレシンを産生し後葉（神経下垂体）から血中に放出する。全ての五感経路（EIDOS×SONOS×HAPTOS×GEUSTO）と第六感経路（内受容感覚）が最終的にここのホルモン産生ニューロンに収束する。「愛の化学物質の製造工場」。',
+    science:'Harris（1955）：視床下部が下垂体を通じて内分泌系全体を制御することを確立。現代神経内分泌学の基礎。',
+    protocol:'五感統合が全て視床下部のオキシトシン産生ニューロンを目標としている。HAPTOS（CT繊維→島皮質→視床下部直接）が最も直接的な経路。',
+    hormones:['オキシトシン（産生・分泌）','バソプレシン（産生・分泌）','CRH→コルチゾール（ストレス応答）','GnRH→テストステロン/エストロゲン（性ホルモン調節）']},
+  {color:'var(--nacc)',name:'側坐核',en:'Nucleus Accumbens',ico:'🟠',
+    location:'前脳基底核・線条体の腹側部分',
+    size:'左右一対の小さな核群',
+    connections:'腹側被蓋野（ドーパミン入力）・扁桃体（感情）・海馬（記憶）・前頭前野（認知的評価）',
+    love:'VTAからのドーパミン投射を受ける「報酬・動機・欲求・快楽」の中枢。「また会いたい・また触れたい・また話したい」という強烈な欲求の神経実体。恋愛初期の「会いたくて仕方がない・頭から離れない」という状態がここのドーパミン放出パターンによって生成される。',
+    science:'Schultz（1997）の予測誤差報酬モデル：期待を上回る報酬でドーパミン急増・期待以下でドーパミン低下というメカニズムが欲求の神経基盤。',
+    protocol:'「部分強化スケジュール（予測できないが少し予想外の良さ）」が側坐核のドーパミン放出を最大化させる。EIDOSのシグネチャー進化×SONOSの「予測可能な驚き」の設計根拠。',
+    hormones:['ドーパミン（主役）','エンドルフィン（快楽増幅）','エンケファリン（報酬調整）']},
+  {color:'var(--vta)',name:'腹側被蓋野',en:'VTA',ico:'🟣',
+    location:'中脳・脳幹上部・ドーパミン産生細胞の集団',
+    size:'小さな核群だが脳全体に広大なドーパミン投射ネットワーク',
+    connections:'側坐核（報酬経路）・前頭前野（認知的評価）・海馬（記憶）・扁桃体（感情）・島皮質',
+    love:'中脳辺縁系ドーパミン経路（メゾリンビック経路）の起点。コカイン・ギャンブル・食事・セックスなど全ての強力な報酬体験で活性化する同じ回路。Helen Fisher（2005）のfMRI研究で恋愛中の人のVTAがコカイン使用時と同じパターンで活性化することを確認。「恋愛が一種の中毒」の神経解剖学的実体。',
+    science:'Helen Fisher et al.（2005, Journal of Neurophysiology）：恋愛中の17名のfMRI研究。VTA×側坐核×尾状核が「愛する人の写真」を見た時に強く活性化。',
+    protocol:'新規性（初めての体験・予想外の演出）がVTAのドーパミン産生を最も強く刺激する。毎回少し「違う驚き」を設計することが恋愛初期の「興奮状態」を長期維持する鍵。',
+    hormones:['ドーパミン（産生・投射）','ノルアドレナリン（一部産生）']},
+  {color:'var(--insula)',name:'島皮質',en:'Insula',ico:'💜',
+    location:'外側溝（シルビウス裂）の深部に埋まった葉状の皮質',
+    size:'折り畳まれているため見えにくいが比較的大きな領域',
+    connections:'扁桃体・帯状皮質・前頭前野・体性感覚野・視床下部・自律神経系',
+    love:'味覚（一次味覚野）×CT繊維触覚×内受容感覚（心臓・腸・体温）×痛み×快楽×感情×共感を全て統合する「感覚×感情の中央統合センター」。SENSES/SEXTUSで解説した五感×七感の全経路が収束する。「気持ちいい・安心する・体が反応する」という恋愛的感情の意識的生成の場所。',
+    science:'Craig（2009, Nature Reviews Neuroscience）：島皮質前部が主観的感情体験の神経基盤であるという「感情の島皮質理論」を提唱。',
+    protocol:'五感統合の全ての実践が最終的に島皮質の活性化を目標としている。HAPTOSのCT繊維刺激がGEUSTOの味覚とSONOSの囁き声と同じ島皮質に収束する。',
+    hormones:['オキシトシン（産生経路）','エンドルフィン（快楽処理）','セロトニン（感情安定）']},
+  {color:'var(--pfc)',name:'前頭前野',en:'Prefrontal Cortex',ico:'🔷',
+    location:'前頭葉の最前部・脳の「CEO」',
+    size:'人間で特に発達した領域（霊長類比最大）',
+    connections:'扁桃体（感情制御）・海馬（記憶統合）・VTA（動機）・側坐核（報酬評価）・全脳領域',
+    love:'理性的判断・批判的思考・リスク評価・社会的行動制御の中枢。Bartels & Zeki（2004）のfMRI研究で恋愛中に内側前頭前野の一部が「活動低下（相手への批判的評価の抑制）」することを確認——「恋は盲目」の神経解剖学的根拠。長期関係では再び活動が戻り「理性的な絆」への移行が起きる。',
+    science:'Bartels & Zeki（2004, Neuroreport）：恋愛中の脳では批判・否定的評価に関わる前頭前野領域が抑制される。',
+    protocol:'初期（恋愛感情最大）→前頭前野抑制で盲目的に好き。長期（理性回復）→前頭前野が再活動し「この人の全てを知った上で好き」という成熟した愛着に移行。五感統合による絆形成がこの移行を支える。',
+    hormones:['オキシトシン（社会的判断を「安全」に傾ける）','ドーパミン（目標指向行動）']},
+  {color:'var(--acc)',name:'前帯状皮質',en:'Anterior Cingulate Cortex',ico:'❤️',
+    location:'大脳半球の内側面・脳梁の上・帯状皮質の前部',
+    size:'帯状の皮質領域',
+    connections:'扁桃体・前頭前野・島皮質・視床・運動皮質',
+    love:'共感・社会的痛み・注意・感情調整の中枢。Eisenberger et al.（2003 Science）で社会的拒絶が身体的痛みと同じACCを活性化させることを確認。「振られると本当に心が痛い」の神経解剖学的実体。逆にACCの「共感状態」では相手の感情が自分のことのように処理され深い感情的絆が形成される。Gottmanの「修復の試み（ハグ・謝罪）」がACCの痛み反応を直接抑制する。',
+    science:'Eisenberger et al.（2003, Science）：社会的拒絶でdACCと右腹外側前頭前野が活性化。社会的痛みと身体的痛みの共有神経経路。',
+    protocol:'HAPTOSの20秒ハグ×SONOSの感情ラベリング×共感的傾聴がACCの「痛み反応」を最も効果的に抑制し「安心感」を生成する。',
+    hormones:['オキシトシン（社会的痛みを軽減）','エンドルフィン（鎮痛）']},
+  {color:'var(--cereb)',name:'小脳',en:'Cerebellum',ico:'🟡',
+    location:'脳幹の後上方・後頭葉の下',
+    size:'脳全体の10%の体積だがニューロン数は全脳の80%',
+    connections:'脳幹（感覚入力）・大脳皮質（運動協調）・前庭核（平衡）・脊髄（運動出力）',
+    love:'運動記憶×タッチパターン記憶×リズムの習得を担当。HAPTOSで解説した固有感覚記憶（「この人のタッチパターンを体が覚えている」）の神経基盤がここ。ダンスの動作同期（Hove & Risen 2009）による絆形成も小脳の運動同期機能が関与。「この人の歩き方・タッチのリズム・一緒にいる時の体の感覚」という身体的な絆の記憶庫。',
+    science:'Ito（1984）の小脳学習理論：プルキンエ細胞の長期抑圧（LTD）が運動学習の神経基盤。タッチパターンの「体の記憶」がここで形成される。',
+    protocol:'繰り返しの同じタッチパターン（秒速5cmのCT繊維刺激×20秒ハグ）が小脳に「この人のタッチの記憶」を刻む。バソプレシン絆形成と組み合わさって「体が覚えている絆」が完成する。',
+    hormones:['（直接のホルモン産生は少ないが）オキシトシン受容体が存在し絆に応答する']},
+  {color:'var(--brain)',name:'脳幹・迷走神経',en:'Brainstem & Vagus',ico:'⚪',
+    location:'脳の最深部・中脳・橋・延髄の三部分',
+    size:'脳幹全体で約7〜8cm',
+    connections:'脊髄・全脳領域・迷走神経（全身の臓器へ）',
+    love:'迷走神経（第10脳神経）の起点が脳幹（延髄の背側迷走神経核・孤束核）にある。SONOSの耳介CT繊維→迷走神経耳介枝→孤束核→視床下部というオキシトシン直接産生経路の中継点。ポリヴェーガル理論（Porges）の腹側迷走神経複合体（VVC）が「安全の神経学」として恋愛の根本的な安心感を生成する。全ての自律神経（心拍・呼吸・消化・性器血流）の最高司令部。',
+    science:'Porges（1994, Psychophysiology）：ポリヴェーガル理論。迷走神経の3系統（背側迷走神経・交感神経・腹側迷走神経）が社会的行動・愛着・恐怖・凍りつきを制御する。',
+    protocol:'腹式呼吸×囁き声×20秒ハグ×共食（迷走神経刺激）が腹側迷走神経複合体を活性化させ「安全の神経学的シグナル」として相手の扁桃体防衛機制を最速で解除する。',
+    hormones:['（オキシトシン産生経路の中継点）','ACh（アセチルコリン：副交感神経伝達）']},
+];
+
+/* ════ HORMONE DATA ════ */
+const HORMONE_DATA=[
+  {color:'#4338ca',name:'オキシトシン',en:'Oxytocin',ico:'💙',
+    nickname:'絆のホルモン・愛情ホルモン',
+    produced:'視床下部（室傍核・視索上核）→後葉から血中分泌',
+    trigger:'タッチ・授乳・オルガズム・共食・アイコンタクト・囁き声',
+    love:'「信頼・絆・安心感・温もり・この人といたい」という感情の直接的な化学的基盤。CT繊維刺激（HAPTOS）が最も効率的に産生を促進する経路。オキシトシン受容体は刺激されるたびに感受性が増加（増感）するため反復接触でどんどん効果が強まる「雪だるま効果」の主役。',
+    halftime:'末梢：約3分（半減期）/ 脳内：効果数時間',
+    nexus_sense:['HAPTOS（CT繊維→最速産生）','SONOS（囁き声→迷走神経→直接）','GEUSTO（キス→5種同時）','EIDOS（嗅覚→扁桃体→間接）']},
+  {color:'#6d28d9',name:'バソプレシン',en:'Vasopressin',ico:'💜',
+    nickname:'絆維持ホルモン・所有欲ホルモン',
+    produced:'視床下部（室傍核・視索上核）→後葉分泌',
+    trigger:'射精・長期的な絆形成・パートナー保護行動',
+    love:'オキシトシンが「今・ここの親密感」を作るのに対し「この特定の相手への永続的な独占的絆感情（ペアボンド）」を形成する。射精後30分以内に最大値→「守りたい・傍にいたい」感情のピーク。AVPR1a（バソプレシン受容体遺伝子）の多型が嫉妬・所有欲・一夫一妻的行動の強さと相関する。',
+    halftime:'末梢：約20分 / 脳内：効果数時間〜日',
+    nexus_sense:['HAPTOS（20秒ハグ→バソプレシン起動）','GEUSTO（行為後スキンシップ→プロラクチン抑制×バソプレシン維持）']},
+  {color:'#dc2626',name:'ドーパミン',en:'Dopamine',ico:'🔴',
+    nickname:'報酬・欲求・快楽のホルモン',
+    produced:'VTA（腹側被蓋野）→側坐核・前頭前野へ投射',
+    trigger:'新規性・予測誤差（期待を上回る報酬）・目標達成・恋愛初期',
+    love:'「また会いたい・もっと知りたい・頭から離れない」という欲求の化学的実体。コカインと同じ回路を使う（Helen Fisher 2005）。新規性で最大放出→慣れで低下（マンネリの神経科学的正体）。完全予測可能より「少し予想外（部分強化スケジュール）」で最大分泌。VTAから側坐核・前頭前野・海馬・扁桃体への広大な投射ネットワーク。',
+    halftime:'シナプス内：ミリ秒〜秒単位',
+    nexus_sense:['FORMA（新しいスタイル→予測誤差）','EIDOS（シグネチャー香水×バリエーション）','全感覚の「驚き」要素']},
+  {color:'#ea580c',name:'ノルアドレナリン',en:'Noradrenaline',ico:'🟠',
+    nickname:'ときめき・興奮・覚醒のホルモン',
+    produced:'青斑核（脳幹）→脳全体に広く投射',
+    trigger:'新規刺激・脅威・恋愛的ときめき・性的覚醒',
+    love:'「ドキドキする・胸が高鳴る・手が震える・顔が赤くなる」という恋愛的ときめきの生理的実体。交感神経優位状態を作り出し心拍増加・瞳孔拡大（Hess 1975）・アポクリン腺分泌（アンドロステノール）を引き起こす。吊り橋効果の化学的基盤。「適度なノルアドレナリン（ときめき）」が恋愛の「スパイス」として機能する。',
+    halftime:'シナプス内：ミリ秒〜秒単位',
+    nexus_sense:['FORMA（視覚的ときめき）','EIDOS（コルチゾール上昇→AND）','前庭感覚（揺れ×吊り橋）']},
+  {color:'#16a34a',name:'セロトニン',en:'Serotonin',ico:'🟢',
+    nickname:'幸福・安定・慢性的絆のホルモン',
+    produced:'縫線核（脳幹）→脳全体 / 腸クロム親和性細胞（腸の95%）',
+    trigger:'日光・運動・達成感・良好な腸内環境・社会的絆',
+    love:'恋愛の「安定した幸福感・充実感・この人といると落ち着く」という慢性的な幸福の化学的基盤。オキシトシンが「急性の絆」を作るのに対しセロトニンは「長期的な安定した幸福」を維持する。SSRIがセロトニンを増加させると性的欲求と恋愛的激しさが低下する現象が、セロトニンが恋愛の「激しさ」より「安定」に傾けることを示す。',
+    halftime:'脳内：数時間',
+    nexus_sense:['GEUSTO（共食×腸内環境改善→腸のセロトニン産生）','EIDOS（清潔感香水→安心感）']},
+  {color:'#0f766e',name:'エンドルフィン',en:'Endorphin',ico:'💚',
+    nickname:'快楽・鎮痛・絆の幸福感',
+    produced:'下垂体・視床下部→β-エンドルフィンが主役',
+    trigger:'オルガズム・笑い・タッチ・社会的グルーミング・激しい運動',
+    love:'内因性オピオイドとしてμオピオイド受容体に結合し強烈な幸福感・鎮痛・多幸感を引き起こす。霊長類の「グルーミング（毛づくろい）」行動で放出されHAPTOSの頭皮マッサージ×CT繊維刺激の絆形成効果の一部を担う。「会えない→幸福感低下→会いたい」という恋愛の「禁断症状」はエンドルフィン低下による離脱症状。',
+    halftime:'脳内：30分〜数時間',
+    nexus_sense:['HAPTOS（グルーミング×タッチ）','GEUSTO（オルガズム最大）','SONOS（笑い×共感）']},
+  {color:'#b45309',name:'テストステロン',en:'Testosterone',ico:'🟡',
+    nickname:'性的欲求・競争・男性的魅力の基盤',
+    produced:'精巣（男性）・副腎（男女）',
+    trigger:'朝（一日最高値）・競争・勝利・性的刺激・睡眠・亜鉛摂取',
+    love:'男性の声の低さ（SONOS：声帯肥厚）・体の香り（EIDOS：アンドロステノール産生）・体型シルエット（FORMA）・スキンシップ積極性（HAPTOS）・テストステロン転移（GEUSTO：キス）の全ての男性的恋愛的魅力の生物学的基盤。Pipitone（2008）：排卵期の女性の声変化が男性のテストステロンを最大上昇させる。',
+    halftime:'血中半減期：約10〜100分（遊離型）',
+    nexus_sense:['SONOS（声の低さ）','EIDOS（AND産生）','GEUSTO（テストステロン転移）','HAPTOS（性的覚醒状態）']},
+  {color:'#be185d',name:'エストロゲン',en:'Estrogen',ico:'🩷',
+    nickname:'受容性・嗅覚感度・排卵の司令官',
+    produced:'卵巣（主役）・副腎・脂肪組織',
+    trigger:'排卵期にピーク・若さと関連',
+    love:'排卵期のエストロゲン最高値が①嗅覚感度最大（EIDOS効果最大化）②腟粘膜感受性最大③コプリン分泌最大（Cutler 1998：男性テストステロン上昇）④声変化（Pipitone 2008）という「全感覚の受容性最大化」を引き起こす。Buss研究で女性の若さ（エストロゲン指標）が男性の配偶者選択で普遍的に最重視される進化的根拠。',
+    halftime:'血中半減期：数時間',
+    nexus_sense:['全感覚（排卵期に感受性最大化）','EIDOS（嗅覚感度最大）','GEUSTO（コプリン×口腔感度）']},
+  {color:'#6b7280',name:'コルチゾール',en:'Cortisol',ico:'⚪',
+    nickname:'ストレス×適度なときめきの両刃',
+    produced:'副腎皮質（ストレス応答）',
+    trigger:'ストレス・運動・低血糖・社会的脅威・恋愛的緊張',
+    love:'「適度なコルチゾール（ときめきの緊張）」が恋愛初期の「ドキドキ感」を増幅させる両刃の化学物質。UC Berkeley（2007）：AND（アンドロスタジエノン）が女性のコルチゾールを上昇させ「適度な覚醒状態」に入れる。過剰なコルチゾール（慢性ストレス）は性ホルモン産生を抑制し恋愛機能全体を低下させる。副交感神経優位（安心環境）でコルチゾールが低下→扁桃体防衛機制が緩む→親密性向上。',
+    halftime:'血中半減期：60〜90分',
+    nexus_sense:['EIDOS（AND×コルチゾール上昇）','FORMA（キャンドル照明→コルチゾール低下）']},
+  {color:'#7c3aed',name:'フェニルエチルアミン',en:'PEA',ico:'🔮',
+    nickname:'恋愛初期の恍惚感・天然アンフェタミン',
+    produced:'体内で合成（チロシン・フェニルアラニンから）',
+    trigger:'恋愛初期・チョコレート摂取・強い感情的興奮',
+    love:'「恋に落ちた瞬間の恍惚感・全てが輝いて見える・この人のことしか考えられない」という恋愛初期の独特の体験の化学的実体。構造がアンフェタミン（覚醒剤）に類似しており興奮・多幸感・食欲低下・睡眠減少という作用を持つ。チョコレートに含まれることが「チョコ→恋愛的興奮」という文化的連想の生化学的根拠（GEUSTOのPEA戦略）。通常は数ヶ月〜2年で代謝酵素（MAO-B）により分解→恋愛の「熱狂期の終わり」。',
+    halftime:'脳内：数時間',
+    nexus_sense:['GEUSTO（チョコレート×PEA）','恋愛Phase 1（魅力期）の主役']},
+];
+
+/* ════ CIRCUIT DATA ════ */
+const CIRCUIT_DATA=[
+  {color:'var(--amyg)',name:'恐怖回路',sub:'告白の緊張×扁桃体×ノルアドレナリン',
+    flow:['感覚入力','視床','扁桃体（BLA）','視床下部','交感神経','ノルアドレナリン放出'],
+    love:'告白前の「心臓がドキドキする・手が震える・頭が真っ白になる」という体験がこの回路の活性化。「好きな人の前で緊張する」のは扁桃体が「この人は重要で失いたくない」という評価を「軽度の脅威」として処理するため。適度な活性化がときめきとして体験される。',
+    protocol:'SONOSの「腹式呼吸×低い安定した声」が視床下部へのCRH分泌を抑制しながら適度な緊張感を「魅力的な自信」として演出する設計。',
+    application:'告白時の「0.5秒の沈黙→低く落ち着いた断言口調」がこの回路の適度な活性化を利用してドーパミン的「緊張×期待」を最大化させる。'},
+  {color:'var(--vta)',name:'報酬回路',sub:'VTA→側坐核→ドーパミン→欲求',
+    flow:['新規刺激/予測誤差','VTA（腹側被蓋野）','側坐核','前頭前野','ドーパミン放出','欲求行動'],
+    love:'「また会いたい・頭から離れない・この人のことしか考えられない」という恋愛初期の強迫的な欲求がこの回路の産物。部分強化スケジュール（ギャンブルと同じ）で最大活性化する——「いつも来るわけではないが時々予想外に良いことが起きる」という不規則な報酬パターン。',
+    protocol:'EIDOSのシグネチャー（予測可能）×バリエーション（予測外）の設計が報酬回路の最適活性化状態を長期維持する。「いつも好きだけど毎回少し新しい驚きがある」という状態の神経回路設計。',
+    application:'「返信が必ずくる」より「返信のタイミングが少し不規則」な方がドーパミン的欲求が高まるのはこの回路の部分強化効果。ただし過度な不安定さは恐怖回路を活性化させ逆効果。'},
+  {color:'var(--hippo)',name:'記憶回路',sub:'扁桃体×海馬×「一生忘れられない記憶」',
+    flow:['感情的体験','扁桃体（感情評価）','内嗅皮質','海馬（短期記憶）','NREM睡眠（固定化）','大脳皮質（長期記憶）'],
+    love:'「一生忘れられない体験」が形成される回路。感情的覚醒（扁桃体）×多感覚同時刺激（Calvert超加算的効果）×ホルモン最大値（オキシトシン+バソプレシン+エンドルフィン）×睡眠（海馬→皮質への固定化）という4条件が揃った時に最高強度の記憶が形成される。',
+    protocol:'五感統合の「特別な夜（ピーク）」×「別れ際20秒ハグ（エンド）」×「翌朝の共食（睡眠後の再強化）」というピーク・エンド・翌朝フローが記憶回路の最高効率設計。',
+    application:'「この記憶がどれくらい強いか」は体験時の感情的覚醒レベルと多感覚同時刺激量に比例する。「同じ場所に何度も行く」より「一度の特別な体験」の方が記憶強度が高い理由。'},
+  {color:'var(--hypo)',name:'絆回路',sub:'視床下部×オキシトシン×バソプレシン×ペアボンド',
+    flow:['CT繊維刺激/オルガズム/授乳','視床下部（PVN/SON）','オキシトシン+バソプレシン産生','血中分泌+脳内分泌','扁桃体抑制','絆形成行動'],
+    love:'プレーリーボールの一夫一妻制がバソプレシン受容体（AVPR1a）の分布によって決まるという研究（Young & Wang 2004）が人間の恋愛絆形成の生物学的基盤を示す。オキシトシンが「今の親密感」バソプレシンが「永続的な独占的絆」を担当する分業体制。',
+    protocol:'HAPTOSの段階的スキンシップ（CT繊維累積×オキシトシン受容体増感）→GEUSTOのキス（全ホルモン最大）→HAPTOSの20秒ハグ（バソプレシン起動）→睡眠（海馬固定化）→GEUSTO翌朝共食（全ホルモン再強化）という絆回路最大化フロー。',
+    application:'「一緒に眠ること」が絆形成で最も重要なのはオキシトシン+バソプレシン最大値状態→睡眠中の海馬固定化→翌朝の全ホルモン再強化という三段階の絆回路が完全に機能するため。'},
+  {color:'var(--acc)',name:'共感回路',sub:'ミラーニューロン×島皮質×帯状皮質×「一体感」',
+    flow:['相手の表情/動作/感情の観察','ミラーニューロン（F5野相当）','島皮質（感情的翻訳）','前帯状皮質（社会的評価）','感情的伝染','共感的行動'],
+    love:'「なんとなく伝わった・同じことを考えていた・溶ける感覚」という第六感的な体験がこの回路の産物。相手が笑うと自分も楽しくなる感情的伝染→お互いにドーパミン+エンドルフィンが同時放出→「一緒にいると楽しい」という感情が双方向で強化される正の循環。',
+    protocol:'SONOSのミラーリング×傾聴（ミラーニューロン活性化）×SEXTUSの心拍同期×呼吸同期（第七感的共鳴）×HAPTOSの身体的同調（固有感覚共鳴）が共感回路を最大活性化させる。',
+    application:'笑顔が最も強力な感情的伝染を引き起こす（ミラーニューロン×顔面フィードバック仮説）。「楽しそうな雰囲気を自分が作る」ことが相手の共感回路を通じて「この人といると楽しい」という感情を自動生成させる。'},
+];
+
+/* ════ PHASE DATA ════ */
+const PHASE_DATA=[
+  {color:'var(--vta)',label:'Phase 1',name:'魅力期（Attraction）',period:'初対面〜数週間',
+    desc:'VTAのドーパミン+PEA（フェニルエチルアミン）が恋愛初期の恍惚感を作る。扁桃体が「この人は魅力的・この人は重要」という判定→前頭前野が部分的に抑制され「恋は盲目」状態に。外見・声・香りという最初の五感刺激が全て扁桃体に集中する。',
+    chem:['ドーパミン（急増）','PEA（恍惚感）','ノルアドレナリン（ときめき）','コルチゾール（適度な緊張）'],
+    brain:'VTA・側坐核・扁桃体が最も活発',
+    sense:'EIDOS（嗅覚・0.03秒直達）×FORMA（視覚・0.1秒判定）×SONOS（声・扁桃体高速経路）が同時に扁桃体を最速刺激する設計が最重要。'},
+  {color:'var(--hypo)',label:'Phase 2',name:'愛着期（Attachment）',period:'数週間〜数ヶ月',
+    desc:'オキシトシン系とバソプレシン系が増強する段階。PEAとドーパミンの激しさが少し落ち着き「安心感・信頼・傍にいたい」という穏やかな絆感情が形成され始める。視床下部のオキシトシン産生が本格化し海馬への「この人との記憶」の蓄積が加速する。',
+    chem:['オキシトシン（増加）','バソプレシン（初期形成）','セロトニン（安定化）','ドーパミン（維持）'],
+    brain:'視床下部・海馬・前帯状皮質が活発化',
+    sense:'HAPTOS（CT繊維×20秒ハグ→オキシトシン系構築）×GEUSTO（共食×ファーストキス→絆形成加速）×SONOS（36の質問×自己開示→バソプレシン起動）。'},
+  {color:'var(--hippo)',label:'Phase 3',name:'コミットメント期（Commitment）',period:'数ヶ月〜数年',
+    desc:'前頭前野が再活動し始め「この人を知った上で好き」という成熟した愛着に移行する。バソプレシン絆が強固になり「この人しかいない・守りたい」という独占的絆感情が確立。海馬に「共有した記憶の蓄積」が豊富になり投資モデル（Rusbult）の投資量が急増。',
+    chem:['バソプレシン（安定した絆）','オキシトシン（成熟した信頼）','エンドルフィン（安心感の幸福）','セロトニン（長期的幸福）'],
+    brain:'前頭前野（再活動）・海馬（記憶蓄積）・小脳（身体的記憶）',
+    sense:'シグネチャー五感の確立（EIDOS×FORMA×SONOS×HAPTOS×GEUSTO）が「条件付け」として完成し会うたびに全感覚チャネルでオキシトシン+バソプレシンが自動発動する「恋愛の完全自動化」が起きる段階。'},
+  {color:'var(--insula)',label:'Phase 4',name:'成熟期（Mature Love）',period:'数年〜永続',
+    desc:'エンドルフィン系とセロトニン系が優位になり「深い安らぎ・充実感・共に在ることの幸福」という成熟した愛情へ移行。ドーパミン的な激しさは低下するが島皮質での「体に馴染んだ安心感」という独自の幸福が形成される。ゴットマン研究の「5:1の黄金比」が最重要になる段階。',
+    chem:['エンドルフィン（深い安らぎ）','セロトニン（長期的充実感）','オキシトシン（成熟した絆）','バソプレシン（永続的ペアボンド）'],
+    brain:'島皮質・小脳・前頭前野（全て成熟した統合状態）',
+    sense:'シグネチャー進化（核心維持×バリエーション）×Gottman実践（5:1黄金比×修復の試み）×月次「特別な夜」設計が成熟期の神経回路を維持する。「予測可能な驚き」の部分強化スケジュールでドーパミン系を補完し続ける。'},
+];
+
+/* ════ DECKS ════ */
+const DECKS={
+  amygdala:[
+    {tag:'🔴 扁桃体 #1',q:'扁桃体が「0.05秒で感情判定を完了する」高速回路の解剖学的根拠は？',a:'LeDoux（1996）が発見した「低経路（Low Road）」：視床→扁桃体直接経路が0.05秒で粗い感情的評価を行う。同時に「高経路（High Road）」：視床→大脳皮質→扁桃体の詳細認知経路が0.1〜0.2秒で精密評価を行う。恋愛において「なんとなく第一印象で決まる」体験は前者の低経路による感情先行判定の結果。服装×香り×声という五感の最初の刺激が全て同時にこの低経路を通過する。',src:'LEDOUX 1996 EMOTIONAL BRAIN',frags:['ネイビースーツスタイル','低音ボイス戦略']},
+    {tag:'🔴 扁桃体 #2',q:'Bartels & Zeki（2004）が発見した「恋愛中の前頭前野抑制」の神経科学的意味は？',a:'Bartels & Zeki（2004, Neuroreport）のfMRI研究で恋愛中に内側前頭前野の一部（批判的評価・社会的判断・リスク評価に関与）の活動が低下することが確認された。「恋は盲目（love is blind）」という普遍的な体験の神経解剖学的根拠。オキシトシンとドーパミンが同時に高い状態で最も強くこの抑制が起きる。長期関係では前頭前野が再活動し「この人の全てを知った上で好き」という成熟した愛着に移行する。',src:'BARTELS ZEKI 2004',frags:['Insulo','別れ際ハグ20秒']},
+    {tag:'🔴 扁桃体 #3',q:'扁桃体の「安全判定をクリアする」ことが全ての恋愛戦略の第一前提である理由は？',a:'扁桃体が「この人は安全・信頼できる・脅威ではない」という判定を下さない限り視床下部のオキシトシン産生が抑制され海馬への好意的な記憶保存が阻害される。五感統合戦略の全て（清潔感香水×信頼スタイル×低く温かい声×段階的タッチ×共食）が扁桃体の安全判定を最速でクリアするために設計されている。ポリヴェーガル理論（Porges）のVVC（腹側迷走神経複合体）が扁桃体の警戒反応を抑制する神経学的メカニズム。',src:'AMYGDALA SAFETY PROTOCOL',frags:['個人距離への自然な移行','初デート食事選び戦略']},
+  ],
+  vta:[
+    {tag:'🟣 VTA #1',q:'Helen Fisher（2005）のfMRI研究が示した「恋愛中の脳とコカイン中毒の脳の共通点」は？',a:'Fisher et al.（2005, Journal of Neurophysiology）が恋愛中の17名のfMRIを解析。「愛する人の写真」を見た時にVTA（腹側被蓋野）×側坐核×尾状核（メゾリンビック報酬系）が強く活性化することを確認。この活性化パターンがコカイン・ギャンブルで見られる報酬回路の活性化パターンと酷似していることを発見。「恋愛は一種の中毒」という比喩が神経科学的に正確であることの実験的証拠。',src:'HELEN FISHER 2005',frags:['低音ボイス戦略','Gozo']},
+    {tag:'🟣 VTA #2',q:'VTAの「予測誤差報酬モデル（Schultz 1997）」が恋愛戦略に与える最重要な含意は？',a:'Wolfram Schultz（1997, Science）の発見：ドーパミンニューロンは「期待を上回る報酬」でのみ大きく発火し「期待通り」では発火せず「期待以下」では活性が低下する。完全予測可能な刺激（毎回同じ）ではドーパミンは放出されない。「部分強化スケジュール（時々予想外に良いことが起きる）」でVTAのドーパミン産生が最大化。これがシグネチャー進化（核心維持×バリエーション）の神経科学的最優先根拠。',src:'SCHULTZ 1997 DOPAMINE',frags:['Gozo','Insulo']},
+  ],
+  hormones:[
+    {tag:'💊 ホルモン #1',q:'オキシトシンが「雪だるま効果」を持つ神経薬理学的根拠は？',a:'オキシトシン受容体（OXTR）は刺激されるたびに受容体の数と感受性が増加する（増感・upregulation）という特性を持つ。CT繊維タッチ×キス×共食等でオキシトシンが分泌されるたびに次回の分泌効率が高まり同じ刺激に対してより強いオキシトシン反応が起きる「雪だるま効果」が生まれる。これが「会うたびに好きになる」「繰り返すほど絆が深まる」という現象の受容体レベルの説明。',src:'OXYTOCIN RECEPTOR UPREGULATION',frags:['秒速5cmタッチプロトコル','別れ際ハグ20秒']},
+    {tag:'💊 ホルモン #2',q:'バソプレシンとオキシトシンの「分業体制」と恋愛での役割の違いは？',a:'オキシトシン：「今・ここでの親密感・信頼・安心感」を作る急性の絆形成ホルモン。オルガズム後女性に多く分泌。半減期短い（数分）。バソプレシン：「この特定の相手への永続的な独占的絆感情（ペアボンド）・守りたい・独占したい」という慢性的な絆維持ホルモン。オルガズム後男性に多く分泌・30分以内に最大値。AVPR1a（受容体遺伝子）の多型が嫉妬・所有欲・一夫一妻的行動の強さと相関。Young & Wang（2004）：プレーリーボールの一夫一妻制が脳内バソプレシン受容体分布によって決まる。',src:'YOUNG WANG 2004 PRAIRIE VOLE',frags:['ファーストキスプロトコル','別れ際ハグ20秒']},
+    {tag:'💊 ホルモン #3',q:'PEA（フェニルエチルアミン）が「恋愛初期の恍惚感」を作る神経薬理学的メカニズムは？',a:'PEAはアンフェタミン（覚醒剤）に構造が類似した内因性のモノアミン。VTAのドーパミン産生を促進しMAO-B（モノアミン酸化酵素B）による分解を受けつつも恋愛初期に脳内濃度が上昇する。「全てが輝いて見える・食欲がなくなる・睡眠が減る・この人のことしか考えられない」という恋愛初期特有の状態がPEA+ドーパミン急増による複合効果。通常は数ヶ月〜2年でMAO-Bによる分解が安定化→「恋愛の熱狂期の終わり」。チョコレートへのPEA含有がGEUSTOの「チョコデート」戦略の生化学的根拠。',src:'PEA PHENYLETHYLAMINE LOVE',frags:['チョコレート×PEA戦略']},
+    {tag:'💊 ホルモン #4',q:'「プロラクチン管理」が射精後の関係維持で最重要である神経内分泌学的根拠は？',a:'射精後の男性では下垂体前葉からプロラクチンが急増→ドーパミン分泌を抑制→「眠気・満足感・不応期・感情的離脱」が生じる（不応期の神経内分泌機構）。一方スキンシップ継続（キス×抱擁×囁き声）ではオキシトシンのみが持続分泌されプロラクチン上昇が抑制される。射精後30分以内がバソプレシン最大値（ペアボンド形成の最重要時間帯）であるため「この時間帯の五感継続」が長期絆形成の決定的な実践になる。',src:'PROLACTIN MANAGEMENT',frags:['性行為後スキンシップ継続プロトコル']},
+  ],
+  circuits:[
+    {tag:'⚡ 回路 #1',q:'報酬回路（VTA→側坐核）が「部分強化スケジュール」で最大活性化する神経科学的根拠は？',a:'Schultz（1997）の予測誤差報酬モデルで完全予測可能（ドーパミン低下）・完全不確実（不安×コルチゾール）の中間「ある程度予測できるが時々予想外に良い」が最大のドーパミン放出を引き起こすことを確認。スロットマシン・ギャンブルの「中毒性」と同じ原理。恋愛での応用：シグネチャーの核心（予測可能な安心）×バリエーション（少し予想外の新鮮さ）という設計が報酬回路の最適状態を長期維持する。',src:'PARTIAL REINFORCEMENT DOPAMINE',frags:['Gozo','バーガンディニット×スラックス']},
+    {tag:'⚡ 回路 #2',q:'記憶回路において「一生忘れられない記憶」が形成される4つの必要条件は？',a:'①感情的覚醒（扁桃体活性）：高い感情的覚醒状態での体験が海馬への記憶保存を強化するノルアドレナリン-扁桃体連携②多感覚同時刺激（Calvert et al.）：五感+六感の同時刺激が超加算的な記憶強度を生む③ホルモン最大値（オキシトシン+バソプレシン+エンドルフィン）：これらのホルモン存在下での体験が海馬に最高強度で保存される④NREM睡眠（海馬→大脳皮質への固定化）：記憶の永続化には睡眠が必須。4条件の全てが「特別な夜→翌朝の共食」フローで同時に満たされる。',src:'MEMORY CONSOLIDATION FOUR CONDITIONS',frags:['別れ際ハグ20秒','旅行×非日常プロトコル']},
+    {tag:'⚡ 回路 #3',q:'共感回路（ミラーニューロン×島皮質×ACC）における「感情的伝染」の神経経路は？',a:'相手の表情/動作/感情の観察→前頭葉のミラーニューロン（F5野相当）が自分のニューロンを同時発火→島皮質前部（感情の体への翻訳）→前帯状皮質（社会的評価・共感）→感情的伝染が起きる。この経路が双方向で同時に起きることで「この人といると楽しい→自分も楽しい→相手もさらに楽しい」という正の感情的フィードバックループが形成される。笑顔が最も強力な感情的伝染を引き起こすのはF5野が顔面表情に最も強く反応するため。',src:'MIRROR NEURON EMOTIONAL CONTAGION',frags:['笑顔の伝染×感情的共鳴','ミラーリング×意図的同調戦略']},
+  ],
+  phases:[
+    {tag:'📅 段階 #1',q:'恋愛のPhase 1（魅力期）でPEA+ドーパミンが生む「恋愛初期特有の体験」の化学的説明は？',a:'VTAのドーパミン急増×PEA（フェニルエチルアミン）上昇が①全てが輝いて見える（報酬系の過活性化）②食欲低下（ドーパミンが食欲中枢を抑制）③睡眠減少（覚醒系の活性化）④この人のことしか考えられない（側坐核の過活性化による注意の固定化）⑤前頭前野抑制による「恋は盲目」状態というPhase 1特有の体験パターンを生成する。PEAの半減期は短く通常数ヶ月〜2年で代謝が安定→Phase 2（愛着期）への移行が起きる。',src:'PHASE1 ATTRACTION CHEMISTRY',frags:['Insulo','ファーストキスプロトコル']},
+    {tag:'📅 段階 #2',q:'Phase 2（愛着期）でオキシトシン系への移行が起きる神経内分泌学的プロセスは？',a:'Phase 1のPEA+ドーパミン優位からPhase 2のオキシトシン+バソプレシン優位への移行は「親密な身体的接触の蓄積（HAPTOS×GEUSTO）」によって引き起こされる。CT繊維刺激→視床下部のオキシトシン産生ニューロン継続刺激→オキシトシン受容体の増感→同じタッチに対してより強いオキシトシン反応という累積プロセス。PEAの「恍惚感」が落ち着くことを「恋愛が終わった」と誤解する人が多いが実際はより深い絆形成フェーズへの移行。',src:'PHASE2 ATTACHMENT TRANSITION',frags:['4段階スキンシップ設計','36の質問プロトコル']},
+    {tag:'📅 段階 #3',q:'Phase 4（成熟期）の「エンドルフィン的な幸福」が恋愛初期のドーパミン的興奮より「深い」理由は？',a:'ドーパミン（恋愛初期）：強烈だが慣れで低下する欲求駆動型の幸福。「また会いたい」という欠乏感が伴う。エンドルフィン（成熟期）：μオピオイド受容体を介した「深い安らぎ・充実感・この人といれば満たされる」という充足感主導の幸福。慣れに強く「会っていれば安心・会えなくてもこの人の存在が支え」という状態。脳が成熟した愛着（Phase 4）を恋愛初期（Phase 1）より「安定して幸福」に設計していることの神経薬理学的根拠。',src:'PHASE4 MATURE LOVE ENDORPHIN',frags:['別れ際ハグ20秒']},
+  ],
+  glossary:[
+    {tag:'📖 用語 #1',q:'「メゾリンビック経路（中脳辺縁系経路）」とは何か？恋愛との関係は？',a:'VTA（腹側被蓋野）から側坐核・前頭前野・海馬・扁桃体・島皮質へのドーパミン投射ネットワーク全体を指す。別名「報酬経路」。コカイン・アルコール・ギャンブル・食事・セックス・そして恋愛が全てこの回路を活性化させる。「恋愛が最も合法的で最も深い中毒」と言われる理由。恋愛の「熱狂・欲求・依存・禁断症状（会いたい）」の全てがこの経路から生成される。',src:'MESOLIMBIC PATHWAY',frags:['Gozo','ファーストキスプロトコル']},
+    {tag:'📖 用語 #2',q:'「ヘブ則（Hebbian Rule）」が恋愛の「条件付け」を説明する神経科学的根拠は？',a:'Hebb（1949）の神経科学の公理：「共に発火するニューロンは共に繋がる（Neurons that fire together wire together）」。繰り返し同時に刺激される神経回路の接続が強化される（長期増強：LTP）。「シグネチャーセント（EIDOS）×特定の人物の記憶（海馬）」が繰り返し同時活性化されることで「この香り＝あなた＝楽しかった記憶」という条件付けが神経回路レベルで形成される。プルースト効果×五感統合の条件付けの最深部がこの原理に基づく。',src:'HEBB 1949 HEBBIAN RULE',frags:['Insulo','別れ際ハグ20秒']},
+    {tag:'📖 用語 #3',q:'「長期増強（LTP：Long-Term Potentiation）」とは何か？恋愛記憶への応用は？',a:'Bliss & Lømo（1973）が発見したシナプス可塑性の現象：繰り返し強い刺激を受けたシナプスが長期的に「伝達効率が増加する」状態。記憶形成の細胞レベルの基盤。感情的覚醒状態（扁桃体活性）がノルアドレナリン→グルタミン酸受容体（NMDA）→LTP誘導を促進する。「感情的に強い体験が記憶に残りやすい」現象のシナプスレベルの完全説明。五感統合による最高の感情的覚醒状態がLTPを最大化させ「一生忘れられない記憶」を神経回路レベルで形成する。',src:'BLISS LOMO 1973 LTP',frags:['旅行×非日常プロトコル']},
+    {tag:'📖 用語 #4',q:'「ニューロプラスティシティ（神経可塑性）」が「恋愛で人は変わる」という体験を説明する根拠は？',a:'成人の脳でも新しい神経接続が形成され既存の接続が強化・弱化するという神経可塑性（neuroplasticity）が継続的に起きている。長期的な恋愛関係での反復体験が脳の構造・機能を実際に変化させる。「一緒にいる時間が長いほど相手の思考パターン・価値観・反応様式が相互に影響し合う」という体験の神経科学的根拠。ヘブ則×LTP×神経新生（海馬）が全て長期的な恋愛による「脳の変化」を支持する。',src:'NEUROPLASTICITY LOVE',frags:['ダンス×固有感覚×恋愛絆']},
+  ],
+  research:[
+    {tag:'🔬 研究 #1',q:'LeDoux（1996）の「感情的脳（The Emotional Brain）」の核心的発見は？',a:'扁桃体が感情処理の中心であることを実証し「低経路（Low Road）」=視床→扁桃体の高速・粗い感情経路と「高経路（High Road）」=視床→皮質→扁桃体の低速・精密な認知経路の並列処理システムを解明した。「意識より先に感情が起きる」という体験の神経解剖学的証明。恋愛における「理屈より先に好き・嫌いが決まる」現象の完全な説明を提供した20世紀最重要の情動神経科学の著作。',src:'LEDOUX 1996 BOOK',frags:['初デート食事選び戦略','低音ボイス戦略']},
+    {tag:'🔬 研究 #2',q:'Young & Wang（2004 Nature）のプレーリーボール研究が人間の恋愛絆形成に示す含意は？',a:'一夫一妻制のプレーリーボールと乱婚制のメドウボールでは脳内のバソプレシン受容体（AVPR1a）の分布が根本的に異なることを確認。側坐核（報酬系）に多くのバソプレシン受容体を持つプレーリーボールが「特定のパートナーへの報酬感（絆）」を形成する。同じ遺伝子（AVPR1a）の多型が人間の一夫一妻的行動・嫉妬・パートナー保護行動の強さと相関するという含意。HAPTOSのバソプレシン絆形成（20秒ハグ×行為後スキンシップ）の分子生物学的根拠。',src:'YOUNG WANG 2004 NATURE',frags:['別れ際ハグ20秒']},
+    {tag:'🔬 研究 #3',q:'Insel（1992）の「オキシトシン×ペアボンド形成」研究の核心は？',a:'Thomas Insel et al.（1992）がオキシトシンが一夫一妻的なペアボンド（pair bond）形成を直接媒介することを動物実験で示した最初の研究。オキシトシン拮抗薬を投与するとプレーリーボールのペアボンド形成が阻害されることを確認。人間での応用：オキシトシン分泌量を最大化させる五感統合戦略（CT繊維×共食×キス×20秒ハグ）が「プレーリーボール式のペアボンド形成」を人間で意図的に設計する試みとして位置づけられる。',src:'INSEL 1992 OXYTOCIN PAIR BOND',frags:['別れ際ハグ20秒','ファーストキスプロトコル']},
+  ],
+};
+
+/* ════ RENDER BRAIN ════ */
+function renderBrain(){
+  document.getElementById('brainCards').innerHTML=BRAIN_DATA.map((b,i)=>`
+    <div class="brain-card" style="border-color:${b.color}40">
+      <div class="brain-head" onclick="toggleBrain(${i})">
+        <div class="brain-num" style="background:${b.color}">${i+1}</div>
+        <div style="flex:1"><div class="brain-title">${b.ico} ${b.name}</div><div class="brain-en">${b.en}</div></div>
+        <span style="color:var(--txt3);font-size:1.05rem;transition:transform .2s" id="brArr${i}">›</span>
+      </div>
+      <div class="brain-body" id="brBody${i}">
+        <div class="brain-fact" style="border-left:3px solid ${b.color}">
+          <div class="brain-fact-title">📍 位置・サイズ</div>
+          <div class="brain-fact-desc">${b.location}<br><strong>${b.size}</strong></div>
+        </div>
+        <div class="brain-fact" style="border-left:3px solid ${b.color}">
+          <div class="brain-fact-title">🔗 主な接続先</div>
+          <div class="brain-fact-desc">${b.connections}</div>
+        </div>
+        <div class="brain-fact" style="border-left:3px solid ${b.color};background:${b.color}08">
+          <div class="brain-fact-title">❤️ 恋愛での役割</div>
+          <div class="brain-fact-desc">${b.love}</div>
+        </div>
+        <div class="brain-fact" style="border-left:3px solid ${b.color}">
+          <div class="brain-fact-title">🔬 科学的根拠</div>
+          <div class="brain-fact-desc">${b.science}</div>
+        </div>
+        <div class="brain-fact" style="border-left:3px solid ${b.color}">
+          <div class="brain-fact-title">✨ 五感統合との連携</div>
+          <div class="brain-fact-desc">${b.protocol}</div>
+        </div>
+        <div class="hormone-tags">${(b.hormones||[]).map(h=>`<span class="h-tag">${h}</span>`).join('')}</div>
+      </div>
+    </div>`).join('');
+}
+function toggleBrain(i){
+  const body=document.getElementById('brBody'+i);
+  const arr=document.getElementById('brArr'+i);
+  const open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  arr.style.transform=open?'':'rotate(90deg)';
+}
+
+/* ════ RENDER HORMONES ════ */
+function renderHormones(){
+  document.getElementById('hormoneCards').innerHTML=HORMONE_DATA.map((h,i)=>`
+    <div class="hormone-card">
+      <div class="hc-head" onclick="toggleHormone(${i})">
+        <div class="hc-ico" style="background:${h.color}">${h.ico}</div>
+        <div style="flex:1"><div class="hc-name">${h.name}</div><div class="hc-en">${h.en} — ${h.nickname}</div></div>
+        <span style="color:var(--txt3);font-size:1.05rem;transition:transform .2s" id="hArr${i}">›</span>
+      </div>
+      <div class="hc-body" id="hcBody${i}">
+        <div class="hc-row">
+          <div class="hc-stat"><div class="hc-stat-label">産生部位</div><div class="hc-stat-value" style="font-size:.65rem">${h.produced}</div></div>
+          <div class="hc-stat"><div class="hc-stat-label">半減期</div><div class="hc-stat-value" style="font-size:.65rem">${h.halftime}</div></div>
+        </div>
+        <div class="brain-fact" style="border-left:3px solid ${h.color}">
+          <div class="brain-fact-title">⚡ 分泌トリガー</div>
+          <div class="brain-fact-desc">${h.trigger}</div>
+        </div>
+        <div class="brain-fact" style="border-left:3px solid ${h.color};background:${h.color}10">
+          <div class="brain-fact-title">❤️ 恋愛での役割</div>
+          <div class="brain-fact-desc">${h.love}</div>
+        </div>
+        <div class="brain-fact" style="border-left:3px solid ${h.color}">
+          <div class="brain-fact-title">✨ 五感統合との対応</div>
+          <div class="brain-fact-desc">${(h.nexus_sense||[]).join('<br>')}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggleHormone(i){
+  const body=document.getElementById('hcBody'+i);
+  const arr=document.getElementById('hArr'+i);
+  const open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  arr.style.transform=open?'':'rotate(90deg)';
+}
+
+/* ════ RENDER CIRCUITS ════ */
+function renderCircuits(){
+  document.getElementById('circuitCards').innerHTML=CIRCUIT_DATA.map((c,i)=>`
+    <div class="circuit-card">
+      <div class="circ-head" onclick="toggleCircuit(${i})" style="border-bottom:1px solid ${c.color}20">
+        <div style="width:32px;height:32px;border-radius:50%;background:${c.color};display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#fff;flex-shrink:0">${i+1}</div>
+        <div style="flex:1"><div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--txt)">${c.name}</div><div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.08rem">${c.sub}</div></div>
+        <span style="color:var(--txt3);transition:transform .2s" id="cArr${i}">›</span>
+      </div>
+      <div class="circ-body" id="cBody${i}" style="padding:0 .9rem .9rem">
+        <div class="circ-flow" style="margin-top:.7rem">
+          ${c.flow.map((f,j)=>j<c.flow.length-1?`<span class="circ-node" style="background:${c.color}">${f}</span><span class="circ-arrow">→</span>`:`<span class="circ-node" style="background:${c.color}">${f}</span>`).join('')}
+        </div>
+        <div class="brain-fact" style="border-left:3px solid ${c.color};background:${c.color}08">
+          <div class="brain-fact-title">❤️ 恋愛での意味</div>
+          <div class="brain-fact-desc">${c.love}</div>
+        </div>
+        <div class="brain-fact" style="border-left:3px solid ${c.color}">
+          <div class="brain-fact-title">✨ 五感統合での活用</div>
+          <div class="brain-fact-desc">${c.protocol}</div>
+        </div>
+        <div class="brain-fact" style="border-left:3px solid ${c.color}">
+          <div class="brain-fact-title">🎯 実践での応用</div>
+          <div class="brain-fact-desc">${c.application}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function toggleCircuit(i){
+  const body=document.getElementById('cBody'+i);
+  const arr=document.getElementById('cArr'+i);
+  const open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  arr.style.transform=open?'':'rotate(90deg)';
+}
+
+/* ════ RENDER PHASES ════ */
+function renderPhases(){
+  document.getElementById('phaseTimeline').innerHTML=PHASE_DATA.map(p=>`
+    <div class="phase-item">
+      <div class="phase-dot" style="background:${p.color};box-shadow:0 0 8px ${p.color}60"></div>
+      <div class="phase-label" style="color:${p.color}">${p.label} — ${p.period}</div>
+      <div class="phase-title">${p.name}</div>
+      <div class="phase-desc">${p.desc}</div>
+      <div class="phase-chem">${p.chem.map(c=>`<span class="phase-ch">${c}</span>`).join('')}</div>
+      <div class="phase-sense">
+        <div class="phase-sense-title">✨ 五感統合戦略</div>
+        <div class="phase-sense-desc">${p.sense}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ════ FLASHCARD ENGINE ════ */
+let curDeck=[],cIdx=0;
+function loadDeck(name,btn){
+  curDeck=[...(DECKS[name]||[])];cIdx=0;
+  document.querySelectorAll('.dt').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  document.getElementById('deckCnt').textContent=curDeck.length+'枚';
+  showCard();
+}
+function showCard(){
+  if(!curDeck.length)return;
+  const c=curDeck[cIdx];
+  document.getElementById('cfTag').textContent=c.tag;
+  document.getElementById('cfQ').textContent=c.q;
+  document.getElementById('cfA').textContent=c.a;
+  document.getElementById('cfSrc').textContent=c.src;
+  const fe=document.getElementById('cfFrags');
+  if(c.frags&&c.frags.length){fe.innerHTML=`<div class="cf-frags-lbl">🧠 関連プロトコル</div><div class="cf-frag-chips">${c.frags.map(f=>`<span class="cf-frag-chip">${f}</span>`).join('')}</div>`;fe.style.display='block';}
+  else{fe.style.display='none';}
+  document.getElementById('cardFront').classList.remove('hidden');
+  document.getElementById('cardBack').classList.add('hidden');
+  document.getElementById('flipBtn').textContent='答えを見る 🧠';
+  document.getElementById('ctrlPg').textContent=(cIdx+1)+' / '+curDeck.length;
+  updateDots();
+}
+function flipCard(){
+  const front=document.getElementById('cardFront');
+  const back=document.getElementById('cardBack');
+  const btn=document.getElementById('flipBtn');
+  if(!front.classList.contains('hidden')){front.classList.add('hidden');back.classList.remove('hidden');btn.textContent='次のカードへ →';}
+  else nextCard();
+}
+function nextCard(){cIdx=Math.min(cIdx+1,curDeck.length-1);showCard();}
+function prevCard(){cIdx=Math.max(cIdx-1,0);showCard();}
+function updateDots(){
+  const d=document.getElementById('dots');
+  const t=Math.min(curDeck.length,8);
+  d.innerHTML=Array.from({length:t},(_,i)=>`<div class="dot${i===cIdx%t?' on':''}"></div>`).join('');
+}
+function initDecks(){
+  const tabs=document.getElementById('deckTabs');
+  const list=[
+    {key:'amygdala',label:'🔴 扁桃体'},
+    {key:'vta',label:'🟣 VTA'},
+    {key:'hormones',label:'💊 ホルモン'},
+    {key:'circuits',label:'⚡ 神経回路'},
+    {key:'phases',label:'📅 恋愛段階'},
+    {key:'glossary',label:'📖 用語辞典'},
+    {key:'research',label:'🔬 研究総覧'},
+  ];
+  tabs.innerHTML=list.map((d,i)=>`<button class="dt${i===0?' on':''}" onclick="loadDeck('${d.key}',this)">${d.label}</button>`).join('');
+  loadDeck('amygdala',tabs.querySelector('.dt'));
+}
+
+/* ════ QUIZ ════ */
+const QS=[
+  {q:'Helen Fisher（2005, Journal of Neurophysiology）の恋愛fMRI研究で「コカイン中毒と同じパターンで活性化した」脳部位は？',opts:['海馬と前頭前野','VTA（腹側被蓋野）×側坐核×尾状核のメゾリンビック報酬系。恋愛中の17名が「愛する人の写真」を見た時に強く活性化したパターンがコカイン使用時と酷似していることを確認','扁桃体と視床下部'],ans:1,exp:'VTAは恋愛の「エンジン」としてドーパミンを産生し側坐核に投射する。この活性化が「また会いたい・頭から離れない・会えないと辛い」という恋愛の中毒的側面を生み出す。五感統合が「健全な絆形成」としてこの報酬回路を活用する設計。',frags:['Insulo','ファーストキスプロトコル']},
+  {q:'Bartels & Zeki（2004, Neuroreport）の研究で「恋愛中に活動が低下した（抑制された）」脳領域は何で、その恋愛的意味は？',opts:['視床下部（ホルモン産生が止まる）','内側前頭前野の一部（批判的評価・リスク評価・社会的判断に関与）が抑制される。「恋は盲目（love is blind）」という普遍的体験の神経解剖学的根拠。オキシトシン+ドーパミンが同時に高い状態で最も強くこの抑制が起きる','扁桃体（感情処理が止まる）'],ans:1,exp:'長期関係では前頭前野が再活動し「この人の全てを知った上で好き」という成熟した愛着（Phase 3〜4）への移行が起きる。五感統合のPhase 1〜4設計がこの神経学的変化に対応したシナリオ設計の根拠。',frags:['36の質問プロトコル']},
+  {q:'視床下部の「室傍核（PVN）と視索上核（SON）」が果たす恋愛神経内分泌学上の最重要な役割は？',opts:['テストステロンを産生する','オキシトシンとバソプレシンを産生し後葉（神経下垂体）から血中に分泌する。全ての五感経路（EIDOS×SONOS×HAPTOS×GEUSTO）と第六感経路（内受容感覚）が最終的にここのホルモン産生ニューロンに収束する。「愛の化学物質の製造工場」','ドーパミンを産生する'],ans:1,exp:'わずか4gの視床下部が恋愛の全化学的基盤を司る。HAPTOSのCT繊維→島皮質→視床下部という経路が最も直接的なオキシトシン産生ルート。NEXUSの全てのホルモン戦略がここを最終目標としている。',frags:['秒速5cmタッチプロトコル','別れ際ハグ20秒']},
+  {q:'側坐核の「予測誤差報酬モデル（Schultz 1997）」が示す「部分強化スケジュール」の恋愛への最重要な応用は？',opts:['毎回同じことをする','ある程度予測可能だが時々予想外に良いことが起きる「部分強化スケジュール」でVTAのドーパミン産生が最大化する。シグネチャーの核心（予測可能な安心）×バリエーション（少し予想外の新鮮さ）という設計が報酬回路の長期維持の鍵','できるだけ驚かせる'],ans:1,exp:'ギャンブルの「中毒性」と同じ神経メカニズムが恋愛の「やめられない感覚」を作る。EIDOSのシグネチャー進化（同じ香水族の中で少し変える）×SONOSの「予測可能な驚き」がこの最適化の実践版。',frags:['Gozo','バーガンディニット×スラックス']},
+  {q:'Eisenberger et al.（2003 Science）が発見した「社会的痛みと身体的痛みの共有神経経路」の最重要な発見は？',opts:['痛みは心の問題','社会的拒絶（仲間はずれ）が前帯状皮質（dACC）を活性化させることをfMRIで確認。身体的痛みと同じ脳領域が社会的拒絶でも活性化する——「振られると本当に心が痛い・無視されると傷つく」が神経学的事実。アセトアミノフェン（鎮痛剤）が社会的痛みにも効果を示した研究もある','感情と痛みは無関係'],ans:1,exp:'HAPTOSの温もりあるタッチ×SONOSの傾聴×共感が前帯状皮質の「痛み反応抑制」として機能する神経医学的な実践。「安心感を与える」行為がACCの痛み回路を直接抑制する。',frags:['社会的痛みの回避設計']},
+  {q:'海馬への「一生忘れられない記憶」形成に必要な4つの条件は？',opts:['感情的体験だけで良い','①感情的覚醒（扁桃体活性×ノルアドレナリン）②多感覚同時刺激（Calvert超加算的効果）③ホルモン最大値（オキシトシン+バソプレシン+エンドルフィン）④NREM睡眠（海馬→大脳皮質固定化）の4条件。「特別な夜→翌朝共食」フローがこの全条件を満たす','睡眠だけが重要'],ans:1,exp:'4条件の全てが揃った体験が最高強度の記憶として海馬→大脳皮質に永続保存される。「一生忘れられない夜を作る」ことが恋愛戦略として科学的に正当化される完全な神経科学的根拠。',frags:['旅行×非日常プロトコル','別れ際ハグ20秒']},
+  {q:'「ヘブ則（Neurons that fire together wire together）」が五感統合の条件付けを説明する神経科学的根拠は？',opts:['繰り返しが大事','共に発火するニューロンは共に繋がる（Hebb 1949）。シグネチャーセント（EIDOS）×特定の人物の記憶（海馬）が繰り返し同時活性化されることでシナプスの長期増強（LTP）が起き「この香り＝あなた＝楽しかった記憶」という条件付けが神経回路レベルで形成される','感情が大事'],ans:1,exp:'プルースト効果×五感統合の条件付けの神経回路レベルの説明がヘブ則とLTP。「シグネチャーを毎回使い続けること」が単純習慣ではなく神経回路を物理的に構築している行為。',frags:['Insulo','別れ際ハグ20秒']},
+  {q:'PEA（フェニルエチルアミン）の「恋愛初期特有の体験」と「恋愛の熱狂期の終わり」の神経薬理学的説明は？',opts:['ただ飽きるから','PEAがアンフェタミン類似構造でVTAのドーパミン産生を促進し恋愛初期の恍惚感を作る。しかし通常数ヶ月〜2年でMAO-B（モノアミン酸化酵素B）による分解が安定化し脳内PEA濃度が低下→Phase 2（愛着期）のオキシトシン優位への移行が起きる。チョコレートへのPEA含有がGEUSTOのチョコ戦略の生化学的根拠','感情が変化するから'],ans:1,exp:'「PEAの終わり＝恋愛の終わり」という誤解が破局の原因になることが多い。実際はより深いオキシトシン系への移行（Phase 2）という神経内分泌学的な成熟プロセス。',frags:['チョコレート×PEA戦略']},
+  {q:'Young & Wang（2004 Nature）のプレーリーボール研究が人間のバソプレシン×絆形成に示す最重要な含意は？',opts:['動物と人間は違う','一夫一妻制のプレーリーボールと乱婚制のメドウボールの違いが脳内バソプレシン受容体（AVPR1a）の分布の差であることを発見。側坐核に多いバソプレシン受容体が「特定のパートナーへの絆×報酬感」を形成する。同じ遺伝子の多型が人間の一夫一妻的行動・嫉妬・パートナー保護行動の強さと相関する','愛は遺伝子次第'],ans:1,exp:'HAPTOSのバソプレシン絆形成（20秒ハグ×行為後スキンシップ継続）がプレーリーボールの「側坐核×バソプレシン受容体×ペアボンド形成」と同じ神経メカニズムを使って人間の長期的絆を構築する分子生物学的根拠。',frags:['別れ際ハグ20秒','性行為後スキンシップ継続プロトコル']},
+  {q:'島皮質（Insula）が「NEXUS（脳）×SENSES（五感）×SEXTUS（第六感）」の全てで最終収束点になる理由は？',opts:['島皮質が大きいから','島皮質前部が①味覚（一次味覚野・GEUSTO）②CT繊維触覚（HAPTOS）③内受容感覚（心臓・腸・体温・第六感）④感情（扁桃体双方向接続）⑤共感（ミラーニューロン）⑥痛み×快楽⑦自己感覚を全て統合する「感覚×感情の最終統合センター」。五感+七感の全経路が島皮質に収束する脳科学的証明','処理能力が高いから'],ans:1,exp:'NEXUSで学ぶ脳部位×SENSESで学ぶ五感×SEXTUSで学ぶ第六感の全てのシリーズが「島皮質」という一点で完全に収束する。「恋愛体験の全ての意識的感情がここで生成される」という恋愛脳科学の最終結論。',frags:['内受容感覚トレーニング','ファーストキスプロトコル']},
+  {q:'恋愛のPhase 4（成熟期）のエンドルフィン的幸福がPhase 1（魅力期）のドーパミン的興奮より「深い」神経薬理学的根拠は？',opts:['慣れただけ','ドーパミン（Phase 1）は強烈だが慣れで低下する欲求駆動型（欠乏感が伴う）。エンドルフィン（Phase 4）はμオピオイド受容体を介した「深い安らぎ・充実感・共にいれば満たされる」という充足感主導の幸福で慣れに強い。「会っていれば安心・この人の存在が支え」という状態がμオピオイド系の安定した活性化による','感情が薄くなった'],ans:1,exp:'「恋愛初期の激しさがなくなった＝愛情が冷めた」という誤解を神経薬理学が否定する。Phase 4の成熟した愛着はより安定した幸福を生む神経系への移行。五感統合シリーズの最終目標が「エンドルフィン×オキシトシン×バソプレシンの成熟した三重奏」の確立。',frags:['別れ際ハグ20秒']},
+  {q:'「共感回路（ミラーニューロン→島皮質→前帯状皮質）」が「笑顔の伝染」を引き起こす完全な神経経路は？',opts:['笑顔が好きだから','相手の笑顔→視覚野（顔認識）→前頭葉ミラーニューロン（F5野相当）が自分の顔面運動野を活性化→自分の笑顔→島皮質（感情の体への翻訳）→ドーパミン+エンドルフィン分泌。この経路が双方向で同時に起きることで「共に笑う→共にドーパミン放出→この人といると楽しい」という正の感情的フィードバックループが形成される','顔の筋肉が動くから'],ans:1,exp:'「楽しそうな雰囲気を自分が作る」ことが相手の共感回路を通じて「この人といると楽しい」という感情を自動生成させる。SONOSのユーモア×笑いが単なる「面白い話術」ではなく「ミラーニューロン×ドーパミン同時発動」という神経科学的根拠を持つ。',frags:['笑顔の伝染×感情的共鳴']},
+  {q:'脳幹の「ポリヴェーガル理論（Porges 1994）」が恋愛の「第一印象の安心感」を作る神経解剖学的メカニズムは？',opts:['声が重要だから','腹側迷走神経複合体（VVC）が相手の表情・声のトーン・姿勢・呼吸から「安全か危険か」を0.05秒以内で無意識に判定する社会神経システム。VVCが「安全」と判定すると扁桃体の警戒反応が抑制され副交感神経が優位になる。「なんとなく居心地が良い・この人は安全」という第六感的な直感の神経解剖学的実体。腹式呼吸×低い温かい声×笑顔がVVCの「安全判定」を最速で引き起こす','笑顔が安全サイン'],ans:1,exp:'SONOSの低く温かい声×腹式呼吸×HAPTOSの段階的タッチ×EIDOSの清潔感香水が全てVVCの「安全判定」を目指した設計。「第一印象の安心感」が五感統合の根本的な目標である神経科学的理由。',frags:['低音ボイス戦略','個人距離への自然な移行']},
+  {q:'小脳が「この人のタッチを体が覚えている」という絆の固有感覚記憶を形成する神経科学的根拠は？',opts:['記憶は脳だけにある','Ito（1984）の小脳学習理論：プルキンエ細胞の長期抑圧（LTD）が運動学習の神経基盤。繰り返しの同じタッチパターン（秒速5cmのCT繊維刺激×20秒ハグ）が小脳に「このリズム・この温度・この圧力パターン＝この人」という固有感覚記憶を形成する。バソプレシン絆形成と小脳の固有感覚記憶の統合が「体が覚えている絆×この人しかいない」の身体的根拠','体が敏感なだけ'],ans:1,exp:'HAPTOSの「秒速5cmのCT繊維刺激」と「20秒ハグ」が繰り返されることで小脳に「この人のタッチパターン」が物理的に刻まれる。これが「この人に抱きしめられると違う感じがする」という感覚の小脳運動学習による神経実体。',frags:['秒速5cmタッチプロトコル','別れ際ハグ20秒']},
+  {q:'「オキシトシンが扁桃体の活動を抑制する」という神経薬理作用が恋愛で持つ最重要な意味は？',opts:['安心させるため','オキシトシンが扁桃体の基底外側核（BLA）の活動を抑制することで扁桃体の「警戒・恐怖・不信感」反応が低下する（Kirsch et al. 2005 Journal of Neuroscience）。「信頼できる人の傍では不安が減る」という体験の神経薬理学的根拠。逆にオキシトシン系が十分に構築されていない段階（初期）では扁桃体の警戒反応が強く距離縮小を急ぐと逃避反応が起きる。五感統合によるオキシトシン蓄積がこの扁桃体抑制を段階的に構築する。','薬だから'],ans:1,exp:'HAPTOSの段階的スキンシップ（急がない距離縮小）×SONOSの傾聴×EIDOSの清潔感香水が時間をかけてオキシトシンを蓄積し扁桃体の警戒反応を段階的に抑制していく設計。「安心感」の神経薬理学的完全説明。',frags:['4段階スキンシップ設計','個人距離への自然な移行']},
+];
+let qIdx=0,score=0;
+function startQuiz(){qIdx=0;score=0;renderQ();}
+function renderQ(){
+  const area=document.getElementById('quizArea');
+  if(qIdx>=QS.length){area.innerHTML=`<div class="qfin"><div class="qfin-score">${score} / ${QS.length}</div><div class="qfin-msg">${score===QS.length?'完璧！恋愛脳科学マスター 🧠':score>=12?'優秀！神経科学の深い理解 ✨':score>=8?'良好！さらに学習で完全マスターへ 📚':'もう一度挑戦しよう 💪'}</div><button class="qrestart" onclick="startQuiz()">もう一度</button></div>`;return;}
+  const q=QS[qIdx];
+  area.innerHTML=`<div class="qhd"><div style="font-family:var(--fd);font-size:.92rem;font-weight:700">問 ${qIdx+1} / ${QS.length}</div><div class="qsc" id="qSc">${score} / ${qIdx}</div></div>
+  <div class="qcard"><p class="qq">${q.q}</p>${q.opts.map((o,i)=>`<button class="qopt" onclick="ansQ(this,${i},${q.ans})">${o}</button>`).join('')}
+  <div class="qexp" id="qexp">${q.exp}</div>
+  <div id="qfrags"></div>
+  <button class="qnxt" id="qnxt" onclick="nextQ()">次の問題へ →</button></div>`;
+}
+function ansQ(btn,chosen,correct){
+  document.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  if(chosen===correct){btn.classList.add('correct');score++;}
+  else{btn.classList.add('wrong');document.querySelectorAll('.qopt')[correct].classList.add('correct');}
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnxt').classList.add('show');
+  document.getElementById('qSc').textContent=score+' / '+(qIdx+1);
+  const q=QS[qIdx];
+  if(q.frags&&q.frags.length){document.getElementById('qfrags').innerHTML=`<div class="cf-frags-lbl" style="margin-top:.5rem">🧠 関連プロトコル</div><div class="cf-frag-chips">${q.frags.map(f=>`<span class="cf-frag-chip">${f}</span>`).join('')}</div>`;}
+}
+function nextQ(){qIdx++;renderQ();}
+
+/* ════ NAV ════ */
+const PGS=['home','brain','hormone','circuit','phase','learn','quiz','ai'];;
+function nav(id,bIdx){
+  PGS.forEach(p=>{const el=document.getElementById('pg-'+p);if(el)el.classList.remove('on');});
+  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('on'));
+  const pg=document.getElementById('pg-'+id);
+  if(pg){pg.classList.add('on');const sb=pg.querySelector('.sb');if(sb)sb.scrollTop=0;}
+  const btns=document.querySelectorAll('.bni');
+  if(btns[bIdx])btns[bIdx].classList.add('on');
+}
+
+/* ════ BOOT ════ */
+function boot(){
+  const sp=document.getElementById('splash');
+  sp.style.cssText='opacity:0;transition:opacity .45s;pointer-events:none';
+  setTimeout(()=>{
+    sp.style.display='none';
+    document.getElementById('app').classList.add('on');
+    document.getElementById('tipIco').textContent=TIPS[0].ico;
+    document.getElementById('tipTxt').textContent=TIPS[0].txt;
+    renderBrain();
+    renderHormones();
+    renderCircuits();
+    renderPhases();
+    initDecks();
+    startQuiz();
+  },450);
+}
+
+/* ── AI CHAT: NEXUS ── */
+const AI_ENDPOINT_nexus = 'https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI';
+const AI_KEY_nexus = 'HeartsHouse2026Key';
+const AI_SYS_nexus = `あなたはNEXUS脳科学専門AIコーチです。
+専門知識：扁桃体（0.05秒感情判定）・海馬（記憶刻印・LTP）・視床下部（オキシトシン/バソプレシン産生）・側坐核（ドーパミン報酬）・VTA（Helen Fisher恋愛中毒研究）・島皮質（七感収束）・前頭前野（恋は盲目・Bartels&Zeki2004）・帯状皮質（社会的痛み）・小脳（固有感覚記憶）・脳幹/迷走神経。10ホルモン・5神経回路・4恋愛段階。
+回答：脳科学の専門知識を分かりやすく解説。実践への応用まで。日本語200〜400文字。`;
+const AI_QUICK_nexus = [`🧠 扁桃体を最速でクリアする方法`,`💊 オキシトシンを増やすには`,`🔴 ドーパミンを維持する方法`,`💙 海馬に記憶を刻む設計`,`📅 恋愛の段階を教えて`];
+let aiHistory_nexus = [];
+let aiLoading_nexus = false;
+
+function initAI_nexus(){
+  // クイックボタン生成
+  const qc = document.getElementById('aiQuickBtns');
+  if(qc) qc.innerHTML = AI_QUICK_nexus.map(q=>
+    `<button onclick="aiQuick_nexus(this.textContent.replace(/^[^\s]+\s/,''))" style="padding:.38rem .72rem;border-radius:9999px;background:var(--surface2);border:1px solid var(--border2);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap">${q}</button>`
+  ).join('');
+}
+
+function aiQuick_nexus(text){
+  document.getElementById('aiInp').value = text;
+  aiSend_nexus();
+}
+
+function aiAddMsg_nexus(text, role){
+  const msgs = document.getElementById('aiMsgs');
+  if(!msgs) return null;
+  const div = document.createElement('div');
+  const colors = {user:'linear-gradient(135deg,var(--eidos,#B8860B),var(--eidos-l,#D4A017))',ai:'var(--surface)',thinking:'var(--surface2)'};
+  div.style.cssText = `background:${colors[role]||colors.ai};border:1px solid var(--border);border-radius:var(--r-lg);padding:.78rem .9rem;font-family:var(--fu);font-size:.77rem;color:${role==='user'?'#fff':'var(--txt)'};line-height:1.68;align-self:${role==='user'?'flex-end':'flex-start'};max-width:90%;border-bottom-${role==='user'?'right':'left'}-radius:4px;font-style:${role==='thinking'?'italic':'normal'}`;
+  div.innerHTML = text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);
+  msgs.parentElement.scrollTop = msgs.parentElement.scrollHeight;
+  return div;
+}
+
+async function aiSend_nexus(){
+  if(aiLoading_nexus) return;
+  const inp = document.getElementById('aiInp');
+  const text = inp?.value?.trim();
+  if(!text) return;
+  aiAddMsg_nexus(text,'user');
+  inp.value=''; inp.style.height='auto';
+  const thinking = aiAddMsg_nexus('🧠 分析中...','thinking');
+  aiLoading_nexus=true;
+  const btn=document.getElementById('aiSendBtn');
+  if(btn)btn.disabled=true;
+  aiHistory_nexus.push({role:'user',parts:[{text}]});
+  try{
+    const prompt = AI_SYS_nexus+'\n\n【会話履歴】\n'+
+      aiHistory_nexus.slice(-6).map(h=>(h.role==='user'?'ユーザー: ':'AI: ')+h.parts[0].text).join('\n')+
+      '\n\n最後のユーザーの質問に答えてください。';
+    const res = await fetch(AI_ENDPOINT_nexus,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Access-Key':AI_KEY_nexus},
+      body:JSON.stringify({prompt,model:'gemini-2.0-flash',maxTokens:600})
+    });
+    const data = await res.json();
+    thinking?.remove();
+    const t = data?.data?.candidates?.[0]?.content?.parts?.[0]?.text||data?.data?.text||'';
+    if(t){aiAddMsg_nexus(t);aiHistory_nexus.push({role:'model',parts:[{text:t}]});}
+    else aiAddMsg_nexus('⚠️ 回答を取得できませんでした。');
+  }catch(e){thinking?.remove();aiAddMsg_nexus('⚠️ 通信エラーです。');}
+  aiLoading_nexus=false;
+  if(btn)btn.disabled=false;
+}
+
+// グローバル公開（onclickから呼べるように）
+window.aiSend = aiSend_nexus;
+window.aiQuick_nexus = aiQuick_nexus;
+
+window.aiSend = aiSend_nexus;
+
+
+/* ═ AI_NEXUS ═ */
+(function(){
+var EP='{"url":"https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI"}';
+var AIEP='https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI';
+var AIKEY='HeartsHouse2026Key';
+var AISYS='あなたはNEXUS脳科学専門AIコーチです。扁桃体・海馬・視床下部・側坐核・VTA・島皮質・前頭前野・帯状皮質・小脳・脳幹/迷走神経・10ホルモン・5神経回路・4恋愛段階の専門家。脳科学を分かりやすく解説し実践への応用まで。日本語200〜400文字。';
+var AIQS_nexus=["扁桃体をクリアする方法","オキシトシンを増やすには","ドーパミンを維持する方法","海馬に記憶を刻む設計","恋愛の段階を教えて"];
+var aiHist=[];var aiLoad=false;
+
+function initAI(){
+  var qc=document.getElementById('aiQB_nexus');
+  if(!qc)return;
+  qc.innerHTML=AIQS_nexus.map(function(q){
+    return '<button style="padding:.38rem .72rem;border-radius:9999px;background:var(--surface2,#f0edf9);border:1px solid var(--border2);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap" onclick="document.getElementById(\'aiInp_nexus\').value=\''+q+'\';aiSend_nexus()">'+q+'</button>';
+  }).join('');
+}
+
+function addMsg(text,role){
+  var msgs=document.getElementById('aiMsgs_nexus');
+  if(!msgs)return null;
+  var div=document.createElement('div');
+  div.style.cssText='background:'+(role==='user'?'#7c3aed':role==='thinking'?'var(--surface2,#eee)':'var(--surface,#fff)')+';border:1px solid var(--border);border-radius:var(--r-lg,14px);padding:.78rem .9rem;font-family:var(--fu);font-size:.77rem;color:'+(role==='user'?'#fff':'var(--txt)')+';line-height:1.68;max-width:90%;font-style:'+(role==='thinking'?'italic':'normal');
+  div.innerHTML=text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);
+  var sb=msgs.parentElement;if(sb)sb.scrollTop=sb.scrollHeight;
+  return div;
+}
+
+window.aiSend_nexus=function(){
+  if(aiLoad)return;
+  var inp=document.getElementById('aiInp_nexus');
+  var text=inp?inp.value.trim():'';
+  if(!text)return;
+  addMsg(text,'user');
+  if(inp){inp.value='';inp.style.height='auto';}
+  var thinking=addMsg('分析中...','thinking');
+  aiLoad=true;
+  aiHist.push({role:'user',parts:[{text:text}]});
+  var hist=aiHist.slice(-6).map(function(h){return (h.role==='user'?'ユーザー: ':'AI: ')+h.parts[0].text;}).join('\n');
+  var body=JSON.stringify({prompt:AISYS+'\n\n'+hist+'\n\nユーザーの最後の質問に答えてください。',model:'gemini-2.0-flash',maxTokens:600});
+  fetch(AIEP,{method:'POST',headers:{'Content-Type':'application/json','X-Access-Key':AIKEY},body:body})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(thinking)thinking.remove();
+      var t=(data&&data.data&&data.data.candidates&&data.data.candidates[0]&&data.data.candidates[0].content&&data.data.candidates[0].content.parts[0]&&data.data.candidates[0].content.parts[0].text)||'';
+      if(t){addMsg(t,'ai');aiHist.push({role:'model',parts:[{text:t}]});}
+      else addMsg('回答を取得できませんでした。','ai');
+      aiLoad=false;
+    })
+    .catch(function(){
+      if(thinking)thinking.remove();
+      addMsg('通信エラーです。','ai');
+      aiLoad=false;
+    });
+};
+
+window.aiSend=window.aiSend_nexus;
+window.initAI_nexus=initAI;
+initAI();
+})();
+
+</script>
+</body>
+</html>
