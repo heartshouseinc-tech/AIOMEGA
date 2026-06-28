@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d0d1a">
+<title>LOVE INTELLIGENCE — AI Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d1a;--bg2:#12121f;--surface:#1a1a2e;--surface2:#22223a;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+  --txt:#F0EFF8;--txt2:#A09DC0;--txt3:#6B6880;
+  --acc:#7c3aed;--acc2:#2563eb;
+  --fd:'Playfair Display',serif;
+  --fu:'DM Sans','Noto Sans JP',sans-serif;
+  --r-sm:10px;--r-md:14px;--r-lg:18px;--r-xl:24px;--r-full:9999px;
+  --sat:env(safe-area-inset-top);--sab:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);font-family:var(--fu);height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+
+/* ── HEADER ── */
+.hd{padding:calc(var(--sat)+.8rem) 1rem .6rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:linear-gradient(180deg,var(--bg) 80%,transparent)}
+.hd-title{font-family:var(--fd);font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hd-sub{font-family:var(--fu);font-size:.58rem;color:var(--txt3);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:.1rem}
+.apps-btn{width:38px;height:38px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;position:relative}
+.apps-badge{position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:#dc2626;font-size:.52rem;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center}
+
+/* ── APPS DRAWER ── */
+.drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:none;backdrop-filter:blur(4px)}
+.drawer-bg.show{display:block}
+.drawer{position:fixed;top:0;right:-320px;width:300px;height:100dvh;background:var(--bg2);border-left:1px solid var(--border2);z-index:101;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;padding:calc(var(--sat)+1rem) 0 calc(var(--sab)+1rem)}
+.drawer.show{right:0}
+.drawer-hd{padding:.4rem 1.2rem 1rem;display:flex;align-items:center;justify-content:space-between}
+.drawer-title{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--txt)}
+.drawer-close{width:32px;height:32px;border-radius:50%;background:var(--surface2);border:none;color:var(--txt2);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.drawer-list{flex:1;overflow-y:auto;padding:0 .8rem}
+.drawer-list::-webkit-scrollbar{display:none}
+.app-card{display:flex;align-items:center;gap:.8rem;padding:.85rem .9rem;border-radius:var(--r-lg);border:1px solid var(--border);margin-bottom:.45rem;cursor:pointer;transition:all .15s;text-decoration:none;background:var(--surface)}
+.app-card:active{transform:scale(.97)}
+.app-card-ico{width:42px;height:42px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.app-card-name{font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--txt)}
+.app-card-desc{font-family:var(--fu);font-size:.62rem;color:var(--txt2);margin-top:.1rem;line-height:1.4}
+.app-card-arr{margin-left:auto;color:var(--txt3);font-size:.9rem;flex-shrink:0}
+.drawer-sep{height:1px;background:var(--border);margin:.3rem .9rem .7rem}
+.drawer-label{font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);padding:0 .9rem .4rem}
+
+/* ── CHAT AREA ── */
+.msgs{flex:1;overflow-y:auto;padding:.5rem 1rem 0;display:flex;flex-direction:column;gap:.7rem}
+.msgs::-webkit-scrollbar{display:none}
+.msg{max-width:88%;padding:.75rem .9rem;border-radius:var(--r-lg);font-family:var(--fu);font-size:.8rem;line-height:1.68;animation:msgIn .25s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.msg.ai{background:var(--surface);border:1px solid var(--border);color:var(--txt);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.user{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg.thinking{background:var(--surface2);border:1px solid var(--border);color:var(--txt3);align-self:flex-start;font-style:italic}
+.msg-time{font-family:var(--fu);font-size:.55rem;color:var(--txt3);margin-top:.3rem}
+
+/* ── SUGGESTED ── */
+.suggested{padding:.6rem 1rem .4rem;overflow-x:auto;display:flex;gap:.4rem;scrollbar-width:none;flex-shrink:0}
+.suggested::-webkit-scrollbar{display:none}
+.sug-btn{padding:.42rem .82rem;border-radius:var(--r-full);background:var(--surface2);border:1px solid var(--border2);font-family:var(--fu);font-size:.67rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.sug-btn:active{background:var(--acc);border-color:var(--acc);color:#fff}
+
+/* ── APP SUGGEST CARD ── */
+.app-suggest{display:flex;gap:.4rem;margin-top:.6rem;flex-wrap:wrap}
+.app-suggest-btn{display:flex;align-items:center;gap:.4rem;padding:.38rem .72rem;border-radius:var(--r-full);border:1px solid var(--border2);background:var(--surface2);cursor:pointer;text-decoration:none;transition:all .15s}
+.app-suggest-btn:active{transform:scale(.96)}
+.app-suggest-btn span{font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2)}
+
+/* ── INPUT AREA ── */
+.input-area{padding:.6rem 1rem calc(var(--sab)+.7rem);background:var(--bg2);border-top:1px solid var(--border);display:flex;gap:.5rem;align-items:flex-end;flex-shrink:0}
+.textarea{flex:1;background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--r-lg);padding:.65rem .85rem;font-family:var(--fu);font-size:.83rem;color:var(--txt);resize:none;min-height:44px;max-height:130px;outline:none;line-height:1.5}
+.textarea:focus{border-color:var(--acc)}
+.textarea::placeholder{color:var(--txt3)}
+.send-btn{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;color:#fff;font-size:1.1rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:opacity .15s}
+.send-btn:disabled{opacity:.35}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hd">
+  <div>
+    <div class="hd-title">LOVE INTELLIGENCE</div>
+    <div class="hd-sub">AI × 脳科学 × 五感統合</div>
+  </div>
+  <div class="apps-btn" onclick="openDrawer()">
+    ⚡
+    <div class="apps-badge">9</div>
+  </div>
+</div>
+
+<!-- APPS DRAWER -->
+<div class="drawer-bg" id="drawerBg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-hd">
+    <div class="drawer-title">📱 全アプリ</div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-list">
+
+    <div class="drawer-label">統合版</div>
+    <a class="app-card" href="omega-v2.html" style="border-color:rgba(124,58,237,.3)">
+      <div class="app-card-ico" style="background:rgba(124,58,237,.15)">⚡</div>
+      <div>
+        <div class="app-card-name">OMEGA v2</div>
+        <div class="app-card-desc">8アプリ統合 / 47ページ / AI相談付き</div>
+      </div>
+      <div class="app-card-arr">›</div>
+    </a>
+
+    <div class="drawer-sep"></div>
+    <div class="drawer-label">感覚系</div>
+
+    <a class="app-card" href="eidos-parfum-v2.html" style="border-color:rgba(184,134,11,.3)">
+      <div class="app-card-ico" style="background:rgba(184,134,11,.12)">🧴</div>
+      <div>
+        <div class="app-card-name">EIDOS</div>
+        <div class="app-card-desc">嗅覚 / 香水92本 / 濃度ガイド / 脳科学</div>
+      </div>
+      <div class="app-card-arr">›</div>
+    </a>
+
+    <a class="app-card" href="forma-v1.html" style="border-color:rgba(37,99,235,.3)">
+      <div class="app-card-ico" style="background:rgba(37,99,235,.12)">👔</div>
+      <div>
+        <div class="app-card-name">FORMA</div>
+        <div class="app-card-desc">視覚 / ファッション / 色彩心理 / シルエット</div>
+      </div>
+      <div class="app-card-arr">›</div>
+    </a>
+
+    <a class="app-card" href="sonos-v1.html" style="border-color:rgba(22,163,74,.3)">
+      <div class="app-card-ico" style="background:rgba(22,163,74,.12)">🎵</div>
+      <div>
+        <div class="app-card-name">SONOS</div>
+        <div class="app-card-desc">聴覚 / 声の科学 / 傾聴 / ASMR</div>
+      </div>
+      <div class="app-card-arr">›</div>
+    </a>
+
+    <a class="app-card" href="haptos-v1.html" style="border-color:rgba(234,88,12,.3)">
+      <div class="app-card-ico" style="background:rgba(234,88,12,.12)">🤲</div>
+      <div>
+        <div class="app-card-name">HAPTOS</div>
+        <div class="app-card-desc">触覚 / CT繊維 / オキシトシン / ハグ科学</div>
+      </div>
+      <div class="app-card-arr">›</div>
+    </a>
+
+    <a class="app-card" href="geusto-v1.html" style="border-color:rgba(220,38,38,.3)">
+      <div class="app-card-ico" style="background:rgba(220,38,38,.12)">👅</div>
+      <div>
+        <div class="app-card-name">GEUSTO</div>
+        <div class="app-card-desc">味覚 / 共食 / キス / MHC相性</div>
+      </div>
+      <div class="app-card-arr">›</div>
+    </a>
+
+    <div class="drawer-sep"></div>
+    <div class="drawer-label">統合・脳科学系</div>
+
+    <a class="app-card" href="senses-v1.html" style="border-color:rgba(147,51,234,.3)">
+      <div class="app-card-ico" style="background:rgba(147,51,234,.12)">✨</div>
+      <div>
+        <div class="app-card-name">SENSES</div>
+        <div class="app-card-desc">五感統合 / 七感 / 今夜の戦略 / 診断</div>
+      </div>
+      <div class="app-card-arr">›</div>
+    </a>
+
+    <a class="app-card" href="sextus-v1.html" style="border-color:rgba(109,40,217,.3)">
+      <div class="app-card-ico" style="background:rgba(109,40,217,.12)">🔮</div>
+      <div>
+        <div class="app-card-name">SEXTUS</div>
+        <div class="app-card-desc">第六感 / 内受容感覚 / 腸-脳軸 / 直感</div>
+      </div>
+      <div class="app-card-arr">›</div>
+    </a>
+
+    <a class="app-card" href="nexus-v1.html" style="border-color:rgba(124,58,237,.3)">
+      <div class="app-card-ico" style="background:rgba(124,58,237,.12)">🧠</div>
+      <div>
+        <div class="app-card-name">NEXUS</div>
+        <div class="app-card-desc">脳科学 / 10脳部位 / 10ホルモン / 恋愛段階</div>
+      </div>
+      <div class="app-card-arr">›</div>
+    </a>
+
+  </div>
+</div>
+
+<!-- CHAT MESSAGES -->
+<div class="msgs" id="msgs">
+  <div class="msg ai">
+    こんにちは。<strong>LOVE INTELLIGENCE AI</strong>へようこそ。<br><br>
+    脳科学・五感・進化心理学・生理同期の知識を統合して、あなたの恋愛戦略を設計します。<br><br>
+    今日の状況を教えてください。
+    <div class="msg-time">AI Coach</div>
+  </div>
+</div>
+
+<!-- QUICK SUGGESTIONS -->
+<div class="suggested" id="suggested">
+  <button class="sug-btn" onclick="quick('明日初対面のデートがあります。完全な戦略を教えてください。')">🌸 初対面戦略</button>
+  <button class="sug-btn" onclick="quick('今日の香水の種類・プッシュ数・タイミングを教えてください。')">🧴 香水設計</button>
+  <button class="sug-btn" onclick="quick('告白のタイミングと最適な言葉の設計を教えてください。')">🔥 告白設計</button>
+  <button class="sug-btn" onclick="quick('相手の気持ちを読む方法を教えてください。')">👁 心理読解</button>
+  <button class="sug-btn" onclick="quick('生理的同期を起こす方法を教えてください。')">🌊 同期設計</button>
+  <button class="sug-btn" onclick="quick('服装・香水・声・触れ方の五感統合戦略をください。')">✨ 五感統合</button>
+</div>
+
+<!-- INPUT -->
+<div class="input-area">
+  <textarea class="textarea" id="inp" placeholder="状況を入力（例：明日19時 初対面 銀座 相手28歳 清潔感好き 雨 15℃）" rows="1"
+    oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,130)+'px'"
+    onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send();}"></textarea>
+  <button class="send-btn" id="sendBtn" onclick="send()">➤</button>
+</div>
+
+<script>
+const ENDPOINT = 'https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI';
+const KEY = 'HeartsHouse2026Key';
+
+const SYSTEM = `あなたはLOVE INTELLIGENCE AIコーチです。以下の専門知識を統合して恋愛戦略を設計します。
+
+【専門領域】
+🧴 EIDOS（嗅覚）: 香水92本・MHC相性・プルースト効果・シーン別プッシュ数・ヘアライン噴射・濃度タイプ（EDT/EDP/Parfum）
+👔 FORMA（視覚）: ファッション脳科学・色彩心理（ネイビーのセロトニン信頼シグナル等）・季節別コーデ
+🎵 SONOS（聴覚）: 声の科学・低音VTC・傾聴80%話す20%・囁き声CT繊維耳介枝→オキシトシン直達
+🤲 HAPTOS（触覚）: CT繊維・秒速5cm・20秒ハグ→バソプレシン・段階的スキンシップ設計
+👅 GEUSTO（味覚）: 共食・キス6神経経路・MHC唾液評価・テストステロン転移・チョコレートPEA
+✨ SENSES（五感統合）: 七感統合・島皮質収束・今夜の戦略・愛着スタイル診断・排卵期トラッカー
+🔮 SEXTUS（第六感）: 内受容感覚・腸-脳軸・ミラーニューロン・VVC安全の神経学・社会的痛み
+🧠 NEXUS（脳科学）: 扁桃体0.05秒判定・VTAドーパミン・視床下部オキシトシン産生・海馬記憶刻印
+🧬 進化心理学: Buss37カ国研究・MHC相性・排卵期行動変化・配偶者選択の進化戦略
+🌊 生理的同期: 心拍同期Feldman2011・呼吸同期・脳波同調Neural Coupling・瞳孔同期
+👁 マインドリーディング: 微表情Ekman・視線の科学・7つのボディランゲージ指標・沈黙の使い方
+
+【回答スタイル】
+- 実践的で具体的。「何を・いつ・どこに・何プッシュ・何秒」まで落とし込む
+- 科学的根拠を一言添える（研究者名・ホルモン名等）
+- 絵文字で読みやすく
+- 300〜500文字でコンパクトに
+- 必要に応じてアプリを案内する（「詳しくはEIDOSで学べます」等）
+- 日本語で回答`;
+
+let history = [];
+let loading = false;
+
+function openDrawer(){
+  document.getElementById('drawer').classList.add('show');
+  document.getElementById('drawerBg').classList.add('show');
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('show');
+  document.getElementById('drawerBg').classList.remove('show');
+}
+
+function addMsg(text, role){
+  const msgs = document.getElementById('msgs');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.innerHTML = text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function addAppLinks(text){
+  // AIの回答に応じて関連アプリリンクを表示
+  const apps = [
+    {key:['香水','EIDOS','嗅覚','プッシュ','Gozo','Insulo'], href:'eidos-parfum-v2.html', ico:'🧴', name:'EIDOS'},
+    {key:['服装','FORMA','視覚','ファッション','スーツ'], href:'forma-v1.html', ico:'👔', name:'FORMA'},
+    {key:['声','SONOS','聴覚','傾聴','話し方'], href:'sonos-v1.html', ico:'🎵', name:'SONOS'},
+    {key:['触れ','HAPTOS','触覚','ハグ','スキンシップ'], href:'haptos-v1.html', ico:'🤲', name:'HAPTOS'},
+    {key:['食事','GEUSTO','味覚','キス','共食'], href:'geusto-v1.html', ico:'👅', name:'GEUSTO'},
+    {key:['五感','SENSES','統合','今夜','七感'], href:'senses-v1.html', ico:'✨', name:'SENSES'},
+    {key:['第六感','SEXTUS','直感','内受容','腸'], href:'sextus-v1.html', ico:'🔮', name:'SEXTUS'},
+    {key:['脳','NEXUS','ホルモン','扁桃体','ドーパミン'], href:'nexus-v1.html', ico:'🧠', name:'NEXUS'},
+  ];
+  const matched = apps.filter(a => a.key.some(k => text.includes(k)));
+  if(matched.length === 0) return '';
+  return '<div class="app-suggest">' +
+    matched.slice(0,4).map(a =>
+      `<a class="app-suggest-btn" href="${a.href}"><span>${a.ico}</span><span>${a.name}</span></a>`
+    ).join('') + '</div>';
+}
+
+function quick(text){
+  document.getElementById('inp').value = text;
+  send();
+}
+
+async function send(){
+  if(loading) return;
+  const inp = document.getElementById('inp');
+  const text = inp.value.trim();
+  if(!text) return;
+
+  addMsg(text, 'user');
+  inp.value = ''; inp.style.height = 'auto';
+  document.getElementById('suggested').style.display = 'none';
+
+  const thinking = addMsg('🧠 分析中...', 'thinking');
+  loading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  history.push({role:'user', parts:[{text}]});
+
+  try {
+    const prompt = SYSTEM + '\n\n【会話履歴】\n' +
+      history.slice(-8).map(h => (h.role==='user'?'ユーザー: ':'AI: ') + h.parts[0].text).join('\n') +
+      '\n\n最後のユーザーの質問に答えてください。';
+
+    const res = await fetch(ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Access-Key':KEY},
+      body:JSON.stringify({prompt, model:'gemini-2.0-flash', maxTokens:700})
+    });
+    const data = await res.json();
+    thinking.remove();
+
+    const aiText = data?.data?.candidates?.[0]?.content?.parts?.[0]?.text
+                || data?.data?.text || '';
+
+    if(aiText){
+      const links = addAppLinks(aiText);
+      const div = addMsg(aiText + (links ? '<br>' + links : ''), 'ai');
+      history.push({role:'model', parts:[{text:aiText}]});
+    } else {
+      addMsg('⚠️ 回答を取得できませんでした。', 'ai');
+    }
+  } catch(e){
+    thinking.remove();
+    addMsg('⚠️ 通信エラーです。', 'ai');
+  }
+
+  loading = false;
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('msgs').scrollTop = 99999;
+}
+</script>
+</body>
+</html>
