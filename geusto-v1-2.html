@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#2d0a0a">
+<title>GEUSTO — Taste Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Sans+JP:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF7F7; --bg2:#FFE8E8; --bg3:#FFD5D5;
+  --surface:#FFFFFF; --surface2:#F5F7FA;
+  --gold:#B8860B; --gold-l:#D4A017; --gold-xl:#FDF8EC;
+  --navy:#2d0a0a; --navy-l:#7f1d1d; --navy-xl:#FFF5F5;
+  --indigo:#7f1d1d; --indigo-l:#dc2626; --indigo-xl:#FFF5F5;
+  --violet:#7c3aed; --violet-xl:#F5F3FF;
+  --rose:#BE123C; --rose-l:#F43F5E; --rose-xl:#FFF1F2;
+  --teal:#0F766E; --teal-xl:#F0FDFA;
+  --amber:#B45309; --amber-xl:#FFFBEB;
+  --sage:#4D7C0F; --sage-xl:#F7FEE7;
+  --slate:#334155; --slate-xl:#F8FAFC;
+  --txt:#1C1917; --txt2:#6B6560; --txt3:#A8A29E;
+  --border:rgba(120,100,80,.11); --border2:rgba(120,100,80,.2);
+  --sh-sm:0 1px 4px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --sh-lg:0 12px 36px rgba(0,0,0,.1);
+  --r-sm:10px; --r-md:16px; --r-lg:22px; --r-xl:28px; --r-full:9999px;
+  --sat:env(safe-area-inset-top,44px); --sab:env(safe-area-inset-bottom,0px);
+  --fd:'Playfair Display',serif; --fu:'DM Sans',sans-serif; --fb:'Noto Sans JP',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--txt);font-family:var(--fb);font-weight:300;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button{border:none;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;outline:none}
+
+/* ── SPLASH ─── */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,#FDF8EC 0%,#FAF7F2 50%,#F0FDFA 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+}
+.sp-bottle{font-size:5rem;animation:bottleFloat 3s ease-in-out infinite;margin-bottom:1.5rem}
+@keyframes bottleFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+.sp-title{font-family:var(--fd);font-size:2.8rem;font-weight:700;letter-spacing:.1em;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-l) 50%,var(--amber) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:fadeUp .7s .3s both}
+.sp-sub{font-family:var(--fu);font-size:.82rem;color:var(--txt2);margin-top:.35rem;letter-spacing:.06em;animation:fadeUp .7s .5s both}
+.sp-tagline{font-family:var(--fd);font-size:1rem;font-style:italic;color:var(--txt2);margin-top:.6rem;animation:fadeUp .7s .65s both}
+.sp-btn{
+  margin-top:2.5rem;padding:.95rem 3rem;
+  background:linear-gradient(135deg,var(--gold),var(--gold-l));
+  color:#fff;font-family:var(--fu);font-size:.95rem;font-weight:600;
+  border-radius:var(--r-full);box-shadow:0 8px 24px rgba(184,134,11,.35);
+  animation:fadeUp .7s .85s both;transition:transform .15s,box-shadow .15s;letter-spacing:.02em}
+.sp-btn:active{transform:scale(.96)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ── SHELL ─── */
+#app{display:none}
+#app.on{display:block}
+
+/* ── BOTTOM NAV ─── */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(255,255,255,.92);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+  border-top:1px solid var(--border);display:flex;padding-bottom:var(--sab);
+}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;padding:.7rem .5rem .55rem;gap:.18rem;background:none;color:var(--txt3);transition:color .18s}
+.bni.on{color:var(--gold)}
+.bni-ico{font-size:1.4rem;line-height:1}
+.bni-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0;transition:opacity .18s;margin:1px auto 0}
+.bni.on .bni-dot{opacity:1}
+.bni-lbl{font-family:var(--fu);font-size:.54rem;font-weight:500;letter-spacing:.02em}
+
+/* ── PAGES ─── */
+.page{display:none}
+.page.on{display:block;animation:pIn .28s ease both}
+@keyframes pIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.sb{overflow-y:auto;-webkit-overflow-scrolling:touch;height:100vh;padding-bottom:calc(76px + var(--sab))}
+
+/* ── TYPOGRAPHY ─── */
+.pg-title{font-family:var(--fd);font-size:1.55rem;font-weight:700}
+.sec-title{padding:1.4rem 1.25rem .65rem;font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--txt)}
+.sec-title span{font-family:var(--fu);font-size:.9rem;font-weight:400;color:var(--txt2)}
+.tag-label{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em}
+.spacer{height:1.2rem}
+
+/* ── CARD BASE ─── */
+.card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);box-shadow:var(--sh-sm);overflow:hidden;margin:0 1.25rem .85rem}
+.card-hd{padding:1rem 1.25rem .9rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem}
+.card-ico{width:38px;height:38px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.card-hd-title{font-family:var(--fd);font-size:1.02rem;font-weight:600}
+.card-hd-sub{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.1rem}
+.card-bd{padding:1.1rem 1.25rem}
+
+/* ── HOME ─── */
+.home-top{padding:calc(var(--sat) + 1rem) 1.25rem 0;display:flex;align-items:center;justify-content:space-between}
+.home-greet{font-family:var(--fu);font-size:.76rem;color:var(--txt2)}
+.home-name{font-family:var(--fd);font-size:1.4rem;font-weight:700;margin-top:.1rem}
+.home-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--amber));display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 12px rgba(184,134,11,.3)}
+.hero{
+  margin:1.1rem 1.25rem;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-l) 60%,var(--amber) 100%);
+  border-radius:var(--r-xl);padding:1.6rem 1.5rem 1.8rem;
+  position:relative;overflow:hidden;box-shadow:0 12px 36px rgba(184,134,11,.28);
+}
+.hero-bl{position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.1);top:-70px;right:-60px}
+.hero-bl2{position:absolute;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.07);bottom:-35px;left:10px}
+.hero-tag{font-family:var(--fu);font-size:.63rem;font-weight:500;color:rgba(255,255,255,.75);letter-spacing:.09em;text-transform:uppercase;margin-bottom:.55rem;position:relative}
+.hero-title{font-family:var(--fd);font-size:1.65rem;font-weight:700;color:#fff;line-height:1.25;position:relative;margin-bottom:1.3rem}
+.hero-title em{font-style:italic}
+.hero-stats{display:flex;gap:1.2rem;position:relative}
+.hs-n{font-family:var(--fd);font-size:1.5rem;font-weight:600;color:#fff;display:block}
+.hs-l{font-family:var(--fu);font-size:.54rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.05em}
+.hero-div{width:1px;background:rgba(255,255,255,.25);margin:.2rem 0}
+.tip-card{margin:0 1.25rem 1rem;background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-lg);padding:1.2rem;display:flex;gap:1rem;align-items:flex-start}
+.tip-ico{font-size:1.6rem;flex-shrink:0}
+.tip-lbl{font-family:var(--fu);font-size:.58rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem}
+.tip-txt{font-family:var(--fd);font-size:.96rem;font-style:italic;color:var(--txt);line-height:1.55}
+.mod-grid{padding:0 1.25rem;display:grid;gap:.75rem}
+.mod{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.15rem 1.1rem;display:flex;align-items:center;gap:.9rem;box-shadow:var(--sh-sm);cursor:pointer;transition:transform .12s;position:relative;overflow:hidden}
+.mod:active{transform:scale(.98)}
+.mod-ac{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+.mod-ico{width:48px;height:48px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.mod-name{font-family:var(--fd);font-size:1rem;font-weight:600}
+.mod-sub{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.1rem}
+.mod-badge{font-family:var(--fu);font-size:.58rem;font-weight:600;padding:.18rem .6rem;border-radius:var(--r-full)}
+.mod-arr{color:var(--txt3);font-size:1.1rem;margin-left:auto;flex-shrink:0}
+
+/* ── SCENT BASE PAGE ─── */
+.pg-hd{padding:calc(var(--sat) + .6rem) 1.25rem .5rem}
+.banner{margin:.5rem 1.25rem 1.1rem;border-radius:var(--r-xl);padding:1.4rem;border:1px solid}
+.banner-ico{font-size:2.4rem;margin-bottom:.7rem}
+.banner-title{font-family:var(--fd);font-size:1.35rem;font-weight:700;margin-bottom:.4rem}
+.banner-desc{font-family:var(--fu);font-size:.79rem;color:var(--txt2);line-height:1.65}
+.brain-path{display:flex;align-items:center;padding:.4rem 0 .9rem;gap:0}
+.bp-nd{display:flex;flex-direction:column;align-items:center;gap:.32rem;flex-shrink:0;width:62px}
+.bp-ci{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.35rem;box-shadow:var(--sh-sm)}
+.bp-lbl{font-family:var(--fu);font-size:.55rem;font-weight:500;color:var(--txt2);text-align:center;line-height:1.3}
+.bp-arr{flex:1;display:flex;flex-direction:column;align-items:center;gap:.18rem}
+.bp-line{width:100%;height:2px;background:#E5DDD0;border-radius:1px;position:relative;overflow:hidden}
+.bp-flow{position:absolute;top:0;left:-30%;height:100%;width:30%;border-radius:1px;animation:flow 1.6s linear infinite}
+@keyframes flow{to{left:130%}}
+.bp-skip{font-family:var(--fu);font-size:.5rem;color:var(--rose-l);font-weight:600;white-space:nowrap}
+.brain-note{font-family:var(--fu);font-size:.77rem;color:var(--txt2);line-height:1.7;text-align:center}
+.brain-note strong{color:var(--txt)}
+.neuro-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.ng{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.9rem}
+.ng-ico{font-size:1.2rem;margin-bottom:.42rem}
+.ng-name{font-family:var(--fd);font-size:.9rem;font-weight:600;margin-bottom:.15rem}
+.ng-chem{font-family:var(--fu);font-size:.56rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.42rem}
+.ng-desc{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6}
+.ng-scents{font-family:var(--fu);font-size:.63rem;font-weight:500;margin-top:.52rem;padding-top:.52rem;border-top:1px solid var(--border);color:var(--txt);line-height:1.5}
+.sr{display:flex;align-items:flex-start;gap:.8rem;padding:.9rem 1.25rem;border-bottom:1px solid var(--border)}
+.sr:last-child{border-bottom:none}
+.sr-em{font-size:1.3rem;flex-shrink:0;margin-top:.08rem}
+.sr-name{font-family:var(--fd);font-size:.96rem;font-weight:600;margin-bottom:.15rem}
+.sr-eff{font-family:var(--fu);font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.sr-desc{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.note-item{border-radius:var(--r-md);padding:.95rem;border:1px solid transparent;display:flex;gap:.8rem;margin-bottom:.6rem}
+.ni-time{flex-shrink:0;width:50px}
+.ni-phase{font-family:var(--fu);font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.ni-dur{font-family:var(--fu);font-size:.53rem;color:var(--txt2);margin-top:.08rem}
+.ni-title{font-family:var(--fd);font-size:.95rem;font-weight:600;margin-bottom:.25rem}
+.ni-body{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.push-item{background:var(--surface);border-radius:var(--r-md);border:1px solid var(--border);padding:.95rem;display:flex;gap:.8rem;margin-bottom:.6rem;box-shadow:var(--sh-sm)}
+.pi-badge{width:44px;height:44px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.pi-dist{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.18rem}
+.pi-loc{font-family:var(--fd);font-size:.96rem;font-weight:600;margin-bottom:.25rem}
+.pi-why{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.w-chips{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .5rem;scrollbar-width:none}
+.w-chips::-webkit-scrollbar{display:none}
+.wc{flex-shrink:0;padding:.48rem 1rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.wc.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(184,134,11,.28)}
+.w-result{margin:.7rem 1.25rem 0;background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-md);padding:.95rem;font-family:var(--fu);font-size:.79rem;color:var(--txt2);line-height:1.75}
+.w-result strong{color:var(--gold)}
+
+/* ── LEARN ─── */
+.learn-hd{padding:calc(var(--sat) + .75rem) 1.25rem .65rem;display:flex;align-items:center;justify-content:space-between}
+.deck-tabs{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .65rem;scrollbar-width:none}
+.deck-tabs::-webkit-scrollbar{display:none}
+.dt{flex-shrink:0;padding:.46rem .95rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.dt.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(184,134,11,.25)}
+.card-box{
+  margin:0 1.25rem;border-radius:var(--r-xl);
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:var(--sh-md);min-height:290px;
+  display:flex;flex-direction:column;overflow:hidden;
+  position:relative;
+}
+.card-box::before{content:'';position:absolute;inset:7px -4px -7px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);z-index:-1;opacity:.5}
+.card-box::after{content:'';position:absolute;inset:13px -7px -13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);z-index:-2;opacity:.28}
+.card-face{padding:1.6rem 1.45rem;display:flex;flex-direction:column;flex:1;transition:opacity .15s}
+.card-face.hidden{display:none}
+.card-face-back{background:linear-gradient(135deg,var(--gold-xl),#FEF9E7)}
+.cf-tag{font-family:var(--fu);font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.9rem}
+.cf-q{font-family:var(--fd);font-size:1.08rem;font-weight:600;color:var(--txt);line-height:1.45;flex:1}
+.cf-hint{font-family:var(--fu);font-size:.64rem;color:var(--txt3);text-align:center;margin-top:1rem;animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.8}}
+.cf-a{font-family:var(--fu);font-size:.8rem;color:var(--txt2);line-height:1.82;flex:1;border-left:3px solid var(--gold);padding-left:.85rem}
+.cf-src{font-family:var(--fu);font-size:.56rem;font-weight:600;color:var(--txt3);letter-spacing:.06em;text-transform:uppercase;margin-top:.85rem;align-self:flex-end}
+.flip-btn{width:100%;padding:.95rem;background:var(--bg2);border:none;border-top:1px solid var(--border);font-family:var(--fu);font-size:.82rem;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:.02em;transition:background .15s}
+/* ── CARD FRAG LINKS ── */
+.cf-frags{margin-top:.9rem;padding-top:.8rem;border-top:1px solid rgba(184,134,11,.2)}
+.cf-frags-lbl{font-family:var(--fu);font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem}
+.cf-frags-lbl::before{content:'👅';font-size:.7rem}
+.cf-frag-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.cf-frag-chip{font-family:var(--fu);font-size:.65rem;font-weight:600;padding:.28rem .72rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);color:var(--txt2);cursor:pointer;transition:all .16s;display:flex;align-items:center;gap:.3rem;white-space:nowrap}
+.cf-frag-chip:active{transform:scale(.95)}
+.cf-frag-chip:hover,.cf-frag-chip:active{background:var(--gold);border-color:var(--gold);color:#fff}
+.cf-frag-chip .chip-emoji{font-size:.75rem}
+.flip-btn:active{background:var(--gold-xl)}
+.pdots{display:flex;gap:.35rem;justify-content:center;padding:.6rem 0}
+.pd{width:7px;height:7px;border-radius:50%;background:var(--bg3);transition:all .28s;border:1px solid var(--border2)}
+.pd.done{background:var(--gold-l);border-color:transparent}
+.pd.cur{background:var(--gold);border-color:transparent;transform:scale(1.3)}
+.ctrl-row{padding:.8rem 1.25rem;display:flex;align-items:center;gap:.65rem}
+.ctrl-skip{flex:1;padding:.78rem;border-radius:var(--r-md);background:var(--bg2);color:var(--txt2);font-family:var(--fu);font-size:.8rem;font-weight:600;border:none;cursor:pointer;transition:background .15s}
+.ctrl-skip:active{background:var(--bg3)}
+.ctrl-next{flex:1.5;padding:.78rem;border-radius:var(--r-md);background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.8rem;font-weight:600;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(184,134,11,.3);transition:transform .12s}
+.ctrl-next:active{transform:scale(.97)}
+.ctrl-pg{font-family:var(--fu);font-size:.74rem;color:var(--txt3);min-width:48px;text-align:center}
+
+/* ── BRANDS ─── */
+.brand-chips{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .65rem;scrollbar-width:none}
+.brand-chips::-webkit-scrollbar{display:none}
+.bc{flex-shrink:0;padding:.46rem .95rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.72rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.bc.on{border-color:var(--gold);color:var(--gold);background:var(--gold-xl);box-shadow:0 3px 10px rgba(184,134,11,.2)}
+.frag-grid{padding:0 1.25rem;display:grid;gap:.72rem}
+.fc{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.15rem;box-shadow:var(--sh-sm);cursor:pointer;transition:transform .12s}
+.fc.open{border-color:rgba(184,134,11,.3);box-shadow:var(--sh-md)}
+.fc:active{transform:scale(.99)}
+.fc-top{display:flex;align-items:center;gap:.8rem}
+.fc-emoji{font-size:1.75rem;flex-shrink:0}
+.fc-info{flex:1;min-width:0}
+.fc-brand{font-family:var(--fu);font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--txt2);margin-bottom:.15rem}
+.fc-name{font-family:var(--fd);font-size:1.02rem;font-weight:600}
+.fc-type{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.08rem}
+.fc-arr{font-size:1.1rem;color:var(--txt3);transition:transform .25s;flex-shrink:0}
+.fc.open .fc-arr{transform:rotate(90deg)}
+.fc-detail{display:none;margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem}
+.fc.open .fc-detail{display:block}
+.fd-row{display:grid;grid-template-columns:1fr 1fr;gap:.58rem;margin-bottom:.8rem}
+.fd-chip{background:var(--bg2);border-radius:var(--r-sm);padding:.62rem .68rem}
+.fd-chip-lbl{font-family:var(--fu);font-size:.53rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);margin-bottom:.22rem}
+.fd-chip-val{font-family:var(--fu);font-size:.72rem;color:var(--txt);line-height:1.5}
+.fd-sec{margin-bottom:.75rem}
+.fd-sec-title{font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);margin-bottom:.38rem;display:flex;align-items:center;gap:.35rem}
+.fd-sec-body{font-family:var(--fu);font-size:.76rem;color:var(--txt2);line-height:1.75}
+.fd-sec-body strong{color:var(--txt)}
+.scene-chips{display:flex;flex-wrap:wrap;gap:.38rem;margin-top:.45rem}
+.sch{font-family:var(--fu);font-size:.64rem;font-weight:500;padding:.22rem .62rem;border-radius:var(--r-full)}
+.sch-good{background:var(--sage-xl);color:var(--sage);border:1px solid rgba(77,124,15,.2)}
+.sch-bad{background:var(--rose-xl);color:var(--rose);border:1px solid rgba(190,18,60,.2)}
+.rating-row{display:flex;align-items:center;gap:.48rem;margin-bottom:.38rem}
+.rating-lbl{font-family:var(--fu);font-size:.65rem;color:var(--txt2);width:58px;flex-shrink:0}
+.rating-bar{flex:1;height:5px;background:var(--bg3);border-radius:var(--r-full);overflow:hidden}
+.rating-fill{height:100%;border-radius:var(--r-full);background:linear-gradient(90deg,var(--gold),var(--gold-l))}
+.coloring-tip{background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-sm);padding:.65rem .8rem;margin-top:.55rem;font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.65}
+.coloring-tip strong{color:var(--gold)}
+
+/* ── TODAY PAGE ── */
+.sel-chips{display:flex;flex-wrap:wrap;gap:.38rem}
+.sel-chip{padding:.42rem .9rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .16s}
+.sel-chip.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700}
+.sel-go{width:100%;padding:.9rem;border-radius:var(--r-full);background:var(--teal);border:none;font-family:var(--fu);font-size:.9rem;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.03em;transition:opacity .15s}
+.sel-go:disabled{opacity:.4;cursor:not-allowed}
+.sel-result-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:1rem 1.1rem;display:flex;gap:.9rem;align-items:flex-start;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.sel-result-card:active{transform:scale(.98)}
+.sel-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0;margin-top:.1rem}
+.sel-r-brand{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3);margin-bottom:.12rem}
+.sel-r-name{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:.25rem}
+.sel-r-reason{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6}
+/* 月別カレンダー */
+.month-cell{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.7rem .75rem}
+.month-num{font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.month-frag{font-family:var(--fu);font-size:.68rem;font-weight:600;color:var(--txt);margin-bottom:.15rem}
+.month-tip{font-family:var(--fu);font-size:.62rem;color:var(--txt3);line-height:1.45}
+/* ── RADAR CHART ── */
+.radar-wrap{display:flex;flex-direction:column;align-items:center;gap:.4rem;margin:.5rem 0}
+.radar-labels{display:grid;grid-template-columns:1fr 1fr;gap:.2rem .5rem;width:100%}
+.radar-lbl{display:flex;align-items:center;gap:.35rem;font-family:var(--fu);font-size:.62rem;color:var(--txt2)}
+.radar-lbl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* ── COMPARE ── */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.cmp-col{display:flex;flex-direction:column;gap:.5rem}
+.cmp-head{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem;text-align:center}
+.cmp-emoji{font-size:1.6rem;display:block;margin-bottom:.25rem}
+.cmp-brand-lbl{font-family:var(--fu);font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3)}
+.cmp-name-lbl{font-family:var(--fd);font-size:.88rem;font-weight:700;color:var(--txt);line-height:1.2}
+.cmp-row{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.6rem .7rem}
+.cmp-row-lbl{font-family:var(--fu);font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3);margin-bottom:.28rem;text-align:center}
+.cmp-bar-wrap{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:.18rem}
+.cmp-bar{height:100%;border-radius:4px;transition:width .6s ease}
+.cmp-val{font-family:var(--fu);font-size:.6rem;font-weight:600;text-align:center}
+.cmp-winner{background:var(--gold-xl);border-color:rgba(184,134,11,.3)}
+/* compare chip select */
+.fc.compare-on{border:2px solid var(--teal);box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+.fc.compare-on .fc-top::after{content:'✓';position:absolute;top:.6rem;right:.6rem;width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:22px;text-align:center}
+.fci-tabs{display:flex;gap:.32rem;margin-bottom:.75rem;overflow-x:auto;scrollbar-width:none}
+.fci-tabs::-webkit-scrollbar{display:none}
+.fci-tab{flex-shrink:0;padding:.38rem .75rem;border-radius:var(--r-full);background:var(--bg2);border:1.5px solid var(--border);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fci-tab.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 3px 10px rgba(184,134,11,.25)}
+.fci-panel{animation:pIn .2s ease both}
+.fci-panel.hidden{display:none}
+.rating-row span:last-child{font-size:.58rem;color:var(--txt3);width:26px;text-align:right;flex-shrink:0}
+
+/* ── QUIZ ─── */
+.quiz-hd{padding:calc(var(--sat) + .75rem) 1.25rem .65rem;display:flex;align-items:center;justify-content:space-between}
+.quiz-sc{font-family:var(--fu);font-size:.74rem;font-weight:700;color:var(--gold);background:var(--gold-xl);padding:.28rem .88rem;border-radius:var(--r-full);border:1px solid rgba(184,134,11,.2)}
+.qprog{margin:0 1.25rem .65rem;height:5px;background:var(--bg3);border-radius:var(--r-full);overflow:hidden}
+.qprog-fi{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-l));border-radius:var(--r-full);width:0;transition:width .35s ease}
+.qcard{margin:0 1.25rem .8rem;background:var(--surface);border-radius:var(--r-xl);border:1px solid var(--border);box-shadow:var(--sh-md);padding:1.35rem}
+.qc-n{font-family:var(--fu);font-size:.62rem;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.65rem}
+.qc-q{font-family:var(--fd);font-size:1.05rem;font-weight:600;line-height:1.45;margin-bottom:1.15rem}
+.qopt{display:block;width:100%;text-align:left;background:var(--bg2);border:1.5px solid transparent;color:var(--txt);font-family:var(--fu);font-size:.81rem;font-weight:400;padding:.88rem 1rem;border-radius:var(--r-md);margin-bottom:.52rem;cursor:pointer;transition:all .18s;line-height:1.55}
+.qopt:active{background:var(--gold-xl)}
+.qopt.correct{background:var(--sage-xl);border-color:var(--sage);color:var(--sage);font-weight:500}
+.qopt.wrong{background:var(--rose-xl);border-color:var(--rose-l);color:var(--rose)}
+.qexp{display:none;margin-top:.65rem;background:var(--sage-xl);border:1px solid rgba(15,118,110,.2);border-radius:var(--r-md);padding:.9rem;font-family:var(--fu);font-size:.77rem;color:var(--txt2);line-height:1.78}
+.qexp.show{display:block}
+.qnxt{display:none;width:100%;margin-top:.65rem;background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.86rem;font-weight:600;padding:.85rem;border-radius:var(--r-md);box-shadow:0 4px 14px rgba(184,134,11,.25);transition:transform .12s}
+.qnxt.show{display:block}
+.qnxt:active{transform:scale(.98)}
+.result{display:none;margin:0 1.25rem 2rem;background:var(--surface);border-radius:var(--r-xl);border:1px solid var(--border);box-shadow:var(--sh-md);padding:2.2rem 1.5rem;text-align:center}
+.result.show{display:block}
+.res-em{font-size:3.5rem;margin-bottom:.85rem}
+.res-sc{font-family:var(--fd);font-size:3.5rem;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.res-of{font-family:var(--fu);font-size:.78rem;color:var(--txt3);margin:.28rem 0 1rem}
+.res-msg{font-family:var(--fu);font-size:.82rem;color:var(--txt2);line-height:1.8;margin-bottom:1.35rem}
+.res-retry{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.88rem;font-weight:600;padding:.88rem 2.5rem;border-radius:var(--r-full);box-shadow:0 6px 20px rgba(184,134,11,.3)}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-bottle"><svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 唇 上 -->
+  <path d="M20 34 C20 34 28 28 40 28 C52 28 60 34 60 34" stroke="#7f1d1d" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- 唇 下 -->
+  <path d="M20 34 C20 34 24 46 40 48 C56 46 60 34 60 34" fill="#7f1d1d" opacity=".85"/>
+  <path d="M20 34 C20 34 24 44 40 46 C56 44 60 34 60 34" fill="#dc2626" opacity=".6"/>
+  <!-- 舌 -->
+  <path d="M32 38 C32 38 30 52 40 56 C50 52 48 38 48 38 C48 38 44 42 40 42 C36 42 32 38 32 38 Z" fill="#7f1d1d" opacity=".9"/>
+  <path d="M34 40 C34 40 33 51 40 54 C47 51 46 40 46 40" fill="#dc2626" opacity=".5"/>
+  <!-- 味覚の波紋 -->
+  <circle cx="40" cy="42" r="22" stroke="#dc2626" stroke-width="1" fill="none" opacity=".15"/>
+  <circle cx="40" cy="42" r="30" stroke="#dc2626" stroke-width=".8" fill="none" opacity=".08"/>
+  <!-- 分子 -->
+  <circle cx="15" cy="25" r="2.5" fill="#B8860B" opacity=".7"/>
+  <circle cx="65" cy="22" r="2" fill="#B8860B" opacity=".6"/>
+  <circle cx="12" cy="45" r="1.8" fill="#B8860B" opacity=".5"/>
+  <circle cx="68" cy="48" r="2" fill="#B8860B" opacity=".55"/>
+  <circle cx="20" cy="58" r="1.5" fill="#B8860B" opacity=".4"/>
+  <circle cx="62" cy="60" r="1.5" fill="#B8860B" opacity=".4"/>
+</svg></div>
+  <div class="sp-title">GEUSTO</div>
+  <div class="sp-sub">TASTE INTELLIGENCE</div>
+  <div class="sp-tagline">「味わうことは、最も深く本能に届く行為だ」</div>
+  <button class="sp-btn" onclick="boot()">はじめる</button>
+</div>
+
+<div id="app">
+
+<!-- ══ HOME ══ -->
+<div class="page on" id="pg-home">
+  <div class="sb">
+    <div class="home-top">
+      <div><div class="home-greet">Parfum Intelligence 🌿</div><div class="home-name">今日の香りを設計しよう</div></div>
+      <div class="home-av"><svg width="32" height="32" viewBox="0 0 80 80" fill="none"><path d="M20 34 C20 34 28 28 40 28 C52 28 60 34 60 34" stroke="#7f1d1d" stroke-width="3" fill="none"/><path d="M20 34 C20 34 24 46 40 48 C56 46 60 34 60 34" fill="#7f1d1d" opacity=".8"/><path d="M32 38 C32 38 30 52 40 56 C50 52 48 38 48 38 C48 38 44 42 40 42 C36 42 32 38 32 38 Z" fill="#dc2626" opacity=".9"/></svg></div>
+    </div>
+    <div class="hero">
+      <div class="hero-bl"></div><div class="hero-bl2"></div>
+      <div class="hero-tag">Scent Psychology Platform</div>
+      <div class="hero-title">味わうことは、<em>最も深く</em><br>本能に届く行為だ。</div>
+      <div class="hero-stats">
+        <div><span class="hs-n">40+</span><span class="hs-l">プロトコル収録</span></div>
+        <div class="hero-div"></div>
+        <div><span class="hs-n">8</span><span class="hs-l">学習デッキ</span></div>
+        <div class="hero-div"></div>
+        <div><span class="hs-n">90+</span><span class="hs-l">学習カード</span></div>
+      </div>
+    </div>
+    <div class="tip-card" id="tipCard" onclick="rotateTip()" style="cursor:pointer">
+      <div class="tip-ico" id="tipIco">✨</div>
+      <div style="flex:1"><div class="tip-lbl">Today's Science Protocol <span style="font-size:.5rem;opacity:.5">— タップで更新</span></div><div class="tip-txt" id="tipTxt"></div></div>
+    </div>
+    <div class="sec-title">モジュール <span>— 学習を選ぼう</span></div>
+    <div class="mod-grid">
+      <div class="mod" onclick="nav('scent',2)"><div class="mod-ac" style="background:var(--violet)"></div><div class="mod-ico" style="background:var(--violet-xl)">🧠</div><div><div class="mod-name">味覚の科学</div><div class="mod-sub">舌→味覚野→扁桃体×ホルモン×恋愛科学</div></div><span class="mod-badge" style="background:var(--violet-xl);color:var(--violet)">必読</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('learn',3)"><div class="mod-ac" style="background:var(--gold)"></div><div class="mod-ico" style="background:var(--gold-xl)">📚</div><div><div class="mod-name">Flash Learn</div><div class="mod-sub">8デッキ 100+カード — 味覚×ホルモン×恋愛</div></div><span class="mod-badge" style="background:var(--gold-xl);color:var(--gold)">HOT</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('brands',4)"><div class="mod-ac" style="background:var(--amber)"></div><div class="mod-ico" style="background:var(--amber-xl)">👔</div><div><div class="mod-name">Taste Library</div><div class="mod-sub">40+ プロトコル × 脳科学解説</div></div><span class="mod-badge" style="background:var(--amber-xl);color:var(--amber)">NEW</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('quiz',5)"><div class="mod-ac" style="background:var(--rose)"></div><div class="mod-ico" style="background:var(--rose-xl)">⚡</div><div><div class="mod-name">Taste Quiz</div><div class="mod-sub">味覚×ホルモン専門クイズ — 10問</div></div><span class="mod-arr">›</span></div>
+    </div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ TODAY ══ -->
+<div class="page" id="pg-today">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--teal)">🎯 今日の戦略</div><div style="font-family:var(--fu);font-size:.78rem;color:var(--txt2);margin-top:.3rem">シーン・段階・目標から最適な食×味覚戦略を提案</div></div>
+
+    <!-- セレクター -->
+    <div class="card" id="selectorCard">
+      <div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">🎛</div><div><div class="card-hd-title">今日の状況を選ぶ</div><div class="card-hd-sub">3ステップで最適戦略を提案</div></div></div>
+      <div class="card-bd" style="display:flex;flex-direction:column;gap:1rem">
+
+        <!-- Step1 シーン -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 1 — 今日のシーン</div>
+          <div class="sel-chips" id="sceneChips">
+            <button class="sel-chip" data-group="scene" data-val="first">🌸 初対面</button>
+            <button class="sel-chip" data-group="scene" data-val="date2">💬 2回目以降</button>
+            <button class="sel-chip" data-group="scene" data-val="night">🌙 夜のデート</button>
+            <button class="sel-chip" data-group="scene" data-val="casual">☕ カジュアル</button>
+            <button class="sel-chip" data-group="scene" data-val="work">💼 ビジネス</button>
+            <button class="sel-chip" data-group="scene" data-val="special">🔥 勝負の夜</button>
+          </div>
+        </div>
+
+        <!-- Step2 気分 -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 2 — 演出したい体験</div>
+          <div class="sel-chips" id="moodChips">
+            <button class="sel-chip" data-group="mood" data-val="clean">✨ 清潔感・誠実さ</button>
+            <button class="sel-chip" data-group="mood" data-val="sexy">🔥 官能性・色気</button>
+            <button class="sel-chip" data-group="mood" data-val="trust">🤝 親密感・絆</button>
+            <button class="sel-chip" data-group="mood" data-val="deep">💫 特別な体験・記憶</button>
+            <button class="sel-chip" data-group="mood" data-val="smart">🌟 情熱・深い関係</button>
+          </div>
+        </div>
+
+        <!-- Step3 天気 -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 3 — 今日の天気・気温</div>
+          <div class="sel-chips" id="weatherChips">
+            <button class="sel-chip" data-group="weather" data-val="hot">☀️ 暑い（25℃+）</button>
+            <button class="sel-chip" data-group="weather" data-val="mild">🌤 快適（15〜25℃）</button>
+            <button class="sel-chip" data-group="weather" data-val="cold">❄️ 寒い（15℃−）</button>
+          </div>
+        </div>
+
+        <button class="sel-go" id="selGoBtn" onclick="runSelector()">→ 最適な戦略を選ぶ</button>
+      </div>
+    </div>
+
+    <!-- 結果 -->
+    <div id="selResult" style="display:none">
+      <div style="font-family:var(--fu);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin:.85rem 0 .55rem;padding:0 .1rem">🎯 推奨結果</div>
+      <div id="selResultCards" style="display:flex;flex-direction:column;gap:.65rem"></div>
+      <button onclick="resetSelector()" style="width:100%;margin-top:.9rem;padding:.75rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-full);font-family:var(--fu);font-size:.8rem;font-weight:600;color:var(--txt2);cursor:pointer">← 選び直す</button>
+    </div>
+
+    <!-- 月別カレンダー -->
+    <div class="card" style="margin-top:.5rem">
+      <div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">📅</div><div><div class="card-hd-title">月別・食×ホルモン戦略カレンダー</div><div class="card-hd-sub">季節×食×ホルモン×恋愛の年間戦略</div></div></div>
+      <div class="card-bd">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem" id="monthCalendar"></div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ SCENT SCIENCE ══ -->
+<div class="page" id="pg-scent">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--indigo)">🧠 味覚・口腔・ホルモンの科学</div></div>
+
+    <!-- 味覚の解剖学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--indigo-xl)">👅</div><div><div class="card-hd-title">味覚の解剖学</div><div class="card-hd-sub">舌から脳まで — 0.05秒の旅</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--indigo-xl);border:1px solid rgba(127,29,29,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">👅</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo)">①舌乳頭と味蕾（10,000個）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">舌表面の乳頭に約10,000個の味蕾が存在。甘味・酸味・塩味・苦味・旨味の5基本味を処理。<strong>口腔内の触覚受容器（メルケル盤・パチニ小体・自由神経終末）</strong>が温度・テクスチャ・痛覚も同時処理する複合感覚器官。</div></div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">⚡</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet)">②鼓索神経・舌咽神経 → 孤束核（脳幹）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">味覚信号は鼓索神経（前2/3）・舌咽神経（後1/3）を経由し脳幹の孤束核に到達。<strong>嗅覚と同様に感情系への高速副経路</strong>が存在し0.05秒で扁桃体への信号が始まる。食事の「なんとなく好き」という直感の正体。</div></div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">🌊</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--gold)">③視床（腹側後内側核）→ 一次味覚野（島皮質）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">島皮質（前部）が味覚の「快・不快・強度」を処理。触覚のCT繊維経路と<strong>同じ島皮質に収束</strong>するため口腔内のタッチ（キス・舌）は味覚と感情が統合された最強の複合感覚になる。</div></div></div>
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">💓</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose)">④眼窩前頭皮質（OFC）× 報酬系</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">眼窩前頭皮質が「この味は価値があるか・また求めたいか」を評価。<strong>ドーパミン報酬回路（側坐核）と直結</strong>しており「美味しい・また食べたい・一緒にいたい」という欲求を生む。食事を共にする体験がここで「特別な記憶」として処理される。</div></div></div>
+        <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">🧬</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--teal)">⑤嗅覚との統合（フレーバー形成）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">味覚の80%は実際には嗅覚（後鼻腔嗅覚）。「香り×味×テクスチャ×温度」が統合されて「フレーバー（風味）」が形成される。キス中の口腔内化学物質の認識も嗅覚神経が担う部分が大きい。</div></div></div>
+      </div>
+    </div></div>
+
+    <!-- 口腔触覚の科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">💋</div><div><div class="card-hd-title">口腔触覚 × キスの神経科学</div><div class="card-hd-sub">唇・舌・口腔が持つ最高密度の触覚情報処理</div></div></div><div class="card-bd">
+      <div style="background:var(--indigo-xl);border:1px solid rgba(127,29,29,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.75rem">
+        <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--indigo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">🔬 神経解剖学的事実</div>
+        <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt2);line-height:1.7">唇は人体で<strong style="color:var(--txt)">最も触覚受容器の密度が高い部位の一つ</strong>。体性感覚野（ペンフィールドマップ）において唇が占める面積は手のひら全体に匹敵する。キス1回で<strong style="color:var(--txt)">5種以上のホルモンが同時分泌</strong>され化学物質の相互評価が行われる。</div>
+      </div>
+      <div class="neuro-grid">
+        <div class="ng"><div class="ng-ico">💋</div><div class="ng-name">唇の触覚密度</div><div class="ng-chem" style="color:var(--indigo)">OXYTOCIN PEAK</div><div class="ng-desc">唇のメルケル盤・マイスナー小体・自由神経終末が超高密度で配置。キス中の口腔触覚がCT繊維と同経路で島皮質→視床下部→オキシトシン産生を最大に活性化させる。</div><div class="ng-scents">キス＝触覚最強の行為</div></div>
+        <div class="ng"><div class="ng-ico">🌡</div><div class="ng-name">温度受容器</div><div class="ng-chem" style="color:var(--rose)">TRPV1 RECEPTOR</div><div class="ng-desc">口腔内のTRPV1（カプサイシン受容体）が温度・辛味・刺激を感知。体温（37℃）に近い温かさが「安全・快楽・愛情」の複合シグナルを送る。</div><div class="ng-scents">体温のキス＝最大快楽</div></div>
+        <div class="ng"><div class="ng-ico">🧬</div><div class="ng-name">MHC化学認識</div><div class="ng-chem" style="color:var(--violet)">COMPATIBILITY</div><div class="ng-desc">唾液中の化学物質（MHC遺伝子産物）を嗅覚経路で認識。「なんとなく合う・合わない」というキスの感覚の分子生物学的根拠。免疫系の相性評価が行われる。</div><div class="ng-scents">キスが「相性確認」である理由</div></div>
+        <div class="ng"><div class="ng-ico">⚡</div><div class="ng-name">ドーパミン急増</div><div class="ng-chem" style="color:var(--teal)">DOPAMINE SURGE</div><div class="ng-desc">キスの瞬間に側坐核のドーパミンが急増。「また会いたい・また触れたい」という欲求の神経科学的根拠。コカインと同じ報酬回路を使う。</div><div class="ng-scents">キスの「中毒性」の正体</div></div>
+        <div class="ng"><div class="ng-ico">💊</div><div class="ng-name">テストステロン転移</div><div class="ng-chem" style="color:var(--amber)">TESTOSTERONE</div><div class="ng-desc">男性の唾液にはテストステロンが含まれる。ディープキスでの唾液交換が女性の性的覚醒（テストステロン受容体経由）に寄与する可能性が研究で示されている（Wlodarski & Dunbar 2013）。</div><div class="ng-scents">ディープキスの生物学的意味</div></div>
+        <div class="ng"><div class="ng-ico">🔄</div><div class="ng-name">鏡像ニューロン×口腔</div><div class="ng-chem" style="color:var(--teal)">SYNCHRONY</div><div class="ng-desc">キス中の呼吸・動作の同期がミラーニューロンを活性化させ「一体感・共鳴・深い繋がり」を生む。呼吸の同期が心拍の同期を促し脳波まで同調する研究がある。</div><div class="ng-scents">キス中の「溶ける感覚」の根拠</div></div>
+      </div>
+    </div></div>
+
+    <!-- キスとホルモンの詳細 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">💘</div><div><div class="card-hd-title">キス × 5種のホルモン同時分泌</div><div class="card-hd-sub">キスが「最強の絆形成行為」である内分泌学的根拠</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.55rem">
+        <div style="background:linear-gradient(135deg,var(--rose-xl),#FFF5F7);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">① オキシトシン — 絆・愛着・信頼</div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">キスによる唇の触覚刺激が視床下部のオキシトシン産生ニューロンを最大に活性化。<strong style="color:var(--txt)">抱擁の2〜3倍のオキシトシン分泌量</strong>がキスで達成される。「この人しかいない」という感情の神経内分泌学的正体。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#FFF7ED,#FFFBEB);border:1px solid rgba(180,83,9,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">② ドーパミン — 欲求・中毒性・「また会いたい」</div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">側坐核のドーパミン急増が「また会いたい・また触れたい」という強烈な欲求を生む。<strong style="color:var(--txt)">コカインと同じ報酬回路を使用</strong>するためキスへの「渇望・禁断症状」は神経科学的に正確な表現。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--indigo-xl),#F0F0FF);border:1px solid rgba(127,29,29,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--indigo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">③ ノルアドレナリン — 興奮・覚醒・心拍上昇</div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">ノルアドレナリン分泌が心拍数・血圧・体温を上昇させる。<strong style="color:var(--txt)">「ドキドキして頭が真っ白になる」</strong>という感覚の神経科学的正体。前頭前野の活動が低下し理性的な判断が一時的に抑制される。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1px solid rgba(15,118,110,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">④ エンドルフィン+セロトニン — 幸福感・平和・安らぎ</div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">キス中の唇・口腔の快楽刺激がエンドルフィンを分泌し「深い幸福感・安らぎ・平和」を作る。セロトニンの安定した分泌が「この人といると安心できる」という長期的な信頼感の土台を同時に形成する。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--violet-xl),#F0F0FF);border:1px solid rgba(109,40,217,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--violet);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">⑤ テストステロン転移 — 性的覚醒・欲求の増幅</div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">男性の唾液中テストステロンがディープキスで女性の口腔粘膜から吸収される可能性をWlodarski & Dunbar（2013, Archives of Sexual Behavior）が示した。<strong style="color:var(--txt)">キスが女性の性的覚醒を段階的に高める</strong>という生物学的メカニズムの根拠。</div>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- 食×ホルモン×恋愛 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--amber-xl)">🍽</div><div><div class="card-hd-title">食 × ホルモン × 恋愛科学</div><div class="card-hd-sub">食べ物・共食・食の化学が恋愛感情に与える効果</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🍫 チョコレート × フェニルエチルアミン（PEA）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">カカオに含まれるフェニルエチルアミン（PEA）は恋愛初期の脳内に大量分泌される物質と同じ。PEAがドーパミン・ノルアドレナリン放出を促進し「恋愛のときめき」と同様の生理状態を作る。デートのデザートにチョコレート系を選ぶことの神経化学的根拠。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🦪 牡蠣 × 亜鉛 × テストステロン</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">牡蠣は亜鉛含有量が食品中トップクラス。亜鉛はテストステロン合成の必須ミネラルであり不足するとテストステロン低下・性欲減退が起きる。「牡蠣が媚薬」という言い伝えの栄養内分泌学的根拠。D-アスパラギン酸（牡蠣に含有）がLHを刺激しテストステロン産生を直接促進する研究もある。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🌶 辛味（カプサイシン）× ノルアドレナリン × 吊り橋効果</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">カプサイシンがTRPV1受容体を刺激し痛覚+温度感覚を活性化。全身のノルアドレナリン分泌が増加し心拍数・体温が上昇する。この生理的覚醒が「恋愛のときめき」として誤帰属される「食の吊り橋効果」。辛いものを一緒に食べると親密感が高まる研究がある。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🍷 赤ワイン × リラクゼーション × 扁桃体抑制</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">適量のアルコールが扁桃体の防衛機制を一時的に抑制しGABA受容体を活性化させる。「お酒を飲むと心が開く」という現象の神経薬理学的根拠。過剰摂取は判断力低下・記憶形成障害を引き起こすため「適量」が鍵。赤ワインのポリフェノールがNOを産生し血管拡張→体温上昇→親密感という副次効果もある。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🍽 共食効果 × オキシトシン（Dunbar 2017）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">Robin Dunbar（2017）の研究で「一緒に食事をする頻度」が社会的絆の強さと最も高く相関することが確認された。共食が笑い・会話・身体的近接を誘発しオキシトシン分泌を累積的に促進する。「食事に誘う」ことが恋愛の最強の第一手である神経科学的根拠。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 体液×汗×ホルモン科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🧬</div><div><div class="card-hd-title">体液・汗・ホルモン × 進化生物学</div><div class="card-hd-sub">体から分泌される化学物質が持つ恋愛科学的意味</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">💧 汗（アポクリン腺分泌）× アンドロステノール</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">アポクリン腺（腋窩・生殖器周辺）から分泌される新鮮な汗にはアンドロステノールが含まれる。女性に「清潔で魅力的な男らしさ」として知覚される（酸化するとアンドロステノン＝不快臭に変化）。清潔さが最強の誘引力である化学的根拠。体温上昇時（スポーツ後・入浴後）の汗が最もアンドロステノールを多く含む。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🧬 テストステロン × 男性の体液全般</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">精液にはテストステロン・エストロゲン・オキシトシン・エンドルフィン・セロトニン・プロスタグランジンが含まれる。進化的観点から精液中のこれらの化学物質が女性の気分・ホルモン環境に影響を与える可能性が複数の研究（Gallup et al. 2002, Archives of Sexual Behavior）で示されている。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🔬 MHC（主要組織適合性複合体）× 体液の化学認識</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">Tシャツ実験（Wedekind 1995）で女性は自分と異なるMHCを持つ男性の汗の匂いに惹かれることが確認された。キス・オーラルセックス・性行為を通じた体液交換がより詳細なMHC情報を相手に提供し<strong>「免疫系の相性評価」</strong>を深化させる進化的機能がある。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">💊 オーラルセックス × オキシトシン最大放出</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">口腔粘膜の超高密度な触覚受容器×生殖器の自律神経刺激×体液の化学的相互作用が同時に発生するオーラルセックスは、単一の性行為としてオキシトシン・バソプレシン・エンドルフィン・ドーパミンの四種同時分泌量が最大になる行為の一つ。「与える側」もオキシトシン+エンドルフィンが分泌される双方向性がある。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🔥 オルガズム × ホルモンカスケード</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">オルガズム時に①オキシトシン（最大値）②プロラクチン（リラクゼーション・眠気）③エンドルフィン（強烈な幸福感）④ドーパミン（報酬・欲求の強化）⑤バソプレシン（男性の絆形成）が連鎖分泌される。特にバソプレシンが男性において「この相手への独占的な絆感情」を急速に形成する。</div></div>
+      </div>
+    </div></div>
+
+    <!-- テストステロンと恋愛 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--amber-xl)">💪</div><div><div class="card-hd-title">テストステロン × 恋愛の神経内分泌学</div><div class="card-hd-sub">男性ホルモンが恋愛・セクシュアリティに与える全影響</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--amber-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--gold);margin-bottom:.3rem">🔬 テストステロンの基礎生物学</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">男性のテストステロンは精巣（95%）と副腎（5%）で産生。朝（6〜8時）に最高値・夜に最低値という日内変動がある。女性も副腎・卵巣から男性の5〜10%量を分泌し性欲・活力・恋愛意欲に関与する。テストステロンは声の低さ・顔の対称性・筋肉量・精子品質の指標でもあり女性が「総合的な遺伝子品質」を評価する際の基準となる。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">📈 テストステロンを高める食品と行動</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">①亜鉛（牡蠣・赤身肉・ナッツ）②ビタミンD（日光・魚類）③マグネシウム（葉物野菜・種子）④良質な脂質（アボカド・オリーブオイル）⑤筋力トレーニング（特に大筋群）⑥十分な睡眠（7〜9時間・睡眠不足でテストステロン10〜15%低下）⑦ストレス管理（コルチゾール抑制）が研究で確認されたテストステロン維持・向上の方法。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">💑 性行為後のテストステロン変化</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">射精後、男性のテストステロンは一時的に低下しプロラクチンが上昇する（不応期の神経内分泌学的根拠）。一方「スキンシップのみ・抱擁・キス」ではテストステロンは低下せずオキシトシンのみが増加する。セックスレスな親密なスキンシップがテストステロンを維持しながら絆を深める最適戦略である研究的根拠。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 恋愛の3段階×味覚 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">💘</div><div><div class="card-hd-title">味覚×ホルモン — 恋愛3段階への貢献</div><div class="card-hd-sub">食から性的親密性まで — ホルモンの連鎖設計</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.55rem">
+        <div style="background:linear-gradient(135deg,var(--rose-xl),#FFF5F7);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 1 — 欲求（Lust）食×辛味×テストステロン</div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65"><strong style="color:var(--txt)">辛い食事×牡蠣×アルコール少量</strong>がテストステロン様刺激×ノルアドレナリン×扁桃体抑制を引き起こす。「なぜかこの食事の後から気になり始めた」という現象の化学的根拠。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#FFF7ED,#FFFBEB);border:1px solid rgba(180,83,9,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 2 — 誘引（Attraction）キス×ドーパミン×MHC</div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65"><strong style="color:var(--txt)">最初のキス</strong>でドーパミン急増×MHC相性評価×テストステロン転移が同時に起きる。「キスしてから急激に好きになった・なった」という体験の神経内分泌学的正体。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--indigo-xl),#FFF0F0);border:1px solid rgba(127,29,29,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--indigo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 3 — 絆（Attachment）体液交換×バソプレシン×ペアボンド</div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65"><strong style="color:var(--txt)">オーラルセックス・性行為・抱擁の組み合わせ</strong>でオキシトシン+バソプレシン+エンドルフィンが最大分泌。「この人しかいない」という独占的絆感情（ペアボンド）が神経生物学的に形成される。</div>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- 夜の味覚・口腔・ホルモン科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">🌙</div><div><div class="card-hd-title">夜の味覚・口腔・ホルモン科学</div><div class="card-hd-sub">キスの深化×体液化学×翌朝のホルモン戦略</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose);margin-bottom:.3rem">💋 キス中の口腔内化学変化 × テストステロン濃度上昇</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">性的覚醒状態では体温上昇に伴い唾液分泌量が増加し唾液中のテストステロン濃度が上昇する。ディープキスでの唾液交換量が増加するほど<strong>テストステロン転移量が増大</strong>しWlodarski & Dunbar（2013）が示した「女性の性的覚醒段階的上昇」メカニズムが加速する。口腔内温度（37℃以上に上昇）がTRPV1受容体を活性化させ痛覚境界付近の快楽シグナルを生成する。</div></div>
+        <div style="background:var(--amber-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--amber);margin-bottom:.3rem">👅 ボディリッキング（舐める行為）の三感統合科学</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">皮膚を舐める行為が①CT繊維（触覚）②味覚受容器（塩味・旨味・体温由来の化学物質）③嗅覚（アポクリン腺分泌物・MHCペプチド）の三感を<strong>口腔という一点で同時に統合</strong>する唯一の行為。EIDOSの嗅覚情報×GEUSTOの味覚情報×HAPTOSのCT繊維情報が口腔内で融合しオキシトシン分泌経路を複数同時に活性化させる。「なんともいえない感覚」の神経科学的正体。</div></div>
+        <div style="background:var(--indigo-xl);border:1px solid rgba(127,29,29,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo);margin-bottom:.3rem">🧬 コプリン×排卵期×テストステロン最大化のタイミング</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">女性の排卵期（周期14日目前後）にコプリン（腟分泌物の脂肪酸混合物）の組成が変化し男性のテストステロン上昇効果が最大化する（Cutler et al. 1998）。同時期にエストロゲンピーク→腟粘膜の感受性最大化・潤滑最大・コプリン分泌最大が重なる。EIDOS研究でも確認された排卵期×嗅覚感度の最大化と完全に同期する<strong>「五感統合が最大効果を発揮するタイミング」</strong>がこの排卵期に集中している。</div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet);margin-bottom:.3rem">💊 オルガズム後のホルモンカスケード × プロラクチン管理</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">射精後の男性でプロラクチンが急増し「眠気・満足感・不応期」が生じる（プロラクチンの神経内分泌学的根拠）。一方<strong>スキンシップのみ・キス・抱擁を継続</strong>するとプロラクチンは上昇せずオキシトシンのみが持続分泌される。「行為後の抱擁が絆形成を最大化する」戦略の内分泌学的根拠。バソプレシンは男性において射精後30分以内に最大値を迎え「この人を守りたい・傍にいたい」という保護感情を形成する。</div></div>
+        <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--teal);margin-bottom:.3rem">🍳 翌朝の共食 × オキシトシン強化 × 記憶の固定化</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">睡眠中に分泌されたオキシトシン・バソプレシンが海馬での記憶固定化（記憶の固定には睡眠が必須）を促進する。<strong>翌朝の共食</strong>がDunbar（2017）の共食効果×朝のテストステロンピーク（男性は朝に最高値）×オキシトシン持続分泌を重ね合わせる。「一緒に朝食を食べる」という体験が前夜の記憶を最強に固定し「また一緒にいたい」という欲求を生物学的に強化する最終段階。</div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--gold);margin-bottom:.3rem">🌙 夜の味覚×五感統合戦略の完成形</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">食事（ドーパミン×オキシトシン蓄積）→キス（5種ホルモン×MHC評価）→スキンシップ（CT繊維累積×オキシトシン増感）→親密な行為（オキシトシン+バソプレシン+エンドルフィン最大）→20秒ハグ（Grewen研究）→眠り（海馬固定化）→<strong>翌朝の共食（全ホルモン強化）</strong>という一連の流れが「EIDOS×FORMA×SONOS×HAPTOS×GEUSTOの五感統合の完全自動化システム」を相手の脳内に永久保存させる恋愛設計の最終完成形。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 口腔・舌の解剖学精密版 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--indigo-xl)">🔬</div><div><div class="card-hd-title">口腔・舌の解剖学精密版</div><div class="card-hd-sub">舌乳頭4種×神経密度×口腔粘膜の吸収機構</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--indigo-xl);border:1px solid rgba(127,29,29,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo);margin-bottom:.3rem">① 舌乳頭4種の解剖学的分類</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6"><strong>糸状乳頭</strong>（filiform）：全舌表面を覆う。味蕾なし。テクスチャ感知（機械受容器）。<strong>茸状乳頭</strong>（fungiform）：舌尖・舌縁に分布。3〜5個の味蕾+温度受容器+触覚受容器を含む複合感覚器。<strong>葉状乳頭</strong>（foliate）：舌縁後方。舌咽神経支配。<strong>有郭乳頭</strong>（circumvallate）：舌根に逆V字型に8〜12個。最大の味蕾（100〜300個/乳頭）を持つ。キス中に舌が接触する部位によって異なる感覚情報が処理される。</div></div>
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose);margin-bottom:.3rem">② 舌の神経支配 — 4本の神経が並走する複雑な支配</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6"><strong>鼓索神経</strong>（顔面神経枝）：舌前2/3の味覚。<strong>舌神経</strong>（三叉神経枝）：舌前2/3の触覚・温度感覚・痛覚。<strong>舌咽神経</strong>（第9脳神経）：舌後1/3の味覚+触覚。<strong>迷走神経</strong>：舌根・咽頭に分布。キス中に舌が動くことで4本の神経が同時に活性化し「味覚+触覚+温度+圧覚」の複合情報が孤束核（脳幹）→島皮質→扁桃体に送られる。</div></div>
+        <div style="background:var(--amber-xl);border:1px solid rgba(180,83,9,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--amber);margin-bottom:.3rem">③ 口腔粘膜の吸収機構 — テストステロン転移の解剖学的経路</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">口腔粘膜（特に舌下・頬粘膜）は<strong>血管から0.1〜0.3mmという超薄い固有層</strong>を持ち脂溶性分子の吸収効率が消化管より高い（舌下錠がこの機構を利用）。男性唾液中のテストステロン（脂溶性ステロイドホルモン）がディープキスで女性の口腔粘膜に接触→固有層の毛細血管から吸収→女性の血中テストステロン受容体に作用する可能性（Wlodarski & Dunbar 2013の解剖学的根拠）。</div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet);margin-bottom:.3rem">④ 舌根・咽頭の迷走神経接続</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">舌根（舌の付け根）・咽頭後壁には<strong>迷走神経の感覚枝（上喉頭神経）</strong>が豊富に分布する。この部位への刺激が迷走神経を経由して脳幹→視床下部→オキシトシン産生ニューロンへ直接信号を送る。「ディープキス（舌を深く使う）がより強い感情的体験」になる解剖学的理由。SONOS で説明した「耳介→迷走神経→オキシトシン」と同じ経路を舌根からも活性化できる。</div></div>
+        <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--teal);margin-bottom:.3rem">⑤ TRPV1受容器 × 口腔内温度感覚の解剖</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">口腔粘膜のTRPV1（transient receptor potential vanilloid 1）は43℃以上の熱・カプサイシン・酸性環境に反応するポリモーダル侵害受容器。キス中の体温上昇（37→38℃以上）がTRPV1を軽度活性化→侵害受容系と快楽系の境界領域の刺激→「甘い痛み」「刺激的な心地よさ」を生成。辛味×キスの「興奮増幅効果」の口腔解剖学的根拠。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 唾液腺の解剖学 × 性的覚醒 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">💧</div><div><div class="card-hd-title">唾液腺の解剖学 × 性的覚醒・テストステロン</div><div class="card-hd-sub">耳下腺・顎下腺・舌下腺の三大腺が性的覚醒でどう変化するか</div></div></div><div class="card-bd">
+      <div class="neuro-grid">
+        <div class="ng"><div class="ng-ico">👂</div><div class="ng-name">耳下腺（最大）</div><div class="ng-chem" style="color:var(--indigo)">漿液性</div><div class="ng-desc">耳前方に位置する最大の唾液腺。顔面神経・耳介側頭神経・舌咽神経が支配。漿液性分泌（サラサラ）が主。キス中の副交感神経優位で分泌増加。<strong>男性の耳下腺唾液にテストステロンが高濃度</strong>で含まれる（Wlodarski研究の主要供給源）。</div></div>
+        <div class="ng"><div class="ng-ico">🦷</div><div class="ng-name">顎下腺（主力）</div><div class="ng-chem" style="color:var(--rose)">混合性</div><div class="ng-desc">全唾液の約65%を供給する主力腺。顎舌骨筋・茎突舌骨筋の間に位置。漿液性+粘液性の混合分泌。<strong>性的覚醒時に副交感神経（顔面神経経由）が優位になると分泌量が2〜3倍に増加</strong>。「ドキドキするとつばが増える」の解剖学的根拠。</div></div>
+        <div class="ng"><div class="ng-ico">👅</div><div class="ng-name">舌下腺（最小）</div><div class="ng-chem" style="color:var(--violet)">粘液性</div><div class="ng-desc">舌の下に位置する最小の大唾液腺。粘液性分泌（ネバネバ）が主。舌下隙を通じて口腔底に直接開口する。<strong>口腔粘膜への化学物質吸収（テストステロン転移）の主要な接触面</strong>であり舌下錠と同じ吸収経路を持つ。</div></div>
+        <div class="ng"><div class="ng-ico">⚡</div><div class="ng-name">自律神経支配</div><div class="ng-chem" style="color:var(--teal)">副交感が主役</div><div class="ng-desc">唾液腺は<strong>副交感神経（漿液性・大量分泌）と交感神経（粘液性・少量分泌）</strong>の二重支配。安心・性的覚醒（副交感優位）でサラサラ唾液が大量分泌→テストステロン濃度上昇。緊張（交感優位）でネバネバ少量分泌→「口が渇く」の解剖学的根拠。</div></div>
+        <div class="ng"><div class="ng-ico">🧬</div><div class="ng-name">唾液中テストステロン</div><div class="ng-chem" style="color:var(--amber)">血中の10%</div><div class="ng-desc">唾液中テストステロン濃度は血中濃度の約10%（耳下腺由来が主）。性的覚醒状態では体温上昇と副交感優位による分泌増加でさらに濃度が高まる。<strong>ディープキスの唾液交換量が増えるほど転移量が増大</strong>する解剖学的メカニズム。</div></div>
+        <div class="ng"><div class="ng-ico">🦠</div><div class="ng-name">MHCペプチド×唾液</div><div class="ng-chem" style="color:var(--rose)">免疫相性</div><div class="ng-desc">唾液には血清由来のMHC関連分子（HLAペプチド）が含まれる。嗅覚だけでなく口腔粘膜の化学受容体でもMHC情報が処理される可能性がある。「キスの相性」の口腔解剖学的根拠の一つ。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 口腔と脳の解剖学的統合 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🧠</div><div><div class="card-hd-title">口腔 × 脳の解剖学的統合経路</div><div class="card-hd-sub">キスが「最強の絆形成行為」である完全な解剖学的証明</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--indigo);margin-bottom:.25rem">🔗 ペンフィールドマップ再確認 — 唇の脳内占有面積</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">体性感覚野（後中心回）において唇・舌が占める面積は全身の他の部位を大きく上回る。唇（マイスナー小体超高密度）×舌（4神経同時支配×味蕾10,000個）×口腔粘膜（吸収機構）×唾液腺（テストステロン含有分泌）が全て「口腔という一点」に集中する解剖学的奇跡がキスの情報量を最大化させる。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--rose);margin-bottom:.25rem">⚡ キス中に同時活性化する神経経路（解剖学的全リスト）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">①鼓索神経（顔面神経枝）→味覚→孤束核②舌神経（三叉神経）→触覚・温度→視床→体性感覚野③舌咽神経→舌後1/3→孤束核④迷走神経→舌根・咽頭→脳幹→視床下部（オキシトシン直接産生）⑤三叉神経→唇→体性感覚野（最大面積）⑥嗅神経（後鼻腔嗅覚経由）→嗅球→扁桃体。6経路が同時に活性化するのは人体でキス以外に存在しない。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--teal);margin-bottom:.25rem">🌊 「キスの相性」の完全な解剖学的説明</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">①MHC化学情報（唾液×口腔粘膜受容体）②テストステロン転移（耳下腺唾液→舌下粘膜吸収）③TRPV1温度感覚（体温の一致・不一致）④機械受容器（唇・舌の圧覚・振動の同期）⑤嗅覚（後鼻腔経由のアポクリン腺由来化学物質）の5種の情報が0.05秒で統合評価される。「なんか合わない」という感覚は脳が行う5軸同時評価の結果。</div></div>
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--rose);margin-bottom:.25rem">🔬 島皮質（Insula）— 味覚・触覚・内臓感覚の統合中枢</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">島皮質前部が味覚の「快・不快・強度」を処理。同時にHAPTOSのCT繊維経路・SONOSの囁き声経路も島皮質に収束する。キスの瞬間に島皮質が味覚×触覚×温度×化学感覚を全て統合し視床下部（オキシトシン）・扁桃体（感情）・側坐核（ドーパミン報酬）に同時に出力する。口腔が「五感統合の最高密度エリア」である解剖学的完全証明。</div></div>
+      </div>
+    </div></div>
+
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ LEARN ══ -->
+<div class="page" id="pg-learn">
+  <div class="sb">
+    <div class="learn-hd"><div class="pg-title">Taste Learn</div><div style="font-family:var(--fu);font-size:.76rem;color:var(--txt3)" id="deckCnt"></div></div>
+    <div class="deck-tabs">
+      <button class="dt on" onclick="loadDeck('neuro',this)">🧠 味覚神経科学</button>
+      <button class="dt" onclick="loadDeck('kiss',this)">💋 キスの科学</button>
+      <button class="dt" onclick="loadDeck('hormone',this)">💊 ホルモン科学</button>
+      <button class="dt" onclick="loadDeck('food',this)">🍽 食の科学</button>
+      <button class="dt" onclick="loadDeck('body',this)">🧬 体液科学</button>
+      <button class="dt" onclick="loadDeck('scene',this)">📍 シーン戦略</button>
+      <button class="dt" onclick="loadDeck('glossary',this)">📖 用語辞典</button>
+      <button class="dt" onclick="loadDeck('romance',this)">❤️ 恋愛心理</button>
+      <button class="dt" onclick="loadDeck('anatomy',this)">🔬 解剖学</button>
+      <button class="dt" onclick="loadDeck('night',this)">🌙 夜の味覚</button>
+    </div>
+    <div class="pdots" id="pdots"></div>
+    <div class="card-box" id="cardBox">
+      <div class="card-face" id="cardFront">
+        <p class="cf-tag" id="cfTag"></p>
+        <p class="cf-q" id="cfQ"></p>
+        <p class="cf-hint">タップして答えを見る ✨</p>
+      </div>
+      <div class="card-face card-face-back hidden" id="cardBack">
+        <p class="cf-tag" style="color:var(--gold)">ANSWER</p>
+        <p class="cf-a" id="cfA"></p>
+        <p class="cf-src" id="cfSrc"></p>
+        <div class="cf-frags" id="cfFrags"></div>
+      </div>
+      <button class="flip-btn" id="flipBtn" onclick="flipCard()">答えを見る ✨</button>
+    </div>
+    <div class="ctrl-row">
+      <button class="ctrl-skip" onclick="nextCard()">スキップ</button>
+      <span class="ctrl-pg" id="ctrlPg">1 / 1</span>
+      <button class="ctrl-next" onclick="nextCard()">次へ →</button>
+    </div>
+    <p style="text-align:center;font-family:var(--fu);font-size:.66rem;color:var(--txt3);padding:.25rem">ボタンで答え確認 → 次のカードへ</p>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ BRANDS ══ -->
+<div class="page" id="pg-brands">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--amber)">👅 味覚・食・ホルモンライブラリ</div><div style="font-family:var(--fu);font-size:.78rem;color:var(--txt2);margin-top:.3rem">食×キス×ホルモン 女性心理×脳科学をタップで確認</div></div>
+    <div class="brand-chips" id="brandChips"></div>
+    <!-- 比較モードボタン -->
+    <div style="display:flex;align-items:center;gap:.6rem;padding:.1rem .05rem .5rem">
+      <button id="compareToggleBtn" onclick="toggleCompareMode()" style="flex:1;padding:.6rem 1rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .18s">⚖️ 比較モード OFF</button>
+      <button id="compareGoBtn" onclick="openCompare()" style="display:none;padding:.6rem 1.2rem;border-radius:var(--r-full);background:var(--gold);border:none;font-family:var(--fu);font-size:.74rem;font-weight:700;color:#fff;cursor:pointer">比較する →</button>
+    </div>
+    <!-- 比較選択状況 -->
+    <div id="compareStatus" style="display:none;font-family:var(--fu);font-size:.68rem;color:var(--gold);font-weight:600;padding:.1rem .1rem .45rem;text-align:center"></div>
+    <div class="frag-grid" id="fragGrid"></div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ COMPARE MODAL ══ -->
+<div id="compareModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)">
+  <div style="position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:var(--r-xl) var(--r-xl) 0 0;max-height:88vh;overflow-y:auto;padding:1.25rem 1.1rem 2.5rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-family:var(--fd);font-size:1.2rem;font-weight:700">⚖️ 香水比較</div>
+      <button onclick="closeCompare()" style="width:32px;height:32px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt2)">✕</button>
+    </div>
+    <div id="compareContent"></div>
+  </div>
+</div>
+  <div class="sb">
+    <div class="quiz-hd"><div class="pg-title">香水クイズ</div><div class="quiz-sc" id="qSc">0 / 0</div></div>
+    <div class="qprog"><div class="qprog-fi" id="qpFi"></div></div>
+    <div id="qArea"></div>
+    <div class="result" id="result">
+      <div class="res-em" id="rEm">🏆</div>
+      <div class="res-sc" id="rSc">0</div>
+      <div class="res-of">/ 10 問正解</div>
+      <div class="res-msg" id="rMsg"></div>
+      
+    </div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+    <!-- ══ AI PAGE ══ -->
+    <div class="page" id="pg-ai">
+      <div class="sb">
+        <div class="pg-hd">
+          <div class="pg-title" style="color:#dc2626">🤖 AI コーチ</div>
+          <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt3);margin-top:.2rem">脳科学×神経科学 — 専門AIに相談</div>
+        </div>
+        <div id="aiMsgs" style="display:flex;flex-direction:column;gap:.65rem;margin-bottom:.6rem">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.82rem .92rem;font-family:var(--fu);font-size:.78rem;color:var(--txt);line-height:1.68;border-bottom-left-radius:4px">
+            こんにちは。専門AIコーチです。<br>状況を入力してください。具体的なアドバイスを返します。
+          </div>
+        </div>
+        <div id="aiQuickBtns" style="display:flex;gap:.38rem;flex-wrap:wrap;margin-bottom:.6rem"></div>
+        <div class="spacer"></div>
+      </div>
+      <!-- AI入力エリア（固定） -->
+      <div style="padding:.55rem .9rem calc(env(safe-area-inset-bottom)+4.2rem);background:var(--surface);border-top:1px solid var(--border);display:flex;gap:.45rem;align-items:flex-end">
+        <textarea id="aiInp" style="flex:1;background:var(--bg2);border:1.5px solid var(--border2);border-radius:var(--r-lg);padding:.6rem .75rem;font-family:var(--fu);font-size:.8rem;color:var(--txt);resize:none;min-height:42px;max-height:110px;outline:none;line-height:1.5"
+          placeholder="状況を入力..." rows="1"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px'"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"></textarea>
+        <button id="aiSendBtn" onclick="aiSend()" style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#dc2626,#dc262699);border:none;color:#fff;font-size:1.05rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">➤</button>
+      </div>
+    </div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="bni on" onclick="nav('home',0)"><span class="bni-ico">⬡</span><div class="bni-dot"></div><span class="bni-lbl">ホーム</span></button>
+  <button class="bni" onclick="nav('today',1)"><span class="bni-ico">🎯</span><div class="bni-dot"></div><span class="bni-lbl">今日</span></button>
+  <button class="bni" onclick="nav('scent',2)"><span class="bni-ico">🧠</span><div class="bni-dot"></div><span class="bni-lbl">科学</span></button>
+  <button class="bni" onclick="nav('learn',3)"><span class="bni-ico">📚</span><div class="bni-dot"></div><span class="bni-lbl">学習</span></button>
+  <button class="bni" onclick="nav('brands',4)"><span class="bni-ico">👅</span><div class="bni-dot"></div><span class="bni-lbl">ライブラリ</span></button>
+  <button class="bni" onclick="nav('quiz',5)"><span class="bni-ico">⚡</span><div class="bni-dot"></div><span class="bni-lbl">クイズ</span></button>
+
+  <button class="bni" onclick="nav('ai',6)"><span class="bni-ico">🤖</span><div class="bni-dot"></div><span class="bni-lbl">AI</span></button>
+</nav>
+</div>
+
+<script>
+/* ════════════════════════════════
+   TODAY SELECTOR ENGINE
+════════════════════════════════ */
+const SEL_STATE={scene:null,mood:null,weather:null};
+
+// セレクターチップのクリック処理
+document.querySelectorAll('.sel-chip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const g=btn.dataset.group,v=btn.dataset.val;
+    document.querySelectorAll(`.sel-chip[data-group="${g}"]`).forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    SEL_STATE[g]=v;
+  });
+});
+
+// セレクションロジック: scene×mood×weather → 推奨香水リスト（スコアリング）
+const SEL_RULES=[
+  {n:'初デート食事選び戦略',b:'食×デート戦略',e:'🍽',r:'共食がオキシトシン分泌を累積的に促進（Dunbar 2017）。暗い照明×暖かい空間×共有メニューが恋愛感情の土台を作る。',scene:['first','casual','date2'],mood:['clean','trust'],weather:['hot','mild','cold'],base:10},
+  {n:'チョコレート×PEA戦略',b:'食×デート戦略',e:'🍫',r:'フェニルエチルアミン×ドーパミン×セロトニンの三重効果。デートのデザートに最適。手渡しで偶発的タッチと組み合わせ。',scene:['date2','casual','special'],mood:['sexy','trust'],weather:['hot','mild','cold'],base:8},
+  {n:'ファーストキスプロトコル',b:'キスの科学',e:'💋',r:'5種ホルモン同時分泌×MHC評価。「目を見てゆっくり」が直前のドーパミン的予測を最大化しキスの効果を何倍にもする。',scene:['special','night','date2'],mood:['sexy','trust'],weather:['mild','cold'],base:10},
+  {n:'テストステロン維持×食生活',b:'状況別プロトコル',e:'🦪',r:'牡蠣×亜鉛×ビタミンD×睡眠7時間がテストステロン維持の科学的根拠。デート前日の睡眠が最強の準備行動。',scene:['first','date2','night','casual','work','special'],mood:['clean','sexy','trust'],weather:['hot','mild','cold'],base:10},
+  {n:'アンドロステノール×清潔さの化学',b:'体液×ホルモン科学',e:'🧬',r:'新鮮なアポクリン腺分泌物が女性への誘引効果を持つ。「清潔さ」が化学的最強の誘引力である根拠。',scene:['first','date2','night','casual','work','special'],mood:['clean'],weather:['hot','mild','cold'],base:9},
+  {n:'キスの深化プロトコル',b:'キスの科学',e:'🔬',r:'テストステロン転移×舌の触覚×呼吸同期。「ゆっくり・同期・温かさ」が最強。ディープキスが性的覚醒を段階的に高める。',scene:['special','night'],mood:['sexy'],weather:['mild','cold'],base:9},
+  {n:'MHC相性評価プロトコル',b:'体液×ホルモン科学',e:'🔬',r:'体液交換がMHC免疫遺伝情報を提供し「本能的に合う感覚」の科学的根拠。「なんか合う」という直感を信頼する。',scene:['special','night','date2'],mood:['trust','sexy'],weather:['hot','mild','cold'],base:8},
+  {n:'オーラルセックス×ホルモン最大化',b:'状況別プロトコル',e:'🌙',r:'四種ホルモン同時分泌の最大値。双方向性がありバソプレシン絆形成を最速で進める。信頼関係確立後のみ。',scene:['special'],mood:['sexy'],weather:['mild','cold'],base:9},
+  {n:'唇の触覚科学とスキンシップ',b:'口腔触覚',e:'👄',r:'唇はペンフィールドマップで手のひら全体に匹敵する触覚面積を持つ。食事→キスという黄金フローがオキシトシンを階段状に積み上げる。',scene:['date2','night','special'],mood:['sexy','trust'],weather:['hot','mild','cold'],base:9},
+  {n:'初デート食事選び戦略（詳細版）',b:'食×デート戦略',e:'🍷',r:'赤ワイン適量が扁桃体抑制×GABA活性化で心を開く。辛味が吊り橋効果を食卓に持ち込む。',scene:['night','date2'],mood:['sexy','trust'],weather:['mild','cold'],base:8},
+];
+
+function runSelector(){
+  const s=SEL_STATE;
+  if(!s.scene||!s.mood||!s.weather){
+    alert('3つ全て選んでください'); return;
+  }
+  // スコアリング
+  const scored=SEL_RULES.map(r=>{
+    let score=r.base;
+    if(r.scene.includes(s.scene))score+=3;
+    if(r.mood.includes(s.mood))score+=3;
+    if(r.weather.includes(s.weather))score+=2;
+    return {...r,score};
+  }).sort((a,b)=>b.score-a.score).slice(0,3);
+
+  const colors=['var(--gold)','var(--teal)','var(--violet)'];
+  const ranks=['1st','2nd','3rd'];
+  const html=scored.map((r,i)=>`
+    <div class="sel-result-card" onclick="jumpToBrand('${r.n}')">
+      <div class="sel-rank" style="background:${colors[i]}">${ranks[i]}</div>
+      <div style="flex:1">
+        <div class="sel-r-brand">${r.b} ${r.e}</div>
+        <div class="sel-r-name">${r.n}</div>
+        <div class="sel-r-reason">${r.r}</div>
+        <div style="font-family:var(--fu);font-size:.6rem;color:var(--teal);margin-top:.35rem;font-weight:600">タップしてライブラリで詳細を見る →</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('selectorCard').style.display='none';
+  document.getElementById('selResult').style.display='block';
+  document.getElementById('selResultCards').innerHTML=html;
+}
+
+function resetSelector(){
+  SEL_STATE.scene=null;SEL_STATE.mood=null;SEL_STATE.weather=null;
+  document.querySelectorAll('.sel-chip').forEach(b=>b.classList.remove('on'));
+  document.getElementById('selectorCard').style.display='block';
+  document.getElementById('selResult').style.display='none';
+}
+
+/* ── MONTH CALENDAR ── */
+const MONTH_DATA=[
+  {m:'1月',emoji:'❄️',col:'#7f1d1d',frags:'牡蠣料理デート / ホットワイン / 温かいチョコデザート',tip:'厳冬。温かい食事×ホットドリンクが具現化認知を最大発揮。牡蠣料理が亜鉛補充×テストステロン維持の最強の冬の食事戦略'},
+  {m:'2月',emoji:'💝',col:'#BE123C',frags:'チョコレート×PEA / ファーストキス / 赤ワインデート',tip:'バレンタイン月。チョコのPEA×キスの5種ホルモンが重なる最強の月。「食べて→キスする」黄金フローが完成する'},
+  {m:'3月',emoji:'🌸',col:'#be185d',frags:'共食デート / 春野菜料理 / アフタヌーンティー',tip:'出会いの季節。共食の絆形成効果を最初から活用する。食事に誘うことが「恋愛の最強の第一手」の実践の時'},
+  {m:'4月',emoji:'🌿',col:'#15803d',frags:'屋外ピクニック / 春食材料理 / 抹茶デザート',tip:'野外での共食がオキシトシン×自然接触×活動的体験の三重効果を生む。弁当を一緒に作ることが最速の絆形成'},
+  {m:'5月',emoji:'☀️',col:'#b45309',frags:'BBQ / スパイシー料理 / 辛味系デート',tip:'アクティブな季節。辛い食事の吊り橋効果が最も発揮される月。BBQでの共食が強力な絆形成体験になる'},
+  {m:'6月',emoji:'🌊',col:'#0369a1',frags:'和食デート / 鰻 / 亜鉛豊富な食事',tip:'梅雨の室内デート。亜鉛豊富な和食（牡蠣・鰻・ホタテ）でテストステロン維持+共食のオキシトシンを同時に獲得'},
+  {m:'7月',emoji:'🏖',col:'#0891b2',frags:'シーフード / 辛い料理 / アイスシェア',tip:'暑い季節。辛い食事×汗×アンドロステノールの化学的連鎖が最大化。清潔さ維持が全ての前提条件'},
+  {m:'8月',emoji:'⚡',col:'#7c3aed',frags:'夏祭り屋台 / カキ氷シェア / スパイシー料理',tip:'共食+屋台の興奮+スパイシーの生理的覚醒が吊り橋効果を生む最強の月。食べながら距離が縮まる最高の環境'},
+  {m:'9月',emoji:'🍂',col:'#92400e',frags:'牡蠣料理 / 赤ワイン / チョコデザート',tip:'秋の味覚×ホルモン科学。牡蠣（亜鉛）×赤ワイン（扁桃体抑制）×チョコ（PEA）という最強の恋愛食事コースが揃う'},
+  {m:'10月',emoji:'🍁',col:'#b45309',frags:'キャンドルディナー / スパイシー料理 / 赤ワイン',tip:'夜のデートシーズン本番。キャンドルライト×赤ワイン×辛味という恋愛感情を最大化する食事設計が完成する'},
+  {m:'11月',emoji:'🌙',col:'#1e1b4b',frags:'ファーストキス / オイスターバー / チョコデザート',tip:'関係が深まりやすい月。牡蠣→赤ワイン→チョコ→キスという黄金フローを実践する最適なタイミング'},
+  {m:'12月',emoji:'🔥',col:'#7e1d1d',frags:'キャンドルディナー / ファーストキス / 五感統合',tip:'クリスマス。香り×服装×声×タッチ×食の五感統合が完成する最高の夜。食事→キスという黄金フローで永遠の記憶を作る'},
+];
+
+function renderMonthCalendar(){
+  const el=document.getElementById('monthCalendar');
+  if(!el)return;
+  const now=new Date().getMonth(); // 0-indexed
+  el.innerHTML=MONTH_DATA.map((m,i)=>`
+    <div class="month-cell" style="${i===now?'border-color:'+m.col+';background:'+m.col+'12':''};padding:.65rem .7rem">
+      <div class="month-num" style="color:${m.col}">${m.emoji} ${m.m}${i===now?' ← 今月':''}</div>
+      <div class="month-frag" style="font-size:.66rem">${m.frags}</div>
+      <div class="month-tip">${m.tip}</div>
+    </div>
+  `).join('');
+}
+
+/* ════════════════════════════════
+   COMPARE ENGINE
+════════════════════════════════ */
+let compareMode=false;
+let compareList=[];
+
+function toggleCompareMode(){
+  compareMode=!compareMode;
+  compareList=[];
+  const btn=document.getElementById('compareToggleBtn');
+  const goBtn=document.getElementById('compareGoBtn');
+  const status=document.getElementById('compareStatus');
+  if(compareMode){
+    btn.style.background='var(--teal)';btn.style.borderColor='var(--teal)';btn.style.color='#fff';
+    btn.textContent='⚖️ 比較モード ON';
+    status.style.display='block';status.textContent='比較したい香水を2本タップで選択';
+  }else{
+    btn.style.background='';btn.style.borderColor='';btn.style.color='';
+    btn.textContent='⚖️ 比較モード OFF';
+    goBtn.style.display='none';status.style.display='none';
+    document.querySelectorAll('.fc').forEach(c=>c.classList.remove('compare-on'));
+  }
+  renderFrags('すべて');
+}
+
+function handleCompareSelect(fragName){
+  if(!compareMode)return;
+  const idx=compareList.indexOf(fragName);
+  if(idx>-1){
+    compareList.splice(idx,1);
+  }else{
+    if(compareList.length>=2){alert('2本まで選択できます');return;}
+    compareList.push(fragName);
+  }
+  document.getElementById('compareStatus').textContent=
+    compareList.length===0?'比較したい香水を2本タップで選択':
+    compareList.length===1?`✓ ${compareList[0]} — あと1本選択`:
+    `✓ ${compareList[0]}  vs  ${compareList[1]}`;
+  document.getElementById('compareGoBtn').style.display=compareList.length===2?'block':'none';
+  // カードのハイライト更新
+  document.querySelectorAll('.fc').forEach(card=>{
+    const nm=card.querySelector('.fc-name');
+    if(nm)card.classList.toggle('compare-on',compareList.includes(nm.textContent.trim()));
+  });
+}
+
+function openCompare(){
+  if(compareList.length<2){alert('2本選んでください');return;}
+  const f1=BD.find(b=>b.name===compareList[0]);
+  const f2=BD.find(b=>b.name===compareList[1]);
+  if(!f1||!f2)return;
+  const axes=[
+    {k:'清潔感',ico:'✨'},
+    {k:'色気',ico:'🔥'},
+    {k:'信頼感',ico:'🤝'},
+    {k:'初対面',ico:'🌸'},
+    {k:'年齢幅',ico:'👥'}
+  ];
+  const barColor1='#B8860B';const barColor2='#0F766E';
+  const rows=axes.map(ax=>{
+    const v1=f1.rating[ax.k]||0,v2=f2.rating[ax.k]||0;
+    const w1=f1.rating&&f2.rating?v1>=v2:'';
+    const w2=f2.rating&&f1.rating?v2>=v1:'';
+    return `
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+        <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.4rem;text-align:center">${ax.ico} ${ax.k}</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:.5rem;align-items:center">
+          <div>
+            <div class="cmp-bar-wrap"><div class="cmp-bar" style="width:${v1}%;background:${barColor1}"></div></div>
+            <div class="cmp-val" style="color:${barColor1}">${v1}${w1&&v1>v2?' 👑':''}</div>
+          </div>
+          <div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">vs</div>
+          <div>
+            <div class="cmp-bar-wrap"><div class="cmp-bar" style="width:${v2}%;background:${barColor2}"></div></div>
+            <div class="cmp-val" style="color:${barColor2}">${v2}${w2&&v2>v1?' 👑':''}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // シーン比較
+  const sceneCmp=`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+      <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.5rem;text-align:center">📍 ベストシーン</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.6">${(f1.good_scenes||[]).map(s=>`<span style="display:block">✓ ${s}</span>`).join('')}</div>
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.6">${(f2.good_scenes||[]).map(s=>`<span style="display:block">✓ ${s}</span>`).join('')}</div>
+      </div>
+    </div>
+  `;
+
+  // 季節比較
+  const seasonCmp=f1.season&&f2.season?`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+      <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.5rem;text-align:center">🗓 季節適性</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2)">${f1.season.join(' / ')}</div>
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2)">${f2.season.join(' / ')}</div>
+      </div>
+    </div>
+  `:'';
+
+  document.getElementById('compareContent').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem">
+      <div class="cmp-head" style="border-top:3px solid ${barColor1}">
+        <span class="cmp-emoji">${f1.emoji}</span>
+        <div class="cmp-brand-lbl">${f1.brand}</div>
+        <div class="cmp-name-lbl">${f1.name}</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.3rem">${f1.type}</div>
+      </div>
+      <div class="cmp-head" style="border-top:3px solid ${barColor2}">
+        <span class="cmp-emoji">${f2.emoji}</span>
+        <div class="cmp-brand-lbl">${f2.brand}</div>
+        <div class="cmp-name-lbl">${f2.name}</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.3rem">${f2.type}</div>
+      </div>
+    </div>
+    ${rows}${sceneCmp}${seasonCmp}
+    <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.75rem .85rem;margin-top:.3rem">
+      <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--gold);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.06em">💡 総合判定</div>
+      <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.65">${generateVerdict(f1,f2)}</div>
+    </div>
+  `;
+  document.getElementById('compareModal').style.display='block';
+}
+
+function generateVerdict(f1,f2){
+  const sum1=Object.values(f1.rating||{}).reduce((a,b)=>a+b,0);
+  const sum2=Object.values(f2.rating||{}).reduce((a,b)=>a+b,0);
+  const winner=sum1>=sum2?f1.name:f2.name;
+  const loser=sum1>=sum2?f2.name:f1.name;
+  const diff=Math.abs(sum1-sum2);
+  if(diff<20)return `両作は甲乙つけがたい実力派。シーンで使い分けることが理想。${f1.name}は「${(f1.good_scenes||[])[0]||'-'}」、${f2.name}は「${(f2.good_scenes||[])[0]||'-'}」で特に輝く。`;
+  return `総合評価では <strong>${winner}</strong> が優位。ただし <strong>${loser}</strong> が得意とするシーンでは逆転する場面も多い。両方持つことが最強の戦略。`;
+}
+
+function closeCompare(){document.getElementById('compareModal').style.display='none';}
+
+/* ── SVG レーダーチャート生成 ── */
+function buildRadar(rating){
+  const keys=['誠実さ','色気','信頼感','初対面','汎用性'];
+  const vals=keys.map(k=>(rating[k]||0)/100);
+  const cx=80,cy=80,r=60;
+  const angles=keys.map((_,i)=>((i*72)-90)*Math.PI/180);
+  const points=vals.map((v,i)=>({
+    x:cx+r*v*Math.cos(angles[i]),
+    y:cy+r*v*Math.sin(angles[i])
+  }));
+  const poly=points.map(p=>`${p.x},${p.y}`).join(' ');
+  // グリッド円
+  const grids=[.25,.5,.75,1].map(g=>`<circle cx="${cx}" cy="${cy}" r="${r*g}" fill="none" stroke="var(--border)" stroke-width="1"/>`).join('');
+  // 軸
+  const axes=angles.map((a,i)=>`<line x1="${cx}" y1="${cy}" x2="${cx+r*Math.cos(a)}" y2="${cy+r*Math.sin(a)}" stroke="var(--border)" stroke-width="1"/>`).join('');
+  // ラベル
+  const labels=keys.map((k,i)=>{
+    const lx=cx+(r+14)*Math.cos(angles[i]);
+    const ly=cy+(r+14)*Math.sin(angles[i]);
+    return `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="7" fill="var(--txt3)" font-family="DM Sans,sans-serif">${k}</text>`;
+  }).join('');
+  return `<svg width="160" height="160" viewBox="0 0 160 160">${grids}${axes}<polygon points="${poly}" fill="rgba(184,134,11,.25)" stroke="var(--gold)" stroke-width="2"/>${labels}</svg>`;
+}
+
+/* ── 用語辞典デッキ（DECKS追加） ── */
+
+const TIPS=[
+  {ico:'💋',txt:'「キス1回で5種のホルモンが同時分泌される。オキシトシン（抱擁の2〜3倍）・ドーパミン（コカインと同じ報酬回路）・ノルアドレナリン（頭が真っ白）・エンドルフィン（深い幸福感）・テストステロン転移。キスが「最強の絆形成行為」である内分泌学的根拠。」'},
+  {ico:'🍫',txt:'「チョコレートに含まれるフェニルエチルアミン（PEA）は恋愛初期の脳内に大量分泌される物質と同じだ。ドーパミン×ノルアドレナリン放出を促進し「ときめき・興奮」と同様の生理状態を作る。カカオ70%以上が最大効果。」'},
+  {ico:'🦪',txt:'「牡蠣の亜鉛欠乏でテストステロンが最大74%低下する（Prasad 1996）。テストステロンは声の低さ・自信・性欲・活力の全ての基盤。「牡蠣が媚薬」という言い伝えの栄養内分泌学的根拠はこれだ。」'},
+  {ico:'😴',txt:'「睡眠7時間未満でテストステロンが10〜15%低下する（Leproult & Van Cauter 2011）。テストステロンの70〜75%が睡眠中に産生されるためデート前日に十分眠ることが科学的に正当化された最強の準備行動だ。」'},
+  {ico:'🧬',txt:'「Tシャツ実験（Wedekind 1995）で女性は自分と異なるMHCを持つ男性の汗の匂いに惹かれることが確認された。体液交換（キス・性行為）がより詳細なMHC情報を提供し免疫系の深層的相性評価を深化させる。」'},
+  {ico:'🍽',txt:'「共食の頻度が社会的絆の強さと最も高く相関する（Dunbar 2017）。「食事に誘う」ことが恋愛の最強の第一手である神経科学的根拠がここにある。美味しいものを一緒に食べることが人類最古の絆形成プロトコルだ。」'},
+  {ico:'🔬',txt:'「唇は人体で最も触覚受容器の密度が高い部位の一つ。体性感覚野（ペンフィールドマップ）において唇が占める面積は手のひら全体に匹敵する。キスが単なる接触ではなく最大の情報交換・絆形成行為である解剖学的根拠。」'},
+  {ico:'✨',txt:'「香り（EIDOS）×服装（FORMA）×声（SONOS）×タッチ（HAPTOS）×食とキス（GEUSTO）の五感が統合された時、相手の脳内に「会うたびに全感覚でホルモンが同時発動する恋愛の完全自動化システム」が形成される。これが五感統合戦略の完成形だ。」'},
+];
+let tipIdx=Math.floor(Math.random()*TIPS.length);
+function rotateTip(){
+  tipIdx=(tipIdx+1)%TIPS.length;
+  const t=TIPS[tipIdx];
+  document.getElementById('tipIco').textContent=t.ico;
+  document.getElementById('tipTxt').textContent=t.txt;
+}
+
+/* ── BOOT ─── */
+function boot(){
+  const sp=document.getElementById('splash');
+  sp.style.cssText='opacity:0;transition:opacity .45s;pointer-events:none';
+  setTimeout(()=>{
+    sp.style.display='none';
+    document.getElementById('app').classList.add('on');
+    // 初期Tip設定
+    const t=TIPS[tipIdx];
+    document.getElementById('tipIco').textContent=t.ico;
+    document.getElementById('tipTxt').textContent=t.txt;
+    loadDeck('neuro',document.querySelector('.dt'));
+    // 今日ページ初期化
+    renderMonthCalendar();
+    initAI_geusto();
+    // 用語辞典タブを追加
+    const tabs=document.querySelector('.deck-tabs');
+    if(tabs&&!tabs.querySelector('[data-deck="glossary"]')){
+      const btn=document.createElement('button');
+      btn.className='dt';btn.textContent='📖 用語辞典';
+      btn.dataset.deck='glossary';
+      btn.onclick=()=>loadDeck('glossary',btn);
+      tabs.appendChild(btn);
+    }
+  },450);
+}
+
+/* ── NAV ─── */
+const PGS=['home','today','scent','learn','brands','quiz','ai'];;
+function nav(id,bIdx){
+  PGS.forEach(p=>{const el=document.getElementById('pg-'+p);if(el)el.classList.remove('on')});
+  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('on'));
+  const pg=document.getElementById('pg-'+id);
+  if(pg){pg.classList.add('on');const sb=pg.querySelector('.sb');if(sb)sb.scrollTop=0}
+  const btns=document.querySelectorAll('.bni');
+  if(btns[bIdx])btns[bIdx].classList.add('on');
+}
+
+/* ── WEATHER ─── */
+const WD={
+  sunny:'<strong>☀️ 晴れ・低湿度：</strong>香りの拡散が速い。プッシュ数は標準×1.2倍。シトラス・アクア系が最も映える。手首と鎖骨に各1プッシュが理想。',
+  cloudy:'<strong>☁️ 曇り・中湿度：</strong>最も安定した条件。全系統が標準通りに機能する。ウッディ・ムスク系の本領発揮日。',
+  rain:'<strong>🌧 雨・高湿度：</strong>香りがこもりやすい危険日。プッシュ数60%に減らし<strong>足首か膝裏</strong>に付けて下から立ち上がらせる。シトラスは避けること。',
+  night:'<strong>🌙 夜・室内：</strong>密閉空間で香りが凝縮。プッシュ数は1〜2回のみ。アンバー・ムスクを耳の後ろに半プッシュが理想。',
+  summer:'<strong>🌡 真夏・高温：</strong>重い香りが体臭と混合する危険。シトラス系1プッシュのみ。<strong>清潔感に全振り</strong>が最善。',
+  winter:'<strong>❄️ 冬・乾燥：</strong>揮発が遅く香りが長持ちする。ウッディ・スパイス・アンバー系の本領発揮。プッシュ数は標準×0.8倍に抑えてOK。',
+};
+function setW(btn,key){
+  document.querySelectorAll('.wc').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('wRes').innerHTML=WD[key];
+}
+
+/* ════════════════════════════════════
+   FLASHCARD DECKS — 香水専門 7デッキ
+════════════════════════════════════ */
+const DECKS={
+  neuro:[
+    {tag:'🧠 味覚神経科学 #1',q:'味覚信号が脳に届くまでの経路と感情処理の関係は？',a:'味蕾→鼓索神経（前2/3）・舌咽神経（後1/3）→孤束核（脳幹）→腹側後内側核（視床）→一次味覚野（島皮質前部）→眼窩前頭皮質。島皮質が感情系への高速副経路を持ち0.05秒で扁桃体への信号が始まる。触覚のCT繊維経路と同じ島皮質に収束するため口腔内のタッチ（キス・舌）は味覚と感情が統合された最強の複合感覚。',src:'GUSTATORY NEUROSCIENCE',frags:['ファーストキスプロトコル','唇の触覚科学とスキンシップ']},
+    {tag:'🧠 味覚神経科学 #2',q:'フレーバー（風味）が味覚×嗅覚の統合で形成される仕組みは？',a:'「味覚の80%は実際には嗅覚（後鼻腔嗅覚）」という神経科学的事実。咀嚼・嚥下中に口腔内の揮発性成分が後鼻腔を通じて嗅球に到達しEIDOS（嗅覚）と統合されてフレーバーが完成する。キス中の化学物質認識も嗅覚神経が担う部分が大きく「キスの味」は味覚+嗅覚の統合体験。',src:'FLAVOR NEUROSCIENCE',frags:['ファーストキスプロトコル','MHC相性評価プロトコル']},
+    {tag:'🧠 味覚神経科学 #3',q:'唇がペンフィールドマップで「手のひら全体と同面積」を占める神経解剖学的意味は？',a:'体性感覚野の神経地図（ペンフィールドマップ）において脳内の処理リソースが割り当てられた面積が「その部位の感覚的重要性」を示す。唇の面積が手のひら全体に匹敵することはキスが「人体で最も情報量の多いタッチ行為」であることを意味する。これがキスを「単なる接触」ではなく「感覚的最強の絆形成行為」にする解剖学的根拠。',src:'PENFIELD MAP',frags:['唇の触覚科学とスキンシップ']},
+    {tag:'🧠 味覚神経科学 #4',q:'眼窩前頭皮質（OFC）が「美食体験」をドーパミン報酬回路と連結させる仕組みは？',a:'OFCが「この味は価値があるか・また求めたいか」を評価しドーパミン報酬回路（側坐核）と直結している。美味しい食事→ドーパミン放出→「また食べたい・また一緒にいたい」という欲求が形成される。「一緒に美味しいものを食べると好きになる」という体験のOFC×報酬回路の神経科学的正体。',src:'OFC REWARD',frags:['初デート食事選び戦略','チョコレート×PEA戦略']},
+    {tag:'🧠 味覚神経科学 #5',q:'キス中に「頭が真っ白になる」感覚の神経科学的な根拠は？',a:'ノルアドレナリン急増が心拍数・血圧・体温を上昇させると同時に前頭前野（理性・判断力）の血流が低下する。「恋愛時の前頭前野抑制（Fisher et al. fMRI研究）」が最初のキスで特に強く起きる。これが「頭が真っ白になる・理性が飛ぶ」という感覚の神経科学的正体。',src:'PREFRONTAL SUPPRESSION',frags:['ファーストキスプロトコル']},
+  ],
+  kiss:[
+    {tag:'💋 キス #1',q:'「キスの相性」に関するHughes et al.（2007）の研究結果は？',a:'66%の女性と59%の男性が「相性の良くないキスの後に関係が終わった」と報告した。キスへの本能的な反応がMHC相性の評価（遺伝的適合性）を反映している可能性がある。「なんか合わないキスだった」という直感がMHC不適合のシグナルである可能性の研究的根拠。',src:'HUGHES ET AL 2007',frags:['ファーストキスプロトコル','MHC相性評価プロトコル']},
+    {tag:'💋 キス #2',q:'キスが「最強の絆形成行為」である5つのホルモン的根拠は？',a:'①オキシトシン（抱擁の2〜3倍）：視床下部の最大活性化。②ドーパミン：側坐核の急増（コカインと同回路）。③ノルアドレナリン：興奮・覚醒・心拍上昇。④エンドルフィン：深い幸福感・快楽。⑤テストステロン転移（ディープキス）：女性の性的覚醒の段階的上昇。この5種同時分泌が単一の接触行為としては人体最大の反応。',src:'KISS HORMONES',frags:['ファーストキスプロトコル','キスの深化プロトコル']},
+    {tag:'💋 キス #3',q:'キス中の「呼吸・心拍・脳波の同期」が持つ恋愛的意味は？',a:'キス中に呼吸→心拍→脳波という段階的な生理的同調が起きることが研究で確認されている。ミラーニューロンシステムが活性化し「一体感・溶ける感覚・深い繋がり」を生む。この生理的同調がオキシトシン分泌を相互に最大化させバソプレシンによる絆形成を加速させる。',src:'PHYSIOLOGICAL SYNCHRONY',frags:['キスの深化プロトコル']},
+  ],
+  hormone:[
+    {tag:'💊 ホルモン #1',q:'テストステロンが「男性の恋愛的魅力の全基盤」である根拠は？',a:'テストステロンが①声の低さ（声帯の肥厚）②顔の対称性③筋肉量④体の香り（アンドロステノール産生）⑤自信・活力・性欲⑤精子品質の全てに影響する。女性はこれらを複合的に評価し「優れた遺伝子品質」を持つパートナーを本能的に選択する。テストステロン維持が恋愛的魅力の全ての基盤である進化内分泌学的根拠。',src:'TESTOSTERONE ALL',frags:['テストステロン維持×食生活プロトコル']},
+    {tag:'💊 ホルモン #2',q:'オルガズム後の「バソプレシン急増」が男性の絆形成に与える特別な効果は？',a:'男性のオルガズム時にバソプレシンが急増し「この相手への独占的な絆感情（ペアボンド）」が形成される。バソプレシンは「一夫一妻的行動・パートナー保護・縄張り意識」に関与するホルモン。「性行為後から急激に「この人を独占したい・守りたい」という感情が強くなった」体験の神経内分泌学的正体。',src:'VASOPRESSIN PAIR BOND',frags:['オーラルセックス×ホルモン最大化プロトコル']},
+    {tag:'💊 ホルモン #3',q:'「アンドロステノール」と「アンドロステノン」の違いと恋愛への影響は？',a:'アンドロステノール：新鮮な汗→女性に「清潔で魅力的な男らしさ」として知覚される。アンドロステノン：時間経過（酸化）後→女性に「不快・汗臭い」と知覚される。この化学的変化が「清潔さが最強の誘引力」である根拠。入浴後に香水を使うことで「アンドロステノール効果を維持+増幅」させる最適な戦略。',src:'ANDROSTENOL ANDROSTENONE',frags:['アンドロステノール×清潔さの化学']},
+    {tag:'💊 ホルモン #4',q:'「睡眠7時間未満でテストステロンが低下する」Leproult & Van Cauter（2011）研究の内容は？',a:'Chicago大学の研究でテストステロンの70〜75%が睡眠中（特にREM睡眠中）に産生されることが確認された。睡眠7時間未満で10〜15%低下。「デート前日に十分眠ることが最強の準備行動」である内分泌学的根拠。睡眠不足→テストステロン低下→声低下→自信低下→印象低下という連鎖を防ぐ最優先事項。',src:'LEPROULT VAN CAUTER 2011',frags:['テストステロン維持×食生活プロトコル']},
+    {tag:'💊 ホルモン #5',q:'「オーラルセックスが与える側にもホルモン反応を引き起こす」双方向性の根拠は？',a:'「与える」行為においても口腔内の触覚刺激→島皮質→オキシトシン分泌が起きる。さらに相手の反応（表情・声・身体反応）をミラーニューロンが処理しエンドルフィン+オキシトシンが与える側にも分泌される。「ケアする行為が与える者にも幸福感を生む」という神経生物学的な利他行動の機構。',src:'BIDIRECTIONAL ORAL',frags:['オーラルセックス×ホルモン最大化プロトコル']},
+  ],
+  food:[
+    {tag:'🍽 食の科学 #1',q:'共食が絆形成に最も強く相関するDunbar（2017）の研究内容は？',a:'Robin Dunbar（オックスフォード）の研究で「一緒に食事をする頻度」が友人関係の強さ・親密度と最も高く相関することが確認された。共食が笑い・会話・身体的近接・飲食物の共有という複数のオキシトシン刺激を同時に誘発する。食事という行為が人類史上最古で最強の絆形成プロトコルである科学的根拠。',src:'DUNBAR 2017',frags:['初デート食事選び戦略']},
+    {tag:'🍽 食の科学 #2',q:'アルコール（適量）が恋愛に与える神経薬理学的効果は？',a:'適量のエタノールがGABA受容体を活性化させ扁桃体の防衛機制を一時的に抑制し「心が開く・警戒心が緩む」状態を作る。前頭前野の抑制が軽度に起きることで「普段言えないことが言える」という自己開示が増加する。過剰摂取は記憶形成障害・判断力低下・誤判断を引き起こすため「適量（1〜2杯）」が鍵。',src:'ALCOHOL PHARMACOLOGY',frags:['初デート食事選び戦略']},
+    {tag:'🍽 食の科学 #3',q:'カプサイシン（辛味）が「食の吊り橋効果」を引き起こす機序は？',a:'カプサイシンがTRPV1（vanilloid受容体）を活性化→全身のノルアドレナリン分泌増加→心拍数・体温・発汗が上昇。この生理的覚醒状態が恋愛のときめきと同様の身体状態であるため「隣にいる人への恋愛感情」として誤帰属される（ミスアトリビューション）。辛い料理を一緒に食べると親密感が高まる実験的根拠。',src:'CAPSAICIN AROUSAL',frags:['初デート食事選び戦略']},
+    {tag:'🍽 食の科学 #4',q:'チョコレートのフェニルエチルアミン（PEA）以外の恋愛関連成分は？',a:'①テオブロミン：キサンチン誘導体で血管拡張・軽度の心拍上昇・利尿。②トリプトファン：セロトニンの前駆体→幸福感・安定。③アナンダミド：内因性カンナビノイドで「至福感（ananda=梵語で至福）」を生む。④マグネシウム：神経の安定・テストステロン産生に関与。チョコレートが「幸せの食べ物」である複合的根拠。',src:'CHOCOLATE CHEMISTRY',frags:['チョコレート×PEA戦略']},
+  ],
+  body:[
+    {tag:'🧬 体液科学 #1',q:'Gallup et al.（2002）の精液研究が示す内容と解釈上の注意点は？',a:'Archives of Sexual Behaviorの研究で精液中のホルモン物質（テストステロン・オキシトシン・エンドルフィン・プロスタグランジン等）が女性のホルモン環境に影響を与える可能性を提示。【重要な注意】この研究はコンドーム使用vs非使用の相関研究であり因果関係は未確立。性感染症予防の観点からコンドーム使用は絶対に維持すること。科学的関心としての知識として理解する。',src:'GALLUP ET AL 2002',frags:['MHC相性評価プロトコル']},
+    {tag:'🧬 体液科学 #2',q:'MHCと「なんとなく合う感覚」の関係を示すWedekind（1995）研究の詳細は？',a:'44人の男性が2日間着用したTシャツの匂いを女性が評価した実験。女性は自分と異なるMHC遺伝子を持つ男性のTシャツを「より魅力的・より好ましい」と評価した。MHCが体臭として放出されその差異への誘引が「遺伝的多様性の高い子孫を産める相性」を本能が評価するためと解釈された。「キスが合わない感覚」の一因がここにある。',src:'WEDEKIND 1995',frags:['MHC相性評価プロトコル','アンドロステノール×清潔さの化学']},
+    {tag:'🧬 体液科学 #3',q:'「スポーツ後→即シャワー」がアンドロステノールを最大化させる理由は？',a:'スポーツ中の体温上昇でアポクリン腺からアンドロステノール（テストステロン代謝産物・誘引物質）が豊富に分泌される。しかし空気に触れると数時間でアンドロステノン（不快臭）に酸化変化する。「スポーツ→即シャワー→清潔な状態で香水（EIDOS）」という流れがアンドロステノールの誘引効果を最大に活かしながら酸化を防ぐ最適なプロトコル。',src:'ANDROSTENOL PROTOCOL',frags:['アンドロステノール×清潔さの化学']},
+  ],
+  glossary:[
+    {tag:'📖 用語 #1',q:'「フレーバー（風味）」と「テイスト（味覚）」の違いは？',a:'テイスト：舌の味蕾のみで処理される5基本味（甘・酸・塩・苦・旨味）。フレーバー：味覚+後鼻腔嗅覚（揮発成分）+口腔触覚（テクスチャ・温度）+聴覚（咀嚼音）の統合体験。「食事の80%は嗅覚」という意味はテイストではなくフレーバーを指す。EIDOS（嗅覚）×GEUSTO（味覚）の統合がデートでの食体験の核心。',src:'FLAVOR GLOSSARY',frags:['初デート食事選び戦略']},
+    {tag:'📖 用語 #2',q:'「ペアボンド（pair bond）」とは何か？神経生物学的な基盤は？',a:'一対一の持続的なパートナー関係への強い動機付けを持つ絆形成。オキシトシン（親密感・信頼）×バソプレシン（独占的絆・パートナー保護）×ドーパミン（報酬・欲求維持）の三種が協調して形成する。性行為・長期的な身体接触・共食の繰り返しがペアボンドを神経生物学的に「強化」させる。',src:'PAIR BOND',frags:['オーラルセックス×ホルモン最大化プロトコル','MHC相性評価プロトコル']},
+    {tag:'📖 用語 #3',q:'「TRPV1受容体」とは何か？恋愛との関係は？',a:'Transient Receptor Potential Vanilloid 1。カプサイシン（辛味）・熱（43℃以上）・酸（pH低下）に応答するイオンチャネル。口腔内のTRPV1が辛い食事・温かいキスで活性化され「痛み・快楽・温度感覚」の複合シグナルを送る。カプサイシンとオキシトシンが同じノシセプター（侵害受容器）経路を共有することが「辛さ×親密感」の化学的根拠の一つ。',src:'TRPV1',frags:['初デート食事選び戦略']},
+    {tag:'📖 用語 #4',q:'「フェニルエチルアミン（PEA）」とは何か？',a:'神経伝達物質・神経調節物質の一種。恋愛初期の脳内で大量分泌され「ときめき・興奮・相手への集中」という感情状態を作る。ドーパミン・ノルアドレナリンの放出を促進するカテコールアミン系の増幅剤として機能する。チョコレートに含有され「恋愛の分子」と呼ばれる所以。半減期が短く（数十分）「恋愛初期のときめきが3年で薄れる」という現象はPEAへの適応化で説明される。',src:'PEA GLOSSARY',frags:['チョコレート×PEA戦略']},
+    {tag:'📖 用語 #5',q:'「アポクリン腺」と「エクリン腺」の違いとホルモン的意味は？',a:'エクリン腺：全身に分布・主に体温調節・成分は水・塩・乳酸。アポクリン腺：腋窩・乳輪・生殖器周辺・肛門周囲に限定・タンパク質・脂質・ステロイドホルモン代謝産物（アンドロステノール・アンドロステノン等）を分泌。性的魅力に関与するのはアポクリン腺のみ。思春期以降に活発化しMHC関連化学物質の主要な放出源。',src:'APOCRINE ECCRINE',frags:['アンドロステノール×清潔さの化学']},
+  ],
+  night:[
+    {tag:'🌙 夜の味覚 #1',q:'キス中の体温上昇が口腔内化学環境を変化させテストステロン転移を加速させる仕組みは？',a:'性的覚醒に伴う体温上昇（37℃→38〜39℃）が①唾液分泌量増加②唾液中テストステロン濃度上昇③口腔内TRPV1受容体活性化を引き起こす。ディープキスでの唾液交換量が増加するほどWlodarski & Dunbar（2013）が示したテストステロン転移量が増大し女性の性的覚醒が段階的に加速する。「キスが深まるほど好きになる」体験の口腔内分泌学的正体。',src:'KISS TEMPERATURE',frags:['ファーストキスプロトコル','キスの深化プロトコル']},
+    {tag:'🌙 夜の味覚 #2',q:'ボディリッキング（皮膚を舐める行為）が「三感統合」として機能する神経科学的根拠は？',a:'皮膚を舐める行為が①HAPTOSのCT繊維（触覚→島皮質→オキシトシン）②GEUSTOの味覚受容器（塩味・旨味・体温由来化学物質→報酬回路）③EIDOSの嗅覚（アポクリン腺分泌物・MHCペプチド→扁桃体→オキシトシン）の三感を口腔という一点で同時統合する。三感の同時刺激が各経路のオキシトシン分泌を相乗的に増幅させる多感覚統合効果の最強形態の一つ。',src:'BODYLICKING TRIPLE',frags:['アンドロステノール×清潔さの化学','MHC相性評価プロトコル']},
+    {tag:'🌙 夜の味覚 #3',q:'排卵期にコプリンの効果が最大化する内分泌学的タイミングと五感統合との関係は？',a:'排卵期（周期14日目前後）にコプリン組成変化（Cutler 1998）×エストロゲンピーク（腟粘膜感受性最大・潤滑最大）×嗅覚感度最大（EIDOS研究）×テストステロン上昇（HAPTOS Pipitone研究）が全て重なる。五感統合戦略（EIDOS×FORMA×SONOS×HAPTOS×GEUSTO）が最大効果を発揮するタイミングが生理周期によって自然に決まるという内分泌学的事実。「この日は特別に感じやすい」体験の完全な科学的説明。',src:'OVULATION ALL SENSES',frags:['MHC相性評価プロトコル','オーラルセックス×ホルモン最大化プロトコル']},
+    {tag:'🌙 夜の味覚 #4',q:'射精後のプロラクチン急増を「スキンシップ継続」で回避できる内分泌学的根拠は？',a:'射精後の男性でプロラクチンが急増し眠気・不応期・性欲低下が生じる（プロラクチンの神経内分泌学的根拠）。しかしスキンシップのみ・キス・抱擁を継続するとプロラクチンは有意に上昇せずオキシトシンのみが持続分泌される。「行為後の20秒以上の抱擁+囁き声+名前を呼ぶ」という五感統合の継続がプロラクチンによる感情的離脱を防ぎバソプレシン絆形成を維持する最適戦略。',src:'PROLACTIN MANAGEMENT',frags:['別れ際ハグプロトコル（20秒の科学）']},
+    {tag:'🌙 夜の味覚 #5',q:'バソプレシンが「射精後30分以内に最大値」を迎える恋愛心理学的な意味は？',a:'男性のオルガズム後にバソプレシンが急増し「この相手への独占的絆感情・保護したい・傍にいたい」という感情が強くなる（ペアボンド形成の内分泌学的根拠）。「行為後にこの人のことが急激に好きになった」体験の神経内分泌学的正体。このバソプレシンピーク（30分以内）の間に抱擁・声・香りという五感刺激を継続することがペアボンドを永続的なものに固定する重要な時間帯。',src:'VASOPRESSIN PEAK',frags:['オーラルセックス×ホルモン最大化プロトコル','別れ際ハグプロトコル（20秒の科学）']},
+    {tag:'🌙 夜の味覚 #6',q:'睡眠中の記憶固定化とオキシトシンの関係—「一緒に眠ること」の神経科学的意味は？',a:'記憶の固定化（海馬→大脳皮質への転送）は睡眠中（特にNREMスロー波睡眠とREM睡眠）に起きる。性的体験・感情的体験の記憶がオキシトシン+バソプレシンの分泌状態で海馬に保存され睡眠中に固定化される。一緒に眠ることで①オキシトシン持続分泌②体温の共有（CT繊維への継続的な温かい刺激）③呼吸の自然な同期（迷走神経活性維持）が睡眠中も継続し記憶固定化を最大化させる。',src:'SLEEP MEMORY CONSOLIDATION',frags:['テストステロン維持×食生活プロトコル']},
+    {tag:'🌙 夜の味覚 #7',q:'「翌朝の共食」が前夜の記憶と絆を最強に固定化させる神経内分泌学的根拠は？',a:'翌朝は①男性テストステロン（一日最高値）×②Dunbar（2017）共食オキシトシン効果×③睡眠中に固定化された感情記憶の初回再生（想起がさらに記憶を強化）×④朝の食事のドーパミン報酬が重なる。「一緒に朝食を食べる」という体験が前夜の全ての感情記憶を「また会いたい・ずっと一緒にいたい」という欲求として再活性化させる記憶固定化の最終段階として機能する。',src:'MORNING MEAL BONDING',frags:['初デート食事選び戦略','テストステロン維持×食生活プロトコル']},
+    {tag:'🌙 夜の味覚 #8',q:'「食事→キス→スキンシップ→行為→抱擁→眠り→翌朝の共食」という一連の流れが五感統合の完成形である理由は？',a:'各段階でオキシトシン受容体増感が起き次の段階の効果が倍増する「オキシトシン雪だるま効果」の最大形態。食事（ドーパミン蓄積）→キス（5種ホルモン+MHC評価）→スキンシップ（CT繊維累積）→親密な行為（全ホルモン最大）→抱擁（Grewen研究の20秒効果）→睡眠（海馬固定化）→翌朝共食（全ホルモン再強化）という流れがEIDOS×FORMA×SONOS×HAPTOS×GEUSTOの五感全チャネルを通じて「この人との記憶」を相手の脳に永久保存させる恋愛設計の完成形。',src:'COMPLETE NIGHT FLOW',frags:['ファーストキスプロトコル','MHC相性評価プロトコル']},
+  ],
+  anatomy:[
+    {tag:'🔬 解剖学 #1',q:'舌乳頭4種の解剖学的分類とキスへの応用は？',a:'①糸状乳頭：全舌表面・味蕾なし・テクスチャ感知のみ②茸状乳頭：舌尖・舌縁・味蕾+温度+触覚の複合感覚器③葉状乳頭：舌縁後方・舌咽神経支配④有郭乳頭：舌根・逆V字・最大の味蕾（100〜300個/乳頭）。「舌の使い方」によって刺激される乳頭の種類が変わり感覚情報の質が変化する。舌先（茸状乳頭）は複合感覚器として最も情報量が多く「舌先での優しいタッチ」が最大の感覚情報を相手の脳に届ける解剖学的根拠。',src:'LINGUAL PAPILLAE',frags:['キスの深化プロトコル','ファーストキスプロトコル']},
+    {tag:'🔬 解剖学 #2',q:'舌を支配する4本の神経が「キス中に同時活性化する」意味は？',a:'①鼓索神経（顔面神経枝）：舌前2/3の味覚②舌神経（三叉神経枝）：舌前2/3の触覚・温度・痛覚③舌咽神経（第9脳神経）：舌後1/3の味覚+触覚④迷走神経：舌根・咽頭。これら4神経が全て孤束核（脳幹）→島皮質→扁桃体に収束する。キス中の舌の動きで4神経が同時活性化→島皮質で全て統合→視床下部オキシトシン産生ニューロン→側坐核ドーパミンへ同時出力。「キスの情報量が最大」の神経解剖学的完全説明。',src:'TONGUE INNERVATION',frags:['キスの深化プロトコル']},
+    {tag:'🔬 解剖学 #3',q:'口腔粘膜（特に舌下）がテストステロン転移の解剖学的主役である根拠は？',a:'舌下粘膜は血管から固有層まで0.1〜0.3mmという超薄い構造を持ち脂溶性分子の吸収効率が消化管より高い（舌下錠・ニトログリセリン舌下投与がこの機構を使用）。テストステロンは脂溶性ステロイドホルモンであり男性耳下腺から大量分泌される唾液に含まれる（血中濃度の約10%）。ディープキスで唾液が舌下粘膜に接触→毛細血管から吸収→女性の血中テストステロン受容体に作用という経路がWlodarski & Dunbar（2013）の解剖学的根拠。',src:'SUBLINGUAL ABSORPTION',frags:['キスの深化プロトコル','ファーストキスプロトコル']},
+    {tag:'🔬 解剖学 #4',q:'唾液腺の自律神経支配が「安心×性的覚醒でサラサラ唾液が増える」理由を説明する解剖学とは？',a:'三大唾液腺（耳下腺・顎下腺・舌下腺）は副交感神経（漿液性・大量・サラサラ）と交感神経（粘液性・少量・ネバネバ）の二重支配を受ける。副交感神経優位（安心・性的覚醒状態）→顎下腺が全唾液の65%を大量分泌→テストステロン濃度が高い唾液が増加→転移効率が向上。交感神経優位（緊張・不安）→粘液性少量分泌→「口が渇く・緊張でうまくキスできない」の解剖学的正体。',src:'SALIVARY GLAND ANS',frags:['ファーストキスプロトコル','初デート食事選び戦略']},
+    {tag:'🔬 解剖学 #5',q:'舌根・咽頭の迷走神経接続がディープキスを「より強い感情体験」にする解剖学的理由は？',a:'舌根（舌の付け根）・咽頭後壁には迷走神経の感覚枝（上喉頭神経・咽頭枝）が豊富に分布する。この部位への刺激が迷走神経→脳幹（孤束核・迷走神経背側核）→視床下部の室傍核（オキシトシン産生ニューロン）に直接信号を送る。SONOSの「耳介→迷走神経耳介枝→オキシトシン」と同じ迷走神経オキシトシン産生経路を舌根からも活性化できる。「ディープキスがより深い感情体験になる」解剖学的証明。',src:'LINGUAL ROOT VAGUS',frags:['キスの深化プロトコル']},
+    {tag:'🔬 解剖学 #6',q:'キス中に同時活性化する6つの神経経路の全リストとその意味は？',a:'①鼓索神経→味覚→孤束核②舌神経→触覚・温度→体性感覚野③舌咽神経→舌後1/3→孤束核④迷走神経→舌根・咽頭→視床下部（オキシトシン直接）⑤三叉神経→唇→体性感覚野（最大ペンフィールド面積）⑥後鼻腔嗅覚経路→嗅球→扁桃体直接。6経路の同時活性化は人体でキス以外に存在しない。各経路が孤束核・島皮質・扁桃体・視床下部で統合されオキシトシン+ドーパミン+ノルアドレナリン+エンドルフィン+テストステロン転移が5種類同時に発生する。',src:'SIX KISS PATHWAYS',frags:['ファーストキスプロトコル','キスの深化プロトコル']},
+    {tag:'🔬 解剖学 #7',q:'島皮質（Insula）が「口腔の最終統合センター」として機能する解剖学的根拠は？',a:'島皮質前部は味覚（一次味覚野）・内臓感覚・身体意識・感情・共感の中枢。HAPTOSのCT繊維経路（島皮質→視床下部）、SONOSの囁き声経路（島皮質収束）、GEUSTOの味覚経路（島皮質＝一次味覚野）が全て島皮質に収束する。キスの瞬間に島皮質が味覚×触覚×温度×化学感覚を統合し視床下部（オキシトシン）・扁桃体（感情）・側坐核（ドーパミン）に同時出力。「口腔が五感統合の最高密度エリア」の解剖学的証明。',src:'INSULA INTEGRATION',frags:['ファーストキスプロトコル','唇の触覚科学とスキンシップ']},
+    {tag:'🔬 解剖学 #8',q:'「キスの相性」を決める5軸同時評価の解剖学的実体は？',a:'キスの0.05秒以内に①MHC化学情報（唾液×口腔粘膜受容体）②テストステロン転移（耳下腺唾液→舌下粘膜吸収）③TRPV1温度感覚（体温の一致・不一致）④機械受容器（唇・舌の圧覚・振動の同期）⑤後鼻腔嗅覚（アポクリン腺由来化学物質）の5種の情報が島皮質→扁桃体で統合評価される。「なんか合わない」という直感はこの5軸同時評価の結果。Hughes et al.（2007）で66%の女性が「キスが合わなかったために関係が終わった」と報告したことの解剖学的完全説明。',src:'KISS COMPATIBILITY ANATOMY',frags:['MHC相性評価プロトコル','ファーストキスプロトコル']},
+  ],
+  romance:[
+    {tag:'❤️ 恋愛心理 #1',q:'「食事→キス」の黄金フローが恋愛形成を加速させる神経内分泌学的理由は？',a:'美食のドーパミン（報酬）+共食のオキシトシン→キスのオキシトシン（最大値）+ドーパミン+エンドルフィン+バソプレシンという段階的ホルモン蓄積が起きる。前の段階でのオキシトシン分泌が受容体増感を引き起こし次のキスでの分泌量を倍増させる。「美味しいものを一緒に食べた後にキスしたら急激に好きになった」という体験の神経内分泌学的設計。',src:'FOOD KISS FLOW',frags:['初デート食事選び戦略','ファーストキスプロトコル']},
+    {tag:'❤️ 恋愛心理 #2',q:'「五感統合」が完成した時に起きる「恋愛の完全自動化」とは何か？',a:'香り（EIDOSのプルースト効果）×服装（FORMAのシグネチャースタイル）×声（SONOSのシグネチャーボイス）×タッチ（HAPTOSの段階的スキンシップ）×食とキス（GEUSTOの五感統合）が積み重なると、会うたびに全ての感覚チャネルで条件付けられたオキシトシン+バソプレシン+エンドルフィン+ドーパミンが同時に発動する「恋愛の自動再起動システム」が相手の脳内に形成される。',src:'FIVE SENSES COMPLETE',frags:['MHC相性評価プロトコル','ファーストキスプロトコル']},
+    {tag:'❤️ 恋愛心理 #3',q:'「キスの相性」を「運命」ではなく「科学」で理解することの意味は？',a:'キスへの本能的反応（「合う・合わない」という感覚）がMHC遺伝的相性・テストステロンレベル・免疫系の適合性を反映している可能性がある（Hughes 2007・Wedekind 1995）。「なんか合わない」という直感は生物学的情報処理の結果かもしれない。逆に「なぜかこの人のキスがたまらない」は遺伝的深層相性の本能的評価の可能性がある。',src:'KISS COMPATIBILITY',frags:['ファーストキスプロトコル','MHC相性評価プロトコル']},
+    {tag:'❤️ 恋愛心理 #4',q:'テストステロンが維持されることが長期的な恋愛関係にとって重要な理由は？',a:'テストステロンは短期的な性的魅力（声・自信・活力・体の香り）だけでなく長期的な関係においても「性欲の維持・パートナーへの継続的な魅力・活力ある関係性」の基盤。食事・睡眠・運動によるテストステロン維持が「10年後も魅力的でいる」ための最重要な内分泌管理。「年齢を重ねても魅力的な男性」の最大の秘訣はテストステロン維持。',src:'TESTOSTERONE LONG TERM',frags:['テストステロン維持×食生活プロトコル']},
+    {tag:'❤️ 恋愛心理 #5',q:'EIDOS×FORMA×SONOS×HAPTOS×GEUSTOの五感統合が「人類最強の恋愛設計」である根拠は？',a:'各感覚が単独で作用する時の効果の単純合計ではなく複数の感覚が同時に統合される時に記憶の強度・ホルモン分泌量・絆形成速度が指数関数的に増大する「多感覚統合効果（multisensory integration）」が起きる。相手の脳内に5つの感覚チャネル全てで「あなた」が条件付けられた時、それが「この人だけ」という感情の神経生物学的完成形。',src:'MULTISENSORY INTEGRATION',frags:['ファーストキスプロトコル','MHC相性評価プロトコル']},
+  ],
+};
+
+/* ── FLASHCARD ENGINE ─── */
+let curDeck=[],cIdx=0;
+function loadDeck(name,btn){
+  document.querySelectorAll('.dt').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  curDeck=[...DECKS[name]];cIdx=0;
+  document.getElementById('deckCnt').textContent=curDeck.length+'枚';
+  showCard();
+}
+function showCard(){
+  if(!curDeck.length)return;
+  const c=curDeck[cIdx];
+  document.getElementById('cfTag').textContent=c.tag;
+  document.getElementById('cfQ').textContent=c.q;
+  document.getElementById('cfA').textContent=c.a;
+  document.getElementById('cfSrc').textContent=c.src;
+  // 関連香水セクション
+  const fragEl=document.getElementById('cfFrags');
+  if(c.frags&&c.frags.length){
+    const chips=c.frags.map(f=>{
+      const bd=BD.find(b=>b.name===f||b.name.includes(f)||f.includes(b.name.split(' ')[0]&&b.name.split(' ')[1]?b.name.split(' ').slice(0,2).join(' '):b.name));
+      const emoji=bd?bd.emoji:'🧴';
+      const brand=bd?bd.brand:'';
+      return `<span class="cf-frag-chip" onclick="jumpToBrand('${f}')"><span class="chip-emoji">${emoji}</span>${brand?brand+' ':''}<strong>${f}</strong></span>`;
+    }).join('');
+    fragEl.innerHTML=`<div class="cf-frags-lbl">この効果がある香水</div><div class="cf-frag-chips">${chips}</div>`;
+    fragEl.style.display='block';
+  }else{
+    fragEl.style.display='none';
+  }
+  document.getElementById('cardFront').classList.remove('hidden');
+  document.getElementById('cardBack').classList.add('hidden');
+  document.getElementById('flipBtn').textContent='答えを見る ✨';
+  document.getElementById('ctrlPg').textContent=(cIdx+1)+' / '+curDeck.length;
+  updateDots();
+}
+
+function jumpToBrand(fragName){
+  // ブランドライブラリページに移動して該当カードを開く
+  nav('brands',3);
+  setTimeout(()=>{
+    // 全ブランド表示
+    document.querySelectorAll('.bc').forEach(b=>b.classList.remove('on'));
+    const allBtn=document.querySelector('.bc');
+    if(allBtn)allBtn.classList.add('on');
+    renderFrags('すべて');
+    // 該当カードを探して開く
+    setTimeout(()=>{
+      const cards=document.querySelectorAll('.fc');
+      cards.forEach(card=>{
+        const nameEl=card.querySelector('.fc-name');
+        if(nameEl&&(nameEl.textContent.includes(fragName)||fragName.includes(nameEl.textContent.split(' ')[0]))){
+          card.classList.add('open');
+          card.scrollIntoView({behavior:'smooth',block:'center'});
+        }
+      });
+    },200);
+  },100);
+}
+function flipCard(){
+  const front=document.getElementById('cardFront');
+  const back=document.getElementById('cardBack');
+  const btn=document.getElementById('flipBtn');
+  if(!front.classList.contains('hidden')){
+    front.classList.add('hidden');back.classList.remove('hidden');
+    btn.textContent='質問に戻る ↩';
+  }else{
+    front.classList.remove('hidden');back.classList.add('hidden');
+    btn.textContent='答えを見る ✨';
+  }
+}
+function nextCard(){cIdx=(cIdx+1)%curDeck.length;showCard()}
+function updateDots(){
+  const el=document.getElementById('pdots');el.innerHTML='';
+  const total=curDeck.length;
+  const show=Math.min(total,12);
+  const start=Math.max(0,Math.min(cIdx-5,total-show));
+  for(let i=start;i<start+show;i++){
+    const d=document.createElement('div');
+    d.className='pd'+(i<cIdx?' done':i===cIdx?' cur':'');
+    el.appendChild(d);
+  }
+}
+
+/* ════════════════════════════════════
+   BRANDS DATA — 35+ 香水
+════════════════════════════════════ */
+
+
+
+const BD=[
+  // ── 食×デート戦略 ──
+  {brand:'食×デート戦略',color:'#7f1d1d',emoji:'🍽',name:'初デート食事選び戦略',type:'共食×ホルモン×雰囲気設計',notes:'場所：照明が暗め・音量低め・暖かい空間\n飲み物：赤ワイン少量またはホットドリンク\n食べ物：共有できるメニュー・辛味を含む料理',neuro:'Dunbar（2017）の共食研究で「一緒に食事をする頻度」が社会的絆の強さと最も高く相関することが確認された。暗い照明が扁桃体の警戒反応を緩め、共有料理が「一緒に何かをする」というオキシトシン的体験を作る。食事の選択自体が恋愛設計のツール。',hormones:['オキシトシン','ドーパミン'],hormone_detail:[{ico:'🤝',name:'オキシトシン — 共食の直接効果',desc:'共食が笑い・会話・身体的近接を誘発しオキシトシン分泌を累積的に促進する。「食事を一緒にする」という行為が人類史上最古の絆形成プロトコルである神経科学的根拠。'},{ico:'⚡',name:'ドーパミン — 美食の報酬回路',desc:'美味しい食事がドーパミン報酬回路を活性化させる。この快楽体験が「この人と食べると美味しい」という条件付けとして海馬に保存され「また会いたい」という欲求に変換される。'}],note_science:'照明の暗さが「心理的安全性」を高め自己開示を促進する（照明と親密感の研究）。キャンドルライトの揺らぎが副交感神経を優位にしGABA系を活性化させる。',good_scenes:['初対面デート','関係を深めたい時','特別な夜'],bad_scenes:['ファーストフード（印象が下がる）'],season:['通年'],rating:{誠実さ:85,色気:82,信頼感:88,初対面:92,汎用性:90},tip:'「一緒に食べられる料理（シェアプレート等）」を選ぶことがオキシトシン的な「共同作業」を食事に持ち込む最善策。',pairing:'食×デートデッキ「共食の科学（Dunbar研究）」カード参照'},
+  {brand:'食×デート戦略',color:'#7f1d1d',emoji:'🍫',name:'チョコレート×PEA戦略',type:'フェニルエチルアミン×ドーパミン×恋愛感情誘発',notes:'種類：カカオ70%以上のダークチョコレート\nタイミング：デザートまたはサプライズで渡す\n演出：手渡し+名前を呼ぶ',neuro:'チョコレートのフェニルエチルアミン（PEA）がドーパミン・ノルアドレナリン放出を促進し恋愛初期と同様の生理状態を作る。テオブロミン（血管拡張・心拍上昇）・セロトニン前駆体（トリプトファン）・アナンダミド（内因性カンナビノイド様）も同時に作用する複合的な幸福感生成食品。',hormones:['ドーパミン','フェニルエチルアミン','セロトニン'],hormone_detail:[{ico:'⚡',name:'フェニルエチルアミン — 「恋愛の分子」',desc:'PEAは恋愛初期の脳内で大量分泌される神経伝達物質。ドーパミン・ノルアドレナリンの放出を促進し「ときめき・興奮・集中（相手への）」という恋愛初期特有の感情状態を作る。チョコレートを食べた時の「幸せ感」の神経化学的正体。'},{ico:'😌',name:'セロトニン — トリプトファンの変換',desc:'カカオに含まれるトリプトファンが体内でセロトニンに変換される。「幸福感・安心感・信頼感」を底上げしPEAの興奮効果に安定感を加える。「チョコが幸せな気持ちにする」の複合的根拠。'}],note_science:'カカオ70%以上のダークチョコレートがPEA含有量最大。ミルクチョコレートはカゼイン（牛乳タンパク）がPEAの吸収を抑制するため効果が薄い。',good_scenes:['デートのデザート','サプライズ','バレンタイン'],bad_scenes:['なし'],season:['通年'],rating:{誠実さ:80,色気:82,信頼感:82,初対面:78,汎用性:90},tip:'「これ美味しいから試して」と手から手への渡し方が偶発的タッチ+名前呼び+チョコの三重効果を生む。',pairing:'食×デートデッキ「フェニルエチルアミンの科学」カード参照'},
+
+  // ── キスの科学 ──
+  {brand:'キスの科学',color:'#dc2626',emoji:'💋',name:'ファーストキスプロトコル',type:'初キス×MHC評価×5種ホルモン同時分泌',notes:'タイミング：会話の流れが高まった瞬間\n環境：静かで二人の世界・照明が暗め\n方法：ゆっくりと・目を見てから・自然に',neuro:'最初のキスが「相性確認（MHC評価）」と「5種ホルモン同時分泌（オキシトシン・ドーパミン・ノルアドレナリン・エンドルフィン・セロトニン）」を同時に引き起こす。Wlodarski & Dunbar（2013）でキスが「パートナー評価の重要なメカニズム」であることが実証された。',hormones:['オキシトシン','ドーパミン','ノルアドレナリン'],hormone_detail:[{ico:'🤝',name:'オキシトシン — 抱擁の2〜3倍の分泌量',desc:'唇の超高密度な触覚受容器が視床下部のオキシトシン産生ニューロンを最大に活性化させる。ハグの2〜3倍のオキシトシン分泌量がキスで達成されることが神経内分泌学研究で確認されている。'},{ico:'⚡',name:'ドーパミン×ノルアドレナリン — 「中毒性」の根拠',desc:'側坐核のドーパミン急増がコカインと同じ報酬回路を使い「また会いたい・また触れたい」という欲求を生む。ノルアドレナリンが心拍上昇・体温上昇・「頭が真っ白になる」感覚を作る。'}],note_science:'「キスが合わない＝この相手とは合わない」という直感は66%の女性が経験するとされ（Hughes et al. 2007）MHC不適合の可能性が高い。キスへの本能的反応を信頼することの進化的根拠。',good_scenes:['信頼関係が構築された後','2〜3回目のデートの流れで','特別な夜の終わり'],bad_scenes:['初対面直後（逆効果）'],season:['通年'],rating:{誠実さ:88,色気:97,信頼感:90,初対面:40,汎用性:85},tip:'「目を合わせてゆっくりと近づく」という0.5〜1秒のアプローチがドーパミン的予測を最大化させキスの効果を何倍にもする。',pairing:'キスデッキ「5種ホルモン同時分泌の科学」カード参照'},
+  {brand:'キスの科学',color:'#dc2626',emoji:'🔬',name:'キスの深化プロトコル',type:'ディープキス×テストステロン転移×絆形成',notes:'発展：軽いキスから徐々に深化\n舌の使い方：CTに近い速度でゆっくりと\n意識：相手の呼吸・リズムに合わせる（同期）',neuro:'ディープキス（フレンチキス）では唾液中テストステロンが女性の口腔粘膜から吸収される可能性がある（Wlodarski & Dunbar 2013）。舌は口腔内で最もCT様の神経終末が密集した部位の一つ。舌同士の接触がオキシトシン分泌の加速と相手との「同期体験（呼吸・心拍・脳波の同調）」を引き起こす。',hormones:['テストステロン','オキシトシン','エンドルフィン'],hormone_detail:[{ico:'💪',name:'テストステロン転移 — 性的覚醒の加速',desc:'男性の唾液中テストステロン濃度は血中濃度の約10%。ディープキスでの唾液交換が女性の性的覚醒を段階的に高める生物学的メカニズムの根拠。女性のテストステロン受容体が口腔粘膜に存在する可能性が示唆されている。'},{ico:'🤝',name:'オキシトシン — 舌の触覚によるピーク分泌',desc:'舌のCT様神経終末（密度が高い）が相手の舌と接触することで島皮質→視床下部→オキシトシン産生という経路が最大に活性化される。「ディープキスの方が強い絆を感じる」という体験の神経内分泌学的根拠。'}],note_science:'呼吸の同期→心拍の同期→脳波の同期という段階的な生理的同調がキス中に起きることが研究で確認されている。この生理的同調が「一体感・溶ける感覚」の神経科学的正体。',good_scenes:['信頼関係が深まった後','3回目以降の親密なデート'],bad_scenes:['まだ信頼関係が浅い段階'],season:['通年'],rating:{誠実さ:82,色気:99,信頼感:88,初対面:30,汎用性:80},tip:'「ゆっくり・同期・温かさ」の三原則。焦りは全ての効果を下げる。相手の呼吸に合わせることが最強の技術。',pairing:'キスデッキ「テストステロン転移の科学」カード参照'},
+
+  // ── 口腔触覚 ──
+  {brand:'口腔触覚',color:'#7c3aed',emoji:'👄',name:'唇の触覚科学とスキンシップ',type:'口腔触覚×CT様繊維×ペンフィールドマップ',notes:'意識：唇は人体最高密度の触覚器官である認識\n応用：唇へのタッチ（髪を分ける・頬に触れる等）\nキスへの準備：距離を縮めてから自然に',neuro:'ペンフィールドマップ（体性感覚野の身体地図）において唇が占める面積は手のひら全体に匹敵する。唇のマイスナー小体・メルケル盤・自由神経終末の超高密度な配置がキスを「人体で最も情報量の多いタッチ行為」にする。口腔と触覚野の神経接続の強さが「キスの特別感」を生む解剖学的根拠。',hormones:['オキシトシン','エンドルフィン'],hormone_detail:[{ico:'🤝',name:'オキシトシン — 唇×最高密度触覚',desc:'唇の超高密度な触覚受容器が活性化されると視床下部のオキシトシン産生ニューロンへの入力が最大化される。唇へのタッチが「偶発的な腕へのタッチ」の何倍もの強度でオキシトシンを分泌させる神経解剖学的根拠。'},{ico:'😄',name:'エンドルフィン — 口腔快楽の最大化',desc:'口腔内のmu-オピオイド受容体（エンドルフィン受容体）の密度が高く唇・舌への刺激がエンドルフィン分泌を効率的に引き起こす。「キスが気持ちいい」という感覚の分子神経科学的根拠。'}],note_science:'美食・キス・オーラルという「口腔を使う全ての行為」が同じ島皮質×オキシトシン経路を共有している。「一緒に美味しいものを食べてキスする」という一連の流れがオキシトシンを階段状に積み上げる最適な設計。',good_scenes:['全ての口腔関連スキンシップ'],bad_scenes:['なし'],season:['通年'],rating:{誠実さ:85,色気:95,信頼感:90,初対面:45,汎用性:85},tip:'「食事→キス」という流れが美食のドーパミン+キスのオキシトシンを連鎖的に分泌させる恋愛の黄金フロー。',pairing:'口腔触覚デッキ「ペンフィールドマップと唇の科学」カード参照'},
+
+  // ── 体液×ホルモン科学 ──
+  {brand:'体液×ホルモン科学',color:'#1e40af',emoji:'🧬',name:'アンドロステノール×清潔さの化学',type:'アポクリン腺×フェロモン様物質×嗅覚誘引',notes:'前提：入浴後・清潔な状態が絶対条件\n最適：スポーツ直後の新鮮な汗（すぐに入浴）\n香水：アンドロステノールを補強・増幅する役割',neuro:'アポクリン腺（腋窩・生殖器周辺）から分泌される新鮮な汗のアンドロステノールが女性に「清潔で魅力的な男らしさ」として知覚される。時間が経つとアンドロステノン（不快臭）に変化するため「新鮮さ」が化学的に最も重要な要素。EIDOS（嗅覚）アプリとの連携で香水がこの効果を補強・維持する役割を持つ。',hormones:['テストステロン','ノルアドレナリン'],hormone_detail:[{ico:'💪',name:'テストステロン×アンドロステノール',desc:'アンドロステノールはテストステロンの代謝産物。新鮮な汗に含まれる量が多いほど女性への誘引効果が高い。精巣のテストステロン産生能力が「体の香り」に直接反映される進化的な遺伝的品質指標。'},{ico:'🔬',name:'嗅覚×MHC×免疫相性',desc:'アポクリン腺分泌物にはMHC遺伝子産物が含まれる。女性はこれを嗅覚で無意識に評価し「免疫系の相性」を判断する（Wedekind 1995 Tシャツ実験）。香水はこのMHCシグナルを消すことなく補強する設計が理想。'}],note_science:'「運動直後のシャワーなし状態」は最悪。アンドロステノンが生成されてしまう。「運動→即シャワー→清潔な状態で香水」という流れがアンドロステノールの効果を最大に活かす正しい手順。',good_scenes:['デート前の準備','スポーツデート後のシャワー'],bad_scenes:['シャワーなしの状態（化学的逆効果）'],season:['通年'],rating:{誠実さ:90,色気:88,信頼感:85,初対面:88,汎用性:95},tip:'清潔さは化学的に最強の誘引力。香水はその上に乗せる「増幅器」。順序を間違えると全て逆効果になる。',pairing:'体液科学デッキ「アンドロステノール vs アンドロステノンの化学」カード参照'},
+  {brand:'体液×ホルモン科学',color:'#1e40af',emoji:'🔬',name:'MHC相性評価プロトコル',type:'免疫遺伝子×体液×深層的絆形成',notes:'認識：キス・スキンシップがMHC情報を提供\n確認：「なんとなく合う感覚」を信頼する\n意味：遺伝的相性の本能的評価を尊重する',neuro:'MHC（主要組織適合性複合体）遺伝子の差異が体液・唾液・汗の化学物質として放出され相手に無意識に評価される。キス・オーラルセックスを通じた体液交換がより詳細なMHC情報を提供し「遺伝的に多様な子孫を産める相性かどうか」という免疫系の深層的相性評価を深化させる。',hormones:['オキシトシン','バソプレシン'],hormone_detail:[{ico:'🤝',name:'オキシトシン×MHC適合 — 本能的絆の形成',desc:'MHC的に相性の良い相手との体液交換でオキシトシンが最大量分泌されることが示唆されている。「なぜかこの人といると特別に安心する」という感覚のMHC免疫遺伝学的根拠。'},{ico:'🔒',name:'バソプレシン×MHC記憶 — 永続的絆',desc:'MHC相性評価後のバソプレシン分泌が「この相手への特別な独占的絆感情」を形成する。遺伝的に相性の良い相手とのペアボンド形成が神経生物学的に安定しやすい理由。'}],note_science:'「感覚を信頼せよ」という本能が科学的に正当化される。「なんとなく合わない気がする」という感覚がMHC不適合のシグナルである可能性がある。逆に「なぜかずっと一緒にいたい」はMHC適合の生物学的表現。',good_scenes:['深い関係への発展段階','長期的パートナー評価'],bad_scenes:['なし（意識すべき背景知識）'],season:['通年'],rating:{誠実さ:95,色気:85,信頼感:97,初対面:60,汎用性:88},tip:'「本能的に合う感覚」と「MHC相性」は高い相関がある。自分の嗅覚・感覚の判断を尊重することが最先端の科学的根拠を持つ。',pairing:'体液科学デッキ「MHC×Wedekind Tシャツ実験」カード参照'},
+
+  // ── 状況別プロトコル ──
+  {brand:'状況別プロトコル',color:'#0c1a0e',emoji:'🌙',name:'オーラルセックス×ホルモン最大化プロトコル',type:'口腔触覚×四種ホルモン同時分泌×絆形成',notes:'意識：「与える」行為が与える側のホルモンも最大化\n準備：清潔さ・安全な環境・信頼関係の確立\n重要：MHC相性の確認後に発展する段階',neuro:'口腔粘膜の超高密度な触覚受容器×生殖器の自律神経刺激×体液の化学的相互作用が同時に発生するオーラルセックスはオキシトシン・バソプレシン・エンドルフィン・ドーパミンの四種同時分泌量が最大になる行為。「与える側」もオキシトシン+エンドルフィンが分泌される双方向性がある。',hormones:['オキシトシン','バソプレシン','エンドルフィン','ドーパミン'],hormone_detail:[{ico:'🤝',name:'オキシトシン×バソプレシン — ペアボンド最大化',desc:'行為中のオキシトシン累積分泌がバソプレシン系を活性化させ「この相手への独占的な絆感情（ペアボンド）」を急速に形成する。「この体験の後から急激に好きになった」という現象の神経内分泌学的根拠。'},{ico:'😄',name:'エンドルフィン×ドーパミン — 快楽記憶の最強形成',desc:'エンドルフィンの強烈な幸福感とドーパミンの「また求めたい」欲求が組み合わさり海馬に最も強度の高い快楽記憶を形成する。「この人とのこの体験が忘れられない」という絆の感情記憶の神経化学的正体。'}],note_science:'「与える」という行為が利他的に見えて実は与える側の脳にも同様のホルモン反応を引き起こす双方向性がある。相互的なケアがオキシトシン+エンドルフィンを双方で最大化させる最も深い絆形成行為。',good_scenes:['信頼関係が十分に確立された後','MHC相性が確認された関係'],bad_scenes:['信頼関係が不十分な段階'],season:['通年'],rating:{誠実さ:85,色気:99,信頼感:95,初対面:20,汎用性:72},tip:'「清潔さ×信頼関係×相互性」の三原則。準備と信頼関係の構築が全ての前提条件。',pairing:'体液科学デッキ「オルガズム×ホルモンカスケード」カード参照'},
+  {brand:'状況別プロトコル',color:'#0c1a0e',emoji:'🍽',name:'テストステロン維持×食生活プロトコル',type:'栄養×テストステロン×恋愛パフォーマンス',notes:'亜鉛：牡蠣・赤身肉・カボチャの種\nビタミンD：魚類・卵黄・日光\n良質脂質：アボカド・オリーブオイル・ナッツ\n避ける：過剰な砂糖・アルコール・加工食品',neuro:'テストステロンは声の低さ・筋肉量・自信・性欲・活力の全ての基盤。食事・睡眠・運動・ストレス管理がテストステロン産生に直接影響する。亜鉛はテストステロン合成の必須ミネラルでビタミンDはライディッヒ細胞（精巣でのテストステロン産生細胞）の機能を維持する。',hormones:['テストステロン'],hormone_detail:[{ico:'💪',name:'テストステロン×亜鉛×ビタミンD',desc:'亜鉛欠乏でテストステロンが最大74%低下するという研究がある（Prasad 1996）。牡蠣1個で1日の推奨亜鉛量の約600%を摂取できる。ビタミンD3補充でテストステロンが25%増加した研究（Pilz 2011）も存在する。「食べて強くなる」の内分泌学的根拠。'},{ico:'😴',name:'睡眠×テストステロン',desc:'睡眠7〜9時間未満でテストステロンが10〜15%低下する（Leproult & Van Cauter 2011）。「声が低い・自信がある・性欲がある」という恋愛的魅力の全てに直結するテストステロンを維持する最も重要な単一行動が十分な睡眠。'}],note_science:'「デートの前日は十分に眠る」は科学的に正当化された最強の準備行動。睡眠不足はテストステロン低下→声のトーン低下→自信の低下→印象低下という連鎖を引き起こす。',good_scenes:['日常の食生活として','デート前の準備として'],bad_scenes:['なし（常に実践すべき基盤）'],season:['通年'],rating:{誠実さ:88,色気:88,信頼感:85,初対面:85,汎用性:99},tip:'牡蠣・アボカド・ナッツ・卵・魚類を中心とした食事＋7時間以上の睡眠がホルモン的に最強のデート準備。',pairing:'ホルモンデッキ「テストステロンを高める食品と行動」カード参照'},
+
+  // ── 食×デート戦略深化 ──
+  {brand:'食×デート戦略',color:'#7f1d1d',emoji:'🍣',name:'寿司×カウンター席デート',type:'食×距離感×会話設計',notes:'席：カウンター（横並び=「肩並べ効果」）\n選択：お任せで「一緒に驚く」体験\n演出：シェフとの会話で「知識がある男性」を演出',neuro:'カウンター席が「横並び×個人距離×共同注意（同じものを一緒に見る）」という三条件を自然に実現する。SONOSの「肩並べ効果」（対面比較で自己開示が1.5〜2倍増加）が食事環境で自動的に発動する。お任せコース（サプライズ×共有体験）がドーパミン的新規性×共食オキシトシンを同時に作る最強の食事デート形式。',hormones:['オキシトシン','ドーパミン'],hormone_detail:[{ico:'🍣',name:'横並び×共同注意×オキシトシン',desc:'カウンター席での横並びが対面比較で自己開示を深化させる（ドライブデートと同じ肩並べ効果）。お任せで同じものを楽しむ「共同注意体験」がオキシトシン的共鳴を作る。'}],note_science:'高品質な寿司店での体験が「資源調達能力」（Buss選択基準①）のシグナルとして機能しつつ食のドーパミン×共食オキシトシンを同時に実現する。',good_scenes:['2〜3回目以降','特別な夜'],bad_scenes:['初対面（高すぎて緊張させる場合）'],season:['通年'],rating:{誠実さ:90,色気:85,信頼感:90,初対面:55,汎用性:82},tip:'「これ好き？」と一つ一つ確認しながら食べることがSONOSの傾聴×GEUSTOの共食を食卓で統合する最強の会話設計。',pairing:'食の科学デッキ「共食効果×Dunbar研究」カード参照'},
+  {brand:'食×デート戦略',color:'#7f1d1d',emoji:'🫕',name:'家で料理×共同作業デート',type:'食×共同体験×オキシトシン',notes:'形式：一緒に料理を作る\n選択：相手が好きな料理を作る\n演出：少し難しい料理で「一緒に達成する」',neuro:'共同作業（協力して一つのことをする）がオキシトシン分泌の強力なトリガーになる（Rilling et al. 協力ゲーム研究）。「一緒に何かを作る」行為が「私たちの共同作品」という所有感を生み投資モデルの「投資量」を急増させる。Dunbar（2017）の共食効果に「共同作業」が加わることでオキシトシン分泌量が通常の食事より大幅に増加する。',hormones:['オキシトシン','ドーパミン'],hormone_detail:[{ico:'👨‍🍳',name:'共同作業×オキシトシン×投資量',desc:'一緒に料理を作ることが「共同体験×共食×自己決定理論（関係性欲求の充足）」を同時に満たす。完成した料理を一緒に食べる体験が「私たちが作ったもの」という特別な共有体験として海馬に保存される。'}],note_science:'家での料理デートは①EIDOSの香り（食材の香り×料理の香り×体臭の統合）②HAPTOSの近接×タッチ③GEUSTOの共食×味覚の三感が一つの空間で統合される五感統合の理想的な環境。',good_scenes:['3〜4回目以降','親密な段階'],bad_scenes:['初対面'],season:['通年'],rating:{誠実さ:95,色気:80,信頼感:95,初対面:20,汎用性:80},tip:'料理中の「手に触れる場面」（包丁を渡す・調味料を渡す）をHAPTOSの偶発的タッチの機会として最大活用する。',pairing:'SENSESデッキ「五感統合が恋愛の完全自動化システムを形成するメカニズム」カード参照'},
+  {brand:'食×デート戦略',color:'#7f1d1d',emoji:'☕',name:'カフェ×午後のデート設計',type:'食×日常的親密感',notes:'時間：14〜16時（コルチゾール日内低値帯）\nオーダー：相手の好みに合わせて提案する\n座席：横並びまたは90度配置',neuro:'午後14〜16時は日内コルチゾールの低値帯——扁桃体の防衛機制が最も弱まる時間帯。この時間帯の共食体験が扁桃体の開放×オキシトシン分泌の効率を最大化させる。コーヒー×カフェインがアデノシン受容体を拮抗しドーパミン系を軽度に活性化させ「一緒にいると楽しい」感覚を増強する。',hormones:['セロトニン','ドーパミン'],hormone_detail:[{ico:'☕',name:'コルチゾール低値帯×開放感',desc:'午後のコルチゾール低値が扁桃体防衛機制を緩め自己開示の深さを促進する。コーヒーのカフェインがドーパミン系を軽度に活性化させ「楽しい」感覚を増強する。EIDOSの香水が最も受け取られやすい時間帯でもある。'}],note_science:'「カフェで話が弾んだ」体験の神経化学的正体がこのコルチゾール低値×カフェイン×横並び席×午後の光という環境的要因の組み合わせ。',good_scenes:['初デートのフォローアップ','2〜3回目','日常的な会い方'],bad_scenes:['告白（少し軽すぎる）'],season:['通年'],rating:{誠実さ:85,色気:72,信頼感:87,初対面:87,汎用性:95},tip:'ドリンクを注文する時に「何が好き？」と聞いてから「じゃあこれ試してみて」と提案することが傾聴×ケア×知識の三重シグナルになる。',pairing:'食の科学デッキ「共食×アルコール×扁桃体抑制」カード参照'},
+
+  // ── キス深化 ──
+  {brand:'キスの科学',color:'#dc2626',emoji:'💋',name:'別れ際キスプロトコル',type:'キス×記憶×ピーク・エンド',notes:'タイミング：別れの直前（エンドの記憶）\n方法：名前を呼ぶ→目を見る→ゆっくりと\n時間：3〜5秒（短すぎず長すぎず）',neuro:'ピーク・エンドの法則（Kahneman）でデートの最後の瞬間（エンド）が記憶全体の評価を決定する。別れ際のキスが「今日のデートの最後の感情」として海馬に記録され「また会いたい」という欲求の強度を決定する。名前を呼んでから始めることでN200ニューラル反応×オキシトシン+キスの5種ホルモン同時分泌が連鎖する。',hormones:['オキシトシン','バソプレシン','ドーパミン'],hormone_detail:[{ico:'💋',name:'別れ際×エンド×記憶最大化',desc:'ピーク・エンドの法則で「別れ際」は記憶強度が最大になる瞬間。キスの5種ホルモン（オキシトシン×ドーパミン×ノルアドレナリン×エンドルフィン×テストステロン転移）がこの「エンドの記憶」を最高強度で固定する。「また会いたい」という欲求の神経科学的根拠。'}],note_science:'別れ際のキス→帰りの電車・帰路でのオキシトシン持続分泌→「今日楽しかった」という記憶の反芻→バソプレシン絆強化という「キス後の30分」が関係を深める重要な時間帯。',good_scenes:['デートの終わり（全シーン）'],bad_scenes:['初回（まだ早い）'],season:['通年'],rating:{誠実さ:88,色気:95,信頼感:90,初対面:20,汎用性:88},tip:'「今日楽しかった、また会いたい」という言葉の後にキスすることで言語+触覚のダブルシグナルがオキシトシン分泌を倍増させる。',pairing:'キスデッキ「5種ホルモン同時分泌の科学」カード参照'},
+  {brand:'キスの科学',color:'#dc2626',emoji:'🌬',name:'耳元キス×囁き×CT繊維統合',type:'キス×聴覚×触覚統合',notes:'場所：耳介甲介（耳の最も深い凹み）への唇\n言葉：名前を囁く\n呼吸：温かい息を感じさせるように',neuro:'耳介甲介への唇（GEUSTO）×囁き声の空気振動（SONOS：耳介CT繊維→迷走神経耳介枝）×温かい息（TRPV1温度受容器）の三感が一点で統合される人体最密度の多感覚刺激ポイント。SONOSで解説した「耳元への息が三感を同時刺激する唯一の行為」にGEUSTOの口腔（唇）を加えた四感統合として機能する。',hormones:['オキシトシン','エンドルフィン'],hormone_detail:[{ico:'👂',name:'耳介甲介×迷走神経直接刺激',desc:'耳介甲介への唇の接触が医療的なtVNS（経皮的迷走神経刺激）と同じ迷走神経耳介枝を活性化させる。これが視床下部のオキシトシン産生ニューロンへの直接入力となる。「耳元のキスで全身に電気が走る」感覚の解剖学的完全説明。'}],note_science:'耳介甲介（concha）は迷走神経の皮膚枝（耳介枝）が全身で最もアクセスしやすい体表部位。この部位への接触がHAPTOS×SONOS×GEUSTOの三アプリの効果を一点で統合する。',good_scenes:['親密な段階','夜のシーン','告白'],bad_scenes:['初対面×公共の場（距離感が必要）'],season:['通年'],rating:{誠実さ:85,色気:98,信頼感:88,初対面:25,汎用性:80},tip:'名前を低く温かく耳元で囁いてから耳介甲介に唇を軽く触れるだけで、SONOSとHAPTOSとGEUSTOの全てが一瞬で統合される最強の五感統合ポイント。',pairing:'SONOSデッキ「耳介甲介×迷走神経×オキシトシン」カード参照'},
+
+  // ── ホルモン×食 深化 ──
+  {brand:'体液×ホルモン科学',color:'#1e40af',emoji:'🌙',name:'性行為後スキンシップ継続プロトコル',type:'ホルモン管理×絆形成',notes:'タイミング：行為直後〜30分が最重要時間帯\n実践：抱擁（20秒以上）+囁き+名前呼び\n環境：シグネチャーセントを纏っている状態',neuro:'射精後のバソプレシンが30分以内に最大値を迎え「この相手への独占的絆感情」が形成される最重要時間帯。同時にプロラクチン急増（不応期）が起きるがスキンシップ継続でプロラクチン上昇を抑制しオキシトシンのみを持続分泌させられる（GEUSTOのプロラクチン管理）。EIDOSのシグネチャーセント+HAPTOSの20秒ハグ+SONOSの囁き声+名前呼びの四感統合がバソプレシン絆形成を永続化させる。',hormones:['バソプレシン','オキシトシン','エンドルフィン'],hormone_detail:[{ico:'🔒',name:'バソプレシン×30分×永続的絆',desc:'射精後のバソプレシン最大値時に四感統合スキンシップを継続することで「この体験×この感覚×この人」というペアボンドが神経生物学的に最速で形成される。プロラクチンによる感情的離脱を防ぎながら絆を固定化する唯一の戦略。'}],note_science:'「行為後に寝てしまう」という行動がプロラクチンによる感情的離脱（不応期）の自然な結果。この時間帯にスキンシップを継続することがプロラクチン上昇を抑制しバソプレシン絆形成の最重要時間帯を活用する科学的根拠。',good_scenes:['性的親密な段階'],bad_scenes:['なし（対象段階のみ）'],season:['通年'],rating:{誠実さ:88,色気:95,信頼感:98,初対面:20,汎用性:70},tip:'「眠い」感覚が来ても10〜15分だけ抱擁を続けることがバソプレシン絆形成に決定的に重要。眠気＝プロラクチン＝今がバソプレシン最大値の証拠。',pairing:'夜の味覚デッキ「射精後30分バソプレシン最大値」カード参照'},
+  {brand:'体液×ホルモン科学',color:'#1e40af',emoji:'🧪',name:'オーラルセックス×四感統合最大化',type:'口腔×ホルモン×絆形成',notes:'前提：信頼関係×清潔さ×MHC相性確認後\n意識：「与える」行為が自分のホルモンも最大化\n連携：EIDOS×HAPTOS×GEUSTO×SONOSの四感統合',neuro:'口腔粘膜の超高密度な触覚受容器（GEUSTO解剖学）×生殖器の自律神経刺激×体液の化学的相互作用（MHC評価×コプリン×テストステロン転移）が同時に発生する最大の多感覚統合行為。カルバートの超加算的効果が「与える×受け取る」の双方向で同時に発生する唯一の行為。「与える側」にもオキシトシン+エンドルフィンが分泌される双方向性が最大のペアボンド形成速度を生む。',hormones:['オキシトシン','バソプレシン','エンドルフィン','ドーパミン'],hormone_detail:[{ico:'🔄',name:'双方向オキシトシン×最速ペアボンド',desc:'口腔CT繊維×生殖器自律神経×体液化学×嗅覚の四経路が同時活性化。「与える」行為でも島皮質×ミラーニューロンを通じてオキシトシン+エンドルフィンが与える側にも分泌される双方向性が四種ホルモン同時分泌の最大形態を双方で実現する。'}],note_science:'MHC化学情報（コプリン含有腟分泌物×アンドロスタジエノン含有精液）が最大量交換されるため「究極のMHC相性評価」が完了する行為。「この体験後から急激に好きになった」体験の神経生物学的完全設計。',good_scenes:['十分な信頼関係確立後'],bad_scenes:['信頼関係が不十分な段階'],season:['通年'],rating:{誠実さ:85,色気:99,信頼感:95,初対面:20,汎用性:68},tip:'「清潔さ×信頼関係×相互性」の三原則が全ての前提。この三条件が揃った時のみ四種ホルモン最大値が実現する。',pairing:'体液科学デッキ「オーラルセックス×双方向オキシトシン」カード参照'},
+];
+
+
+const QS=[
+  {q:'キス中に同時分泌される5種のホルモンは？',opts:['ドーパミン・セロトニン・GABA・コルチゾール・プロラクチン','オキシトシン・ドーパミン・ノルアドレナリン・エンドルフィン・テストステロン（転移）（Wlodarski & Dunbar 2013）','アドレナリン・エストロゲン・グレリン・インスリン・メラトニン'],ans:1,exp:'唇は人体最高密度の触覚受容器を持つ器官。キスが触覚・嗅覚・味覚・化学感覚を同時に統合した最強の複合感覚行為であり単一行為としてのホルモン分泌量が最大になる。「キスして急激に好きになった」体験の神経内分泌学的正体。',frags:['ファーストキスプロトコル']},
+  {q:'チョコレートが「恋愛の分子」と呼ばれる物質を含む理由は？',opts:['甘いから','フェニルエチルアミン（PEA）が恋愛初期の脳内に大量分泌される物質と同じで、ドーパミン・ノルアドレナリン放出を促進し「ときめき・興奮」と同様の生理状態を作るから','砂糖が多いから'],ans:1,exp:'PEAはドーパミン・ノルアドレナリンの放出促進に加えテオブロミン（血管拡張・心拍上昇）・トリプトファン（セロトニン前駆体）・アナンダミド（内因性カンナビノイド様）も同時に含むカカオ70%以上のダークチョコレートが最も効果が高い。',frags:['チョコレート×PEA戦略']},
+  {q:'「牡蠣が媚薬」という言い伝えの栄養内分泌学的根拠は？',opts:['美味しいから','牡蠣は亜鉛含有量が食品中トップクラスで亜鉛欠乏でテストステロンが最大74%低下する（Prasad 1996）。D-アスパラギン酸がLHを刺激しテストステロン産生を直接促進する研究もある。','精力が付くと思われているから'],ans:1,exp:'亜鉛はテストステロン合成の必須ミネラル。牡蠣1個で1日の推奨亜鉛量の約600%を摂取できる。テストステロンが声・自信・性欲・活力の全ての基盤であることを考えると「牡蠣→テストステロン↑→恋愛的魅力↑」という連鎖は栄養学的に正確。',frags:['テストステロン維持×食生活プロトコル']},
+  {q:'ディープキスで「テストステロン転移」が起きる可能性を示した研究は？',opts:['Kinsey 1948','Wlodarski & Dunbar（2013, Archives of Sexual Behavior）で男性の唾液中テストステロンが女性の口腔粘膜から吸収される可能性が示された','Masters & Johnson 1966'],ans:1,exp:'男性の唾液中テストステロン濃度は血中濃度の約10%。ディープキスでの唾液交換が女性の性的覚醒を段階的に高める生物学的メカニズムの根拠として提示されている。「キスを重ねるほど好きになる」という体験の化学的根拠の一つ。',frags:['キスの深化プロトコル']},
+  {q:'Wedekind（1995）の「Tシャツ実験」が証明したMHCと体液の関係は？',opts:['清潔な服が好まれる','女性は自分と異なるMHCを持つ男性の汗の匂いに惹かれる傾向がある。体液交換（キス・性行為）がより詳細なMHC情報を相手に提供し免疫系の相性評価を深化させる。','同じMHCの人と合う'],ans:1,exp:'MHCは免疫遺伝子の差異を体臭として放出する機構。異なるMHCへの誘引は「遺伝的多様性の高い子孫を産める相性」を本能が評価するため。「なんとなく合う感覚」が免疫遺伝学的相性である可能性を示す。',frags:['MHC相性評価プロトコル']},
+  {q:'共食（一緒に食事をする）がオキシトシン分泌を促進する根拠（Dunbar 2017）は？',opts:['食事が美味しくなるから','共食が笑い・会話・身体的近接を誘発しオキシトシンを累積的に分泌させ「一緒に食事をする頻度」が社会的絆の強さと最も高く相関することがDunbar（2017）で確認された','一緒にいる時間が長くなるから'],ans:1,exp:'人類史上最古の絆形成プロトコルとしての共食。「食事に誘う」ことが最強の恋愛第一手である神経科学的根拠。食事という行為が笑い・会話・タッチの機会を自然に生み出すオキシトシン最大化環境を作る。',frags:['初デート食事選び戦略']},
+  {q:'オルガズム時に連鎖分泌される「ホルモンカスケード」の主な4種は？',opts:['テストステロン・エストロゲン・アドレナリン・インスリン','オキシトシン（最大値）・プロラクチン・エンドルフィン・ドーパミン+バソプレシン（男性）','セロトニン・GABA・コルチゾール・グレリン'],ans:1,exp:'オルガズム後のプロラクチン上昇が「リラクゼーション・眠気・満足感」を作り不応期の神経内分泌学的根拠になる。男性のバソプレシン急増が「この相手への独占的絆感情」を形成する。性行為後の「一緒にいたい・守りたい」という感情の正体。',frags:['オーラルセックス×ホルモン最大化プロトコル']},
+  {q:'睡眠不足がテストステロンに与える影響（Leproult & Van Cauter 2011）は？',opts:['影響はない','睡眠7時間未満でテストステロンが10〜15%低下することが確認された。声のトーン低下→自信の低下→印象低下という連鎖を引き起こす。デート前日に十分眠ることが最強の準備行動。','睡眠が短いほど覚醒して良い'],ans:1,exp:'テストステロンの70〜75%が睡眠中（特にREM睡眠中）に産生される。睡眠不足がテストステロン産生を直接阻害する。「声が低い・自信がある・エネルギーがある」という全ての恋愛的魅力の基盤がテストステロンであることを考えると睡眠管理が最優先の恋愛戦略。',frags:['テストステロン維持×食生活プロトコル']},
+  {q:'「食の吊り橋効果」とは何か？辛味との関係は？',opts:['辛いものが好きになる','カプサイシンがTRPV1受容体を刺激しノルアドレナリン分泌→心拍数・体温上昇という生理的覚醒を引き起こし、この覚醒が「恋愛のときめき」として誤帰属される現象。辛いものを一緒に食べると親密感が高まる研究がある。','辛い食事が好きな人に共通点がある'],ans:1,exp:'吊り橋効果（Dutton & Aron 1974）の食事版。生理的覚醒の感情誤帰属が食卓でも起きる。辛い料理→ノルアドレナリン上昇→「ドキドキ＝あなたのせい」という誤帰属が「なんかこの人といると楽しい・ドキドキする」という感情を強化する。',frags:['初デート食事選び戦略']},
+  {q:'「五感統合（EIDOS×FORMA×SONOS×HAPTOS×GEUSTO）」が完成した時に起きることは？',opts:['全部良ければ印象が上がる','香り（嗅覚）×服装（視覚）×声（聴覚）×タッチ（触覚）×食とキス（味覚）の五感全てが一致・統合された時、相手の脳内に「会うたびに全感覚でオキシトシン+バソプレシン+エンドルフィン+ドーパミンが同時発動する恋愛の完全自動化システム」が形成される。','印象が良くなる'],ans:1,exp:'各感覚が単独で作用する時の効果の単純な合計ではなく、複数の感覚が同時に統合されることで記憶の強度・ホルモン分泌量・絆形成速度が指数関数的に増大する（多感覚統合効果）。これが人類最強の恋愛設計の完成形。',frags:['MHC相性評価プロトコル','ファーストキスプロトコル']},
+];
+
+/* ── AI CHAT: GEUSTO ── */
+const AI_ENDPOINT_geusto = 'https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI';
+const AI_KEY_geusto = 'HeartsHouse2026Key';
+const AI_SYS_geusto = `あなたはGEUSTO味覚・共食専門AIコーチです。
+専門知識：味覚6神経経路・島皮質一次味覚野・共食効果（Dunbar2017）・キスのMHC評価・テストステロン転移・チョコレート×PEA（フェニルエチルアミン）・ワイン×アルコール×社会的潤滑・腸-脳軸（腸内環境→セロトニン）・プロラクチン管理・バソプレシン起動タイミング。
+回答：デートの食事・ドリンク・タイミングを具体的に提案。日本語200〜400文字。`;
+const AI_QUICK_geusto = [`🌸 初対面のデートグルメ`,`🍷 ワインの選び方`,`💋 キスのタイミング`,`🍫 チョコを使う戦略`,`🍽 共食効果を最大化`];
+let aiHistory_geusto = [];
+let aiLoading_geusto = false;
+
+function initAI_geusto(){
+  // クイックボタン生成
+  const qc = document.getElementById('aiQuickBtns');
+  if(qc) qc.innerHTML = AI_QUICK_geusto.map(q=>
+    `<button onclick="aiQuick_geusto(this.textContent.replace(/^[^\s]+\s/,''))" style="padding:.38rem .72rem;border-radius:9999px;background:var(--surface2);border:1px solid var(--border2);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap">${q}</button>`
+  ).join('');
+}
+
+function aiQuick_geusto(text){
+  document.getElementById('aiInp').value = text;
+  aiSend_geusto();
+}
+
+function aiAddMsg_geusto(text, role){
+  const msgs = document.getElementById('aiMsgs');
+  if(!msgs) return null;
+  const div = document.createElement('div');
+  const colors = {user:'linear-gradient(135deg,var(--eidos,#B8860B),var(--eidos-l,#D4A017))',ai:'var(--surface)',thinking:'var(--surface2)'};
+  div.style.cssText = `background:${colors[role]||colors.ai};border:1px solid var(--border);border-radius:var(--r-lg);padding:.78rem .9rem;font-family:var(--fu);font-size:.77rem;color:${role==='user'?'#fff':'var(--txt)'};line-height:1.68;align-self:${role==='user'?'flex-end':'flex-start'};max-width:90%;border-bottom-${role==='user'?'right':'left'}-radius:4px;font-style:${role==='thinking'?'italic':'normal'}`;
+  div.innerHTML = text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);
+  msgs.parentElement.scrollTop = msgs.parentElement.scrollHeight;
+  return div;
+}
+
+async function aiSend_geusto(){
+  if(aiLoading_geusto) return;
+  const inp = document.getElementById('aiInp');
+  const text = inp?.value?.trim();
+  if(!text) return;
+  aiAddMsg_geusto(text,'user');
+  inp.value=''; inp.style.height='auto';
+  const thinking = aiAddMsg_geusto('🧠 分析中...','thinking');
+  aiLoading_geusto=true;
+  const btn=document.getElementById('aiSendBtn');
+  if(btn)btn.disabled=true;
+  aiHistory_geusto.push({role:'user',parts:[{text}]});
+  try{
+    const prompt = AI_SYS_geusto+'\n\n【会話履歴】\n'+
+      aiHistory_geusto.slice(-6).map(h=>(h.role==='user'?'ユーザー: ':'AI: ')+h.parts[0].text).join('\n')+
+      '\n\n最後のユーザーの質問に答えてください。';
+    const res = await fetch(AI_ENDPOINT_geusto,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Access-Key':AI_KEY_geusto},
+      body:JSON.stringify({prompt,model:'gemini-2.0-flash',maxTokens:600})
+    });
+    const data = await res.json();
+    thinking?.remove();
+    const t = data?.data?.candidates?.[0]?.content?.parts?.[0]?.text||data?.data?.text||'';
+    if(t){aiAddMsg_geusto(t,'ai');aiHistory_geusto.push({role:'model',parts:[{text:t}]});}
+    else aiAddMsg_geusto('⚠️ 回答を取得できませんでした。','ai');
+  }catch(e){thinking?.remove();aiAddMsg_geusto('⚠️ 通信エラーです。','ai');}
+  aiLoading_geusto=false;
+  if(btn)btn.disabled=false;
+}
+
+// グローバル公開（onclickから呼べるように）
+window.aiSend = aiSend_geusto;
+window.aiQuick_geusto = aiQuick_geusto;
+
+window.aiSend = aiSend_geusto;
+
+</script>
+</body>
+</html>
