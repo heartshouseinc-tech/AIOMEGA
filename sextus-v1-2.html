@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F8F6FF">
+<title>SEXTUS — Sixth Sense Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F8F6FF; --bg2:#EDEAF9; --bg3:#E4E0F5;
+  --surface:#FFFFFF; --surface2:#F0EDF9;
+  --border:rgba(109,40,217,.12); --border2:rgba(109,40,217,.2);
+  --txt:#1a1230; --txt2:#4a3f6b; --txt3:#8b7dac;
+  --sixth:#7c3aed; --sixth-l:#6d28d9; --sixth-xl:rgba(124,58,237,.1);
+  --teal:#0f766e;  --teal-l:#0d9488;  --teal-xl:rgba(13,148,136,.1);
+  --rose:#e11d48;  --rose-l:#be185d;  --rose-xl:rgba(225,29,72,.08);
+  --amber:#d97706; --amber-l:#b45309; --amber-xl:rgba(180,83,9,.08);
+  --indigo:#2563eb;--indigo-l:#1e40af;--indigo-xl:rgba(37,99,235,.08);
+  --gold:#7c3aed;  --gold-l:#6d28d9;  --gold-xl:rgba(124,58,237,.08);
+  --fd:'Playfair Display',serif;
+  --fu:'DM Sans','Noto Sans JP',sans-serif;
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:24px; --r-full:9999px;
+  --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);font-family:var(--fu);overflow:hidden;height:100dvh}
+strong{color:var(--txt)}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;z-index:300;background:linear-gradient(135deg,#f0ebff,#e8f4f4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;transition:opacity .45s}
+.sp-orbs{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.08}
+.sp-icon{font-size:4.5rem;filter:drop-shadow(0 0 28px rgba(109,40,217,.5))}
+.sp-title{font-family:var(--fd);font-size:3rem;font-weight:700;letter-spacing:.08em;background:linear-gradient(135deg,#a78bfa,#2dd4bf,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sp-sub{font-family:var(--fu);font-size:.78rem;font-weight:600;letter-spacing:.18em;color:var(--txt3);text-transform:uppercase}
+.sp-tagline{font-family:var(--fd);font-size:1rem;font-style:italic;color:var(--txt2);text-align:center;line-height:1.6;max-width:280px}
+.sp-btn{margin-top:.5rem;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--sixth),var(--teal));border:none;border-radius:var(--r-full);font-family:var(--fu);font-size:1rem;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.04em}
+
+/* ── APP ── */
+#app{display:none;flex-direction:column;height:100dvh}
+#app.on{display:flex}
+.pages{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow:hidden;display:none}
+.page.on{display:flex;flex-direction:column}
+.sb{flex:1;overflow-y:auto;padding:0 1.1rem 1rem;-webkit-overflow-scrolling:touch}
+.sb::-webkit-scrollbar{display:none}
+.spacer{height:1.2rem}
+
+/* ── NAV ── */
+.bnav{display:flex;background:var(--bg2);border-top:1px solid var(--border);padding:0 .2rem calc(var(--sab) + .4rem);padding-top:.3rem}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.38rem .2rem;background:none;border:none;cursor:pointer;transition:all .15s}
+.bni-ico{font-size:1.25rem;line-height:1;transition:transform .15s}
+.bni-lbl{font-family:var(--fu);font-size:.52rem;font-weight:600;color:var(--txt3);letter-spacing:.02em;transition:color .15s}
+.bni-dot{width:4px;height:4px;border-radius:50%;background:transparent;margin-top:.1rem;transition:background .15s}
+.bni.on .bni-lbl{color:var(--sixth-l)}
+.bni.on .bni-dot{background:var(--sixth-l)}
+.bni.on .bni-ico{transform:scale(1.12)}
+
+/* ── PAGE HEADER ── */
+.pg-hd{padding:calc(var(--sat) + .9rem) 0 .6rem}
+.pg-title{font-family:var(--fd);font-size:1.45rem;font-weight:700;color:var(--txt)}
+
+/* ── CARD ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:.65rem}
+.card-hd{display:flex;align-items:center;gap:.75rem;padding:.9rem 1rem}
+.card-ico{width:36px;height:36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.card-hd-title{font-family:var(--fu);font-size:.88rem;font-weight:700;color:var(--txt)}
+.card-hd-sub{font-family:var(--fu);font-size:.65rem;color:var(--txt3);margin-top:.12rem}
+.card-bd{padding:.1rem 1rem 1rem}
+.neuro-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.5rem}
+.ng{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.7rem .75rem}
+.ng-ico{font-size:1.3rem;margin-bottom:.3rem}
+.ng-name{font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.15rem}
+.ng-chem{font-family:var(--fu);font-size:.55rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.ng-desc{font-family:var(--fu);font-size:.64rem;color:var(--txt2);line-height:1.55}
+
+/* ── HOME ── */
+.home-hero{background:linear-gradient(160deg,var(--bg2) 0%,#0d0d1f 100%);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.5rem 1.2rem;margin-bottom:.65rem;position:relative;overflow:hidden}
+.hero-orbs{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.home-top{display:flex;align-items:center;gap:.8rem;margin-bottom:.9rem}
+.home-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--sixth),var(--teal));display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;box-shadow:0 0 20px rgba(109,40,217,.4)}
+.hero-title{font-family:var(--fd);font-size:1.35rem;line-height:1.45;margin-bottom:.8rem}
+.hero-title em{font-style:italic;background:linear-gradient(135deg,var(--sixth-l),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hs-row{display:flex;gap:.5rem;margin-bottom:.9rem}
+.hs{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.6rem .5rem;text-align:center}
+.hs-n{display:block;font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--sixth-l)}
+.hs-l{display:block;font-family:var(--fu);font-size:.52rem;color:var(--txt3);margin-top:.1rem;font-weight:600}
+.tip-box{background:linear-gradient(135deg,var(--surface),var(--bg3));border:1px solid var(--border2);border-radius:var(--r-md);padding:.85rem;cursor:pointer;display:flex;gap:.65rem;align-items:flex-start}
+.tip-ico{font-size:1.2rem;flex-shrink:0;margin-top:.05rem}
+.tip-txt{font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7;font-style:italic}
+.mod{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.8rem .9rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:all .15s;margin-bottom:.5rem;position:relative;overflow:hidden}
+.mod:active{transform:scale(.98)}
+.mod-ac{position:absolute;left:0;top:0;bottom:0;width:3px}
+.mod-ico{width:36px;height:36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.mod-name{font-family:var(--fu);font-size:.82rem;font-weight:700;color:var(--txt)}
+.mod-sub{font-family:var(--fu);font-size:.63rem;color:var(--txt3);margin-top:.1rem}
+.mod-arr{margin-left:auto;color:var(--txt3);font-size:1.1rem;flex-shrink:0}
+
+/* ── SENSE CARDS ── */
+.sense-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.65rem}
+.sense-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.8rem .85rem;cursor:pointer;transition:transform .12s;display:flex;flex-direction:column;gap:.3rem}
+.sense-card:active{transform:scale(.97)}
+.sense-badge{font-family:var(--fu);font-size:.55rem;font-weight:700;padding:.12rem .45rem;border-radius:var(--r-full);width:fit-content}
+
+/* ── LEARN ── */
+.learn-hd{padding:calc(var(--sat) + .75rem) 1.25rem .65rem;display:flex;align-items:center;justify-content:space-between}
+.deck-tabs{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .65rem;scrollbar-width:none}
+.deck-tabs::-webkit-scrollbar{display:none}
+.dt{padding:.45rem .9rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt3);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.dt.on{background:var(--sixth);border-color:var(--sixth);color:#fff}
+.card-area{padding:0 1.25rem;flex:1;overflow-y:auto}
+.card-area::-webkit-scrollbar{display:none}
+.card-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;margin-bottom:.65rem}
+.card-face{padding:1.4rem 1.35rem;display:flex;flex-direction:column}
+.card-face.hidden{display:none}
+.card-face-back{background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(13,148,136,.04))}
+.cf-tag{font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--txt3);margin-bottom:.5rem}
+.cf-q{font-family:var(--fd);font-size:1.05rem;font-weight:600;color:var(--txt);line-height:1.45}
+.cf-a{font-family:var(--fu);font-size:.78rem;color:var(--txt2);line-height:1.7}
+.cf-src{font-family:var(--fu);font-size:.6rem;color:var(--txt3);margin-top:.5rem;font-weight:600;letter-spacing:.05em}
+.cf-frags{margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--border)}
+.cf-frags-lbl{font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--sixth-l);margin-bottom:.45rem}
+.cf-frag-chips{display:flex;flex-wrap:wrap;gap:.3rem}
+.cf-frag-chip{font-family:var(--fu);font-size:.63rem;font-weight:600;padding:.25rem .65rem;border-radius:var(--r-full);background:var(--surface2);border:1px solid var(--border);color:var(--txt2);cursor:pointer}
+.flip-btn{width:100%;padding:.9rem;background:var(--bg2);border:none;border-top:1px solid var(--border);font-family:var(--fu);font-size:.82rem;font-weight:600;color:var(--sixth-l);cursor:pointer}
+.card-ctrl{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.25rem}
+.ctrl-btn{width:40px;height:40px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt2)}
+.ctrl-pg{font-family:var(--fu);font-size:.75rem;color:var(--txt3);font-weight:600}
+.dots{display:flex;gap:.3rem;justify-content:center;padding:.3rem 0}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--border2);transition:all .2s}
+.dot.on{background:var(--sixth-l);width:14px;border-radius:3px}
+
+/* ── LIBRARY ── */
+.sense-filter{display:flex;gap:.35rem;overflow-x:auto;padding:0 0 .5rem;scrollbar-width:none;margin-bottom:.3rem}
+.sense-filter::-webkit-scrollbar{display:none}
+.sf-btn{padding:.38rem .85rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.7rem;font-weight:600;color:var(--txt3);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.sf-btn.on{background:var(--sixth);border-color:var(--sixth);color:#fff}
+.lib-grid{display:flex;flex-direction:column;gap:.5rem}
+.lc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.lc.open{border-color:var(--sixth)}
+.lc-top{display:flex;align-items:center;gap:.75rem;padding:.8rem .9rem;cursor:pointer}
+.lc-emoji{font-size:1.4rem;flex-shrink:0}
+.lc-brand{font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--txt3)}
+.lc-name{font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--txt)}
+.lc-type{font-family:var(--fu);font-size:.6rem;color:var(--txt3);margin-top:.08rem}
+.lc-body{padding:0 .9rem .9rem;display:none}
+.lc.open .lc-body{display:block}
+.lc-desc{font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7;margin-bottom:.5rem}
+.lc-tags{display:flex;flex-wrap:wrap;gap:.3rem}
+.lc-tag{font-family:var(--fu);font-size:.6rem;font-weight:600;padding:.2rem .55rem;border-radius:var(--r-full);background:var(--surface2);border:1px solid var(--border);color:var(--txt3)}
+
+/* ── QUIZ ── */
+.quiz-wrap{padding:0 1.1rem;flex:1;overflow-y:auto}
+.quiz-wrap::-webkit-scrollbar{display:none}
+.qhd{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0}
+.qsc{font-family:var(--fu);font-size:.78rem;font-weight:600;color:var(--sixth-l)}
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.3rem 1.2rem;margin-bottom:.6rem}
+.qq{font-family:var(--fd);font-size:1.05rem;font-weight:600;color:var(--txt);line-height:1.5;margin-bottom:1rem}
+.qopt{width:100%;text-align:left;padding:.8rem .9rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-md);font-family:var(--fu);font-size:.76rem;color:var(--txt2);cursor:pointer;margin-bottom:.45rem;transition:all .15s;line-height:1.5}
+.qopt:last-child{margin-bottom:0}
+.qopt.correct{background:rgba(13,148,136,.12);border-color:#0f766e;color:#0f766e}
+.qopt.wrong{background:rgba(225,29,72,.08);border-color:#e11d48;color:#be185d}
+.qexp{font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7;padding:.8rem .9rem;background:var(--bg2);border-radius:var(--r-md);margin-top:.6rem;display:none}
+.qexp.show{display:block}
+.qnxt{width:100%;padding:.85rem;background:var(--sixth);border:none;border-radius:var(--r-full);font-family:var(--fu);font-size:.85rem;font-weight:700;color:#fff;cursor:pointer;margin-top:.6rem;display:none}
+.qnxt.show{display:block}
+.qfin{text-align:center;padding:2rem 1rem}
+.qfin-score{font-family:var(--fd);font-size:2.5rem;font-weight:700;color:var(--sixth-l)}
+.qfin-msg{font-family:var(--fu);font-size:.8rem;color:var(--txt2);margin:.5rem 0 1.5rem}
+.qrestart{padding:.9rem 2rem;background:var(--surface);border:1.5px solid var(--sixth);border-radius:var(--r-full);font-family:var(--fu);font-size:.85rem;font-weight:700;color:var(--sixth-l);cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- ══ SPLASH ══ -->
+<div id="splash">
+  <div class="sp-orbs">
+    <div class="orb" style="width:280px;height:280px;background:#6d28d9;top:-80px;left:-60px"></div>
+    <div class="orb" style="width:200px;height:200px;background:#0d9488;bottom:-60px;right:-40px"></div>
+    <div class="orb" style="width:150px;height:150px;background:#be185d;top:45%;right:10%"></div>
+  </div>
+  <div class="sp-icon">🔮</div>
+  <div class="sp-title">SEXTUS</div>
+  <div class="sp-sub">Sixth Sense Intelligence</div>
+  <div class="sp-tagline">「意識の下で作動する感覚が、<br>最も深く恋愛を動かす。」</div>
+  <button class="sp-btn" onclick="boot()">はじめる →</button>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+  <div class="pages">
+
+    <!-- ══ HOME ══ -->
+    <div class="page on" id="pg-home">
+      <div class="sb">
+        <div class="home-hero">
+          <div class="hero-orbs">
+            <div class="orb" style="width:160px;height:160px;background:#6d28d9;top:-50px;right:-30px;opacity:.12"></div>
+            <div class="orb" style="width:120px;height:120px;background:#0d9488;bottom:-40px;left:-30px;opacity:.1"></div>
+          </div>
+          <div class="home-top">
+            <div class="home-av">🔮</div>
+            <div>
+              <div style="font-family:var(--fd);font-size:1.05rem;font-weight:700">SEXTUS</div>
+              <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.12rem">SIXTH SENSE INTELLIGENCE</div>
+            </div>
+          </div>
+          <div class="hero-title">意識の下で作動する感覚が、<br><em>最も深く恋愛を動かす。</em></div>
+          <div class="hs-row">
+            <div class="hs"><span class="hs-n">8</span><span class="hs-l">第六感カテゴリ</span></div>
+            <div class="hs"><span class="hs-n">40+</span><span class="hs-l">プロトコル</span></div>
+            <div class="hs"><span class="hs-n">8</span><span class="hs-l">学習デッキ</span></div>
+          </div>
+          <div class="tip-box" onclick="rotateTip()">
+            <span class="tip-ico" id="tipIco">🔮</span>
+            <span class="tip-txt" id="tipTxt"></span>
+          </div>
+        </div>
+
+        <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin-bottom:.5rem">8つの第六感</div>
+        <div class="sense-grid">
+          <div class="sense-card" onclick="nav('science',1)" style="border-color:rgba(109,40,217,.3)">
+            <div style="font-size:1.4rem">🫀</div>
+            <div style="font-family:var(--fd);font-size:.88rem;font-weight:700">内受容感覚</div>
+            <div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">胸キュン・直感の解剖</div>
+            <div class="sense-badge" style="background:var(--sixth-xl);color:var(--sixth-l)">最重要</div>
+          </div>
+          <div class="sense-card" onclick="nav('science',1)" style="border-color:rgba(13,148,136,.3)">
+            <div style="font-size:1.4rem">🧠</div>
+            <div style="font-family:var(--fd);font-size:.88rem;font-weight:700">腸-脳軸</div>
+            <div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">第二の脳×直感</div>
+            <div class="sense-badge" style="background:var(--teal-xl);color:var(--teal-l)">新発見</div>
+          </div>
+          <div class="sense-card" onclick="nav('science',1)" style="border-color:rgba(180,83,9,.3)">
+            <div style="font-size:1.4rem">⚖️</div>
+            <div style="font-family:var(--fd);font-size:.88rem;font-weight:700">固有感覚</div>
+            <div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">距離感×身体の記憶</div>
+            <div class="sense-badge" style="background:var(--amber-xl);color:var(--amber-l)">実証済</div>
+          </div>
+          <div class="sense-card" onclick="nav('science',1)" style="border-color:rgba(190,24,93,.3)">
+            <div style="font-size:1.4rem">🌀</div>
+            <div style="font-family:var(--fd);font-size:.88rem;font-weight:700">前庭感覚</div>
+            <div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">揺れ×ときめき誤帰属</div>
+            <div class="sense-badge" style="background:var(--rose-xl);color:var(--rose-l)">応用可</div>
+          </div>
+        </div>
+        <div class="mod" onclick="nav('learn',2)"><div class="mod-ac" style="background:var(--sixth)"></div><div class="mod-ico" style="background:var(--sixth-xl)">📚</div><div><div class="mod-name">第六感 Learn</div><div class="mod-sub">8デッキ 80+カード — 島皮質×腸脳軸×固有感覚</div></div><span class="mod-arr">›</span></div>
+        <div class="mod" onclick="nav('library',3)"><div class="mod-ac" style="background:var(--teal)"></div><div class="mod-ico" style="background:var(--teal-xl)">🔮</div><div><div class="mod-name">第六感ライブラリ</div><div class="mod-sub">40+ プロトコル × 恋愛への応用</div></div><span class="mod-arr">›</span></div>
+        <div class="mod" onclick="nav('quiz',4)"><div class="mod-ac" style="background:var(--rose)"></div><div class="mod-ico" style="background:var(--rose-xl)">⚡</div><div><div class="mod-name">第六感クイズ</div><div class="mod-sub">第六感専門クイズ — 10問</div></div><span class="mod-arr">›</span></div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- ══ SCIENCE PAGE ══ -->
+    <div class="page" id="pg-science">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="background:linear-gradient(135deg,var(--sixth-l),var(--teal-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">🔬 第六感の科学</div></div>
+
+        <!-- 内受容感覚 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--sixth-xl)">🫀</div><div><div class="card-hd-title">内受容感覚（Interoception）</div><div class="card-hd-sub">島皮質×「胸キュン・直感・なんとなく好き」の解剖学的正体</div></div></div><div class="card-bd">
+          <div style="background:var(--sixth-xl);border:1px solid rgba(109,40,217,.18);border-radius:var(--r-md);padding:.9rem;margin-bottom:.7rem">
+            <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--sixth-l);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">🔬 Craig（2002, Nature Reviews Neuroscience）/ Critchley（2004）</div>
+            <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7">内受容感覚は体の内側（心臓・肺・腸・筋肉・血管）からの信号を<strong style="color:var(--txt)">島皮質（前部）</strong>が処理する感覚。「胸が高鳴る・お腹がざわつく・なんとなく体が反応する」という感覚の全ての神経科学的正体がこれ。五感（外受容感覚）に対する「内側からの感覚」として第六感の最も確立された実体。</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🫀 心臓内受容感覚 — 「胸キュン」の解剖</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">心臓の感覚神経（迷走神経心臓枝+交感神経）が心拍変化・心拍リズム・心臓壁の伸展を感知し島皮質前部に送信する。<strong>「胸が高鳴る・ドキドキする・胸がキュンとなる」</strong>という感覚は心臓内受容信号が島皮質で「感情として意識化」される現象。好意を持つ人を見た時の交感神経活性（心拍上昇）が「この人が好き」という感情の身体的根拠として機能する。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🌡 温度内受容 — 「温かい人」の神経科学</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">体温・皮膚温度の変化を感知する内受容信号が島皮質で処理される。<strong>Williams & Bargh（2008, Science）</strong>の実験で温かいコーヒーを持った状態の人が他者を「より温かい・親切な人」と評価した。物理的温度と社会的温もりの知覚が島皮質で処理される神経科学的根拠。HAPTOSの「体温に近い温かいタッチ」がオキシトシン系と同時に島皮質を活性化させる。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🎯 内受容感覚の精度（感度）と恋愛直感の関係</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65"><strong>Garfinkel et al.（2015）</strong>の研究で内受容感覚の精度（自分の心拍を正確に感知できる能力）が高い人ほど感情的直感の精度が高いことが確認された。「なんとなくこの人が好き」という感覚の精度は内受容感覚の感度によって決まる。マインドフルネス・腹式呼吸・ヨガが内受容感覚の感度を高める練習になる。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🔗 島皮質 — 内受容感覚の処理センターと五感統合</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">島皮質は内受容感覚の処理中枢であると同時にHAPTOS（CT繊維→島皮質）×GEUSTO（味覚一次野）×SONOS（囁き声経路）の収束点でもある。<strong>第六感（内受容感覚）が五感統合の「体の内側からの評価層」</strong>として機能し「体が反応する」という感覚が恋愛判断の最も原始的で信頼性の高い情報源になる。</div></div>
+          </div>
+        </div></div>
+
+        <!-- 腸-脳軸 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">🧠</div><div><div class="card-hd-title">腸-脳軸（Gut-Brain Axis）× 直感の科学</div><div class="card-hd-sub">腸管神経系×セロトニン95%×「ガット・フィーリング」の神経解剖</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="background:var(--teal-xl);border:1px solid rgba(13,148,136,.18);border-radius:var(--r-md);padding:.85rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--teal-l);margin-bottom:.35rem">🔬 腸管神経系（ENS）— 第二の脳</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">腸管神経系（Enteric Nervous System）は<strong>約5億個のニューロン</strong>を持ち脳に次ぐ規模の神経系。脊髄（約1億個）より多い。体の<strong>セロトニンの約95%が腸で産生・貯蔵</strong>される。腸は脳からの独立した判断能力を持ち「ガット・フィーリング（腸の感覚）」という表現が日本語でも英語でも普遍的に使われることの神経科学的根拠。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🔄 迷走神経×腸-脳軸の双方向通信</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">腸と脳は迷走神経（第10脳神経）を通じて双方向通信する。<strong>迷走神経の80〜90%は腸→脳への上行信号</strong>（脳→腸はわずか10〜20%）。「お腹がざわつく・胃が締め付けられる」という感覚は腸管神経→迷走神経→脳幹→島皮質という経路で意識化される。HAPTOSとSONOSで活性化した迷走神経が腸の感覚感度も高める五感統合の意外な連鎖。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🦠 腸内細菌×恋愛感情×セロトニン</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">腸内細菌（マイクロバイオーム）がセロトニン産生に直接影響する。腸内環境が良好な状態（多様な腸内細菌）ではセロトニン産生が安定し「幸福感・安定した気分・社交性」が維持される。<strong>「美味しいものを一緒に食べること（GEUSTO）」が腸内環境を通じてセロトニン産生を安定させ恋愛感情の基盤を整える</strong>という第六感×味覚の統合経路。</div></div>
+          </div>
+        </div></div>
+
+        <!-- 固有感覚 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--amber-xl)">⚖️</div><div><div class="card-hd-title">固有感覚（Proprioception）× 恋愛距離感</div><div class="card-hd-sub">筋紡錘×ゴルジ腱器官×「体が覚えている距離」</div></div></div><div class="card-bd">
+          <div class="neuro-grid">
+            <div class="ng"><div class="ng-ico">💪</div><div class="ng-name">筋紡錘</div><div class="ng-chem" style="color:var(--amber-l)">MUSCLE SPINDLE</div><div class="ng-desc">筋肉内に存在し筋肉の長さ・伸張速度を感知。「相手との距離が縮まる時の体の緊張変化」をリアルタイムで感知している受容器。</div></div>
+            <div class="ng"><div class="ng-ico">🔗</div><div class="ng-name">ゴルジ腱器官</div><div class="ng-chem" style="color:var(--amber-l)">GOLGI TENDON</div><div class="ng-desc">腱の張力を感知。スキンシップ時の「ちょうど良い力加減」の無意識的な制御に関与。タッチの質を体が記憶する仕組み。</div></div>
+            <div class="ng"><div class="ng-ico">🧭</div><div class="ng-name">体位感覚</div><div class="ng-chem" style="color:var(--amber-l)">POSITION SENSE</div><div class="ng-desc">目を閉じても「手がどこにあるか」わかる感覚。相手との相対的な位置・距離を体が無意識に追跡している。「隣にいる存在感」の受容器。</div></div>
+            <div class="ng"><div class="ng-ico">💃</div><div class="ng-name">動作の記憶</div><div class="ng-chem" style="color:var(--amber-l)">MOTOR MEMORY</div><div class="ng-desc">スキンシップの動作パターンが小脳に記憶される。「この人とのハグの感触」という体の記憶がバソプレシン絆形成と連動する。</div></div>
+          </div>
+          <div style="background:var(--amber-xl);border:1px solid rgba(180,83,9,.2);border-radius:var(--r-md);padding:.8rem;margin-top:.6rem">
+            <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--amber-l);margin-bottom:.3rem">✨ 恋愛への応用：「体が覚えている」という絆</div>
+            <div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">HAPTOSの20秒ハグ・秒速5cmのCT繊維タッチのパターンが固有感覚として小脳に記憶される。「この人のタッチを体が覚えている」という感覚の神経科学的正体がこの固有感覚記憶。五感+固有感覚の統合記憶が「この人しかいない」という感覚の最深部を構成する。</div>
+          </div>
+        </div></div>
+
+        <!-- 前庭感覚×時間感覚 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">🌀</div><div><div class="card-hd-title">前庭感覚 × 時間感覚 × 恋愛</div><div class="card-hd-sub">揺れ×ドーパミン×「一緒にいると時間が早い」の神経科学</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="background:var(--rose-xl);border:1px solid rgba(190,24,93,.15);border-radius:var(--r-md);padding:.85rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--rose-l);margin-bottom:.3rem">🌀 前庭感覚（Vestibular Sense）— 内耳の平衡・重力感覚</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">内耳の半規管（回転感知）と耳石器（直線加速度・重力感知）が前庭系の受容器。<strong>揺れ・不安定さが交感神経を活性化させ「誰かに頼りたい感覚」を生む</strong>——これが吊り橋効果の前庭感覚版。観覧車・船・波の上・揺れる乗り物でのデートの効果の神経科学的根拠。EIDOSの吊り橋効果（食辛）の前庭版。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">⏱ 時間感覚（Chronoception）×ドーパミン×恋愛</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65"><strong>「一緒にいると時間が早く感じる」</strong>という体験の神経科学的正体：ドーパミン分泌が増加すると基底核の時間処理ニューロンの発火頻度が上がり同じ時間が「短く感じられる」（時間の主観的短縮）。逆に待ち時間（ドーパミン低下状態）は「長く感じる」。「この人といると時間を忘れる」が「強いドーパミン分泌が起きている」という生物学的シグナル。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🧲 磁気感覚の可能性 — Caltech 2019研究</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">Wang et al.（2019, eNeuro）の研究で人間の脳が地磁気変化に対してα波の減弱（神経処理の開始）を示すことが確認された。人間に磁気感覚の神経学的基盤が存在する可能性を示した初めての実験的証拠。「場の雰囲気を感じる・なんとなくここが居心地が良い」という感覚の候補メカニズム。</div></div>
+          </div>
+        </div></div>
+
+        <!-- ミラーニューロン×共鳴感覚 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--indigo-xl)">🪞</div><div><div class="card-hd-title">ミラーニューロン×身体的共鳴感覚</div><div class="card-hd-sub">「なんとなく伝わった」×共感×同調の神経解剖</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="background:var(--indigo-xl);border:1px solid rgba(30,64,175,.15);border-radius:var(--r-md);padding:.85rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--indigo-l);margin-bottom:.3rem">🪞 ミラーニューロン×感情的伝染（Emotional Contagion）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">相手の感情・動作・表情を見るだけで自分の脳の対応するニューロンが発火するミラーニューロン（Rizzolatti 1992）が「感情的伝染」の神経基盤。<strong>「なんとなく相手の気持ちが伝わってきた・同じことを考えていた」</strong>という体験の神経科学的正体。FORMAで解説した「服装→触覚予測」と同じ経路の感情版。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🌊 ポリヴェーガル×神経的共鳴 — 「場の雰囲気を読む」</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">ポリヴェーガル理論（Porges 1994）の「腹側迷走神経複合体（VVC）」が他者の表情・声のトーン・姿勢から「安全か危険か」を無意識に判定する社会神経システムとして機能する。VVCが活性化した状態（安心・信頼）で相手と接することが「なんとなく居心地が良い・この人は安全」という第六感的な感覚の解剖学的根拠。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🫂 心拍同期×脳波同調×「一体感」の神経科学</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">親密な接触中に心拍同期（Feldman 2011）→脳波同調（EEG研究）→呼吸同期（SONOS解説）という段階的な生理的共鳴が起きることが確認されている。<strong>「溶ける感覚・一体感・この人と同じ世界にいる感じ」</strong>という第六感的な体験がこの生理的同調の主観的経験として説明される。</div></div>
+          </div>
+        </div></div>
+
+        <!-- 痛み×エンドルフィン×境界感覚 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">💜</div><div><div class="card-hd-title">痛みと快楽の境界 × エンドルフィン</div><div class="card-hd-sub">「甘い痛み」×μオピオイド受容体×恋愛の快楽-痛み統合</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.45rem">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">💊 μオピオイド受容体 — 快楽と「心地よい痛み」の神経解剖</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">μ（ミュー）オピオイド受容体がエンドルフィン（内因性オピオイド）に反応し強烈な幸福感・快楽・鎮痛を引き起こす。<strong>「離れたくない・会えないと痛い」</strong>という感覚は愛着対象の不在によるオキシトシン+エンドルフィン低下が実際の「離脱症状」として生じる現象。恋愛初期の「会いたい・禁断症状」の受容体レベルの説明。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🌶 TRPV1×痛み×快楽の統合（GEUSTOとの連携）</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">TRPV1受容器（カプサイシン・熱・酸の受容器）が侵害受容系と快楽系の境界領域を処理する。GEUSTOで解説した「辛味×吊り橋効果」「キス中の体温上昇×甘い刺激感」はTRPV1が「適度な侵害刺激＝快楽」として処理されるため。<strong>「甘い痛み」という体験の受容体レベルの完全説明。</strong></div></div>
+            <div style="background:var(--rose-xl);border:1px solid rgba(190,24,93,.15);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--rose-l);margin-bottom:.25rem">💔 社会的痛み（Social Pain）× 身体的痛みの共有神経経路</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">Eisenberger et al.（2003, Science）の研究で<strong>社会的拒絶（仲間はずれ）が身体的痛みと同じ脳領域（前帯状皮質）を活性化させる</strong>ことを確認。「振られると本当に心が痛い」「別れると体が痛い」という表現が比喩ではなく神経学的事実であることの証明。タロリストとしての「心の痛みと体の痛みの共有経路」の第六感的な意味。</div></div>
+          </div>
+        </div></div>
+
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- ══ LEARN PAGE ══ -->
+    <div class="page" id="pg-learn">
+      <div class="learn-hd"><div class="pg-title" style="font-size:1.2rem">第六感 Learn</div><div style="font-family:var(--fu);font-size:.76rem;color:var(--txt3)" id="deckCnt"></div></div>
+      <div class="deck-tabs" id="deckTabs"></div>
+      <div class="card-area" id="cardArea">
+        <div class="card-wrap">
+          <div class="card-face" id="cardFront">
+            <p class="cf-tag" id="cfTag"></p>
+            <p class="cf-q" id="cfQ"></p>
+          </div>
+          <div class="card-face card-face-back hidden" id="cardBack">
+            <p class="cf-tag" style="color:var(--sixth-l)">ANSWER</p>
+            <p class="cf-a" id="cfA"></p>
+            <p class="cf-src" id="cfSrc"></p>
+            <div class="cf-frags" id="cfFrags" style="display:none"></div>
+          </div>
+          <button class="flip-btn" id="flipBtn" onclick="flipCard()">答えを見る 🔮</button>
+        </div>
+        <div class="dots" id="dots"></div>
+        <div class="card-ctrl">
+          <button class="ctrl-btn" onclick="prevCard()">‹</button>
+          <span class="ctrl-pg" id="ctrlPg"></span>
+          <button class="ctrl-btn" onclick="nextCard()">›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LIBRARY PAGE ══ -->
+    <div class="page" id="pg-library">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="color:var(--sixth-l)">🔮 第六感ライブラリ</div><div style="font-family:var(--fu);font-size:.75rem;color:var(--txt3);margin-top:.25rem">第六感を活用する恋愛プロトコル40+</div></div>
+        <div class="sense-filter" id="senseFilter"></div>
+        <div class="lib-grid" id="libGrid"></div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- ══ QUIZ PAGE ══ -->
+    <div class="page" id="pg-quiz">
+      <div class="quiz-wrap">
+        <div class="qhd"><div style="font-family:var(--fd);font-size:1rem;font-weight:700">第六感クイズ</div><div class="qsc" id="qSc">0 / 0</div></div>
+        <div id="quizArea"></div>
+      </div>
+    </div>
+
+  </div>
+
+  
+    <div class="page" id="pg-ai">
+      <div class="sb">
+        <div class="pg-hd">
+          <div class="pg-title" style="color:#6d28d9">&#129302; AI コーチ</div>
+          <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt3);margin-top:.2rem">専門AIに相談</div>
+        </div>
+        <div id="aiMsgs_sextus" style="display:flex;flex-direction:column;gap:.65rem;margin-bottom:.6rem">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.82rem .92rem;font-family:var(--fu);font-size:.78rem;color:var(--txt);line-height:1.68">
+            こんにちは。専門AIコーチです。状況を入力してください。
+          </div>
+        </div>
+        <div id="aiQB_sextus" style="display:flex;gap:.38rem;flex-wrap:wrap;margin-bottom:.6rem"></div>
+        <div class="spacer"></div>
+      </div>
+      <div style="padding:.55rem .9rem calc(env(safe-area-inset-bottom)+4.2rem);background:var(--surface);border-top:1px solid var(--border);display:flex;gap:.45rem;align-items:flex-end;position:sticky;bottom:0">
+        <textarea id="aiInp_sextus" style="flex:1;background:var(--bg2,#f5f3ff);border:1.5px solid var(--border2);border-radius:var(--r-lg);padding:.6rem .75rem;font-family:var(--fu);font-size:.8rem;color:var(--txt);resize:none;min-height:42px;max-height:110px;outline:none;line-height:1.5" placeholder="状況を入力..." rows="1" oninput="this.style.height=&apos;auto&apos;;this.style.height=Math.min(this.scrollHeight,110)+&apos;px&apos;" onkeydown="if(event.key===&apos;Enter&apos;&&!event.shiftKey){event.preventDefault();aiSend_sextus();}"></textarea>
+        <button onclick="aiSend_sextus()" style="width:42px;height:42px;border-radius:50%;background:#6d28d9;border:none;color:#fff;font-size:1.05rem;cursor:pointer;flex-shrink:0">&#9658;</button>
+      </div>
+    </div>
+
+<nav class="bnav">
+    <button class="bni on" onclick="nav('home',0)"><span class="bni-ico">🔮</span><div class="bni-dot"></div><span class="bni-lbl">ホーム</span></button>
+    <button class="bni" onclick="nav('science',1)"><span class="bni-ico">🔬</span><div class="bni-dot"></div><span class="bni-lbl">科学</span></button>
+    <button class="bni" onclick="nav('learn',2)"><span class="bni-ico">📚</span><div class="bni-dot"></div><span class="bni-lbl">学習</span></button>
+    <button class="bni" onclick="nav('library',3)"><span class="bni-ico">🌐</span><div class="bni-dot"></div><span class="bni-lbl">実践</span></button>
+    <button class="bni" onclick="nav('quiz',4)"><span class="bni-ico">⚡</span><div class="bni-dot"></div><span class="bni-lbl">クイズ</span></button>
+
+  <button class="bni" onclick="nav('ai',5)"><span class="bni-ico">&#129302;</span><div class="bni-dot"></div><span class="bni-lbl">AI</span></button>
+</nav>
+</div>
+
+<script>
+/* ════ DATA ════ */
+const TIPS=[
+  {ico:'🫀',txt:'「胸キュン」は比喩ではない。心臓の感覚神経が心拍変化を島皮質に送り「感情」として意識化された現象。内受容感覚（Interoception）が「体が反応する」という最も原始的で信頼性の高い恋愛シグナルを生成している。'},
+  {ico:'🧠',txt:'体のセロトニンの約95%が腸で産生される。「ガット・フィーリング（腸の感覚）」は神経科学的に実在する。腸管神経系（第二の脳）の約5億ニューロンが迷走神経を通じて脳に直接影響を与えている。'},
+  {ico:'⏱',txt:'「一緒にいると時間が早い」の神経科学的正体：ドーパミン分泌が基底核の時間処理ニューロンの発火を増加させ同じ時間を「短く感じさせる」。この感覚は「強いドーパミン分泌が起きている」という生物学的シグナル。'},
+  {ico:'🌀',txt:'揺れる場所でのデート（観覧車・船・波）が「誰かに頼りたい感覚」を引き起こすのは前庭感覚（内耳の平衡器）の不安定化→交感神経活性→吊り橋効果の前庭感覚版として機能するから。'},
+  {ico:'🪞',txt:'「なんとなく伝わった」という感覚のミラーニューロン×ポリヴェーガル理論的根拠：腹側迷走神経複合体（VVC）が相手の表情・声・姿勢から「安全か危険か」を無意識に判定する社会神経システムとして機能する。'},
+  {ico:'💔',txt:'「振られると本当に心が痛い」は神経学的事実。Eisenberger et al.（2003, Science）で社会的拒絶が身体的痛みと同じ前帯状皮質を活性化させることが確認された。社会的痛みと身体的痛みの共有神経経路。'},
+  {ico:'💜',txt:'「会いたい・会えないと辛い」はオキシトシン+エンドルフィン低下による実際の離脱症状。μオピオイド受容体系の変化が恋愛の「中毒性」を生み出す。キスのドーパミンがコカインと同じ回路を使う神経科学的根拠。'},
+  {ico:'🫂',txt:'親密な接触中に心拍同期→脳波同調→呼吸同期という段階的な生理的共鳴が起きる。「溶ける感覚・一体感」という第六感的体験がこの生理的同調の主観的経験として説明できる。'},
+];
+let tipIdx=0;
+function rotateTip(){tipIdx=(tipIdx+1)%TIPS.length;document.getElementById('tipIco').textContent=TIPS[tipIdx].ico;document.getElementById('tipTxt').textContent=TIPS[tipIdx].txt;}
+
+/* ════ LIBRARY ════ */
+const LIB_CATS=['すべて','内受容感覚','腸-脳軸','固有感覚','前庭感覚','時間感覚','ミラーニューロン','痛み×快楽','磁気感覚'];
+const LIB=[
+  // 内受容感覚
+  {cat:'内受容感覚',emoji:'🫀',name:'内受容感覚トレーニング',type:'島皮質感度向上×恋愛直感',desc:'心拍を感知する練習（心拍数を数える×静かな場所で胸の動きを感じる）が島皮質の感度を高め恋愛直感の精度を向上させる。Garfinkel et al.（2015）で内受容感覚の精度が感情的直感の精度と相関することが確認された。',tags:['直感向上','島皮質','日常実践']},
+  {cat:'内受容感覚',emoji:'🌬',name:'腹式呼吸×内受容感覚開発',type:'横隔膜×迷走神経×島皮質',desc:'腹式呼吸が横隔膜→迷走神経→島皮質という経路で内受容感覚の感度を高める。「体が何を感じているか」に意識を向ける練習が恋愛の「体の反応」を信頼できるようになる基礎訓練。',tags:['日常実践','迷走神経','SONOSと連携']},
+  {cat:'内受容感覚',emoji:'🧘',name:'マインドフルネス×体の感覚',type:'内受容感覚×感情認識精度',desc:'マインドフルネス実践が島皮質の灰白質を増加させ内受容感覚処理の精度を向上させることがfMRI研究で確認されている。「今ここの体の感覚」への注意が「なんとなく好き・合わない」という直感の信頼性を高める。',tags:['瞑想','島皮質','直感精度']},
+  {cat:'内受容感覚',emoji:'🌡',name:'温度×社会的温もり戦略',type:'Williams & Bargh 2008×HAPTOS統合',desc:'温かいコーヒー・温かい飲み物を手渡すことが相手に「社会的温もり（温かい人）」という印象を与える（Williams & Bargh 2008 Science）。体温に近い温かいタッチ（HAPTOS）との組み合わせで島皮質への「温もり＝安全」シグナルを最大化する。',tags:['温度戦略','HAPTOSと連携','初対面']},
+  // 腸-脳軸
+  {cat:'腸-脳軸',emoji:'🥗',name:'腸内環境×恋愛感情の基盤作り',type:'マイクロバイオーム×セロトニン',desc:'食物繊維豊富な食事（野菜・発酵食品・全粒穀物）が腸内細菌の多様性を高めセロトニン産生を安定させる。「安定した気分・幸福感・社交性」の土台を腸から作ることがGEUSTOの食戦略と統合された第六感的基盤。',tags:['食習慣','セロトニン','GEUSTOと連携']},
+  {cat:'腸-脳軸',emoji:'🍽',name:'共食×腸-脳軸×直感の強化',type:'Dunbar 2017×腸内環境×第六感',desc:'一緒に食べることがオキシトシン（Dunbar 2017）+腸内環境の改善（共食による多様な食材摂取）+内受容感覚の共鳴（同じ食体験による生理的同調）の三層効果を生む。',tags:['GEUSTOと連携','共食','腸内環境']},
+  {cat:'腸-脳軸',emoji:'🧘',name:'迷走神経刺激×腸-脳軸改善',type:'tVNS×腸内環境×恋愛感受性',desc:'迷走神経刺激（耳介甲介への囁き声・深い腹式呼吸・歌唱・ハミング）が腸-脳軸の通信を改善し腸のセロトニン産生を促進させることが確認されている。SONOSとHAPTOSの実践が腸の感受性まで改善する意外な統合効果。',tags:['迷走神経','SONOSと連携','腸内環境']},
+  // 固有感覚
+  {cat:'固有感覚',emoji:'💃',name:'ダンス×固有感覚×恋愛絆',type:'共同身体運動×固有感覚同期',desc:'ダンスが固有感覚の共同体験として最強の身体的絆形成ツールになる。Hove & Risen（2009）の研究で動作の同期がオキシトシンを分泌させ信頼感・親密感を高めることが確認された。固有感覚同期（二人の動きが合う感覚）がミラーニューロン×オキシトシン×バソプレシンを同時に活性化させる。',tags:['固有感覚','共同体験','オキシトシン']},
+  {cat:'固有感覚',emoji:'🤝',name:'握手×固有感覚×第一印象',type:'手の固有感覚×信頼シグナル',desc:'握手の「温かさ・強さ・持続時間」という固有感覚的な情報が0.1秒以内で扁桃体の信頼評価に影響する。Chaplin（2000）研究：握手の特性が誠実さ・開放性・社交性の評価と相関。固有感覚が第一印象の隠れた主役。',tags:['初対面','固有感覚','扁桃体']},
+  // 前庭感覚
+  {cat:'前庭感覚',emoji:'🎡',name:'観覧車×前庭感覚×吊り橋効果',type:'揺れ×交感神経×ときめき誤帰属',desc:'観覧車・ジェットコースター・船が前庭感覚の不安定化→交感神経活性→ノルアドレナリン上昇→「この人といるからドキドキ」という感情的誤帰属（前庭感覚的吊り橋効果）を引き起こす。食の吊り橋効果（GEUSTO：辛味）の前庭版として活用できる。',tags:['前庭感覚','吊り橋効果','デート設計']},
+  {cat:'前庭感覚',emoji:'🚤',name:'ボート×水上デート×前庭感覚',type:'波揺れ×依存欲求×オキシトシン',desc:'水上の揺れ（前庭感覚の軽度な不安定化）が「誰かにしがみつきたい・もたれかかりたい」という身体的な依存欲求を自然に引き起こす。この欲求がHAPTOSの段階的スキンシップへの自然な橋渡しになる。',tags:['前庭感覚','HAPTOSと連携','デート設計']},
+  // 時間感覚
+  {cat:'時間感覚',emoji:'⏱',name:'「時間を忘れる体験」の設計',type:'ドーパミン×フロー状態×絆形成',desc:'Csikszentmihalyi（1990）の「フロー理論」：最適な挑戦と技術のバランスがドーパミン系を最大活性化させ時間感覚を失わせる「フロー状態」を生む。共同体験（ゲーム・スポーツ・創作）でフロー状態に入ることが「一緒にいると時間を忘れる体験」として記憶される。',tags:['時間感覚','ドーパミン','フロー状態']},
+  {cat:'時間感覚',emoji:'🌅',name:'「待つ時間」を短く感じさせる設計',type:'ドーパミン的期待×時間圧縮',desc:'次のデートへの「楽しみな期待」がドーパミン系を維持し待ち時間を主観的に短縮させる。シグネチャーセント（EIDOS）の使用後に「また会った時に確認したい」という期待を植え付けることが次のデートまでの主観的時間を短縮させる。',tags:['時間感覚','ドーパミン','EIDOSと連携']},
+  // ミラーニューロン
+  {cat:'ミラーニューロン',emoji:'🪞',name:'ミラーリング×意図的同調戦略',type:'ミラーニューロン×類似性×オキシトシン',desc:'相手の話し方のリズム・声のトーン・体の向きを自然にミラーリングすることでミラーニューロン→「この人は私に似ている」という類似性知覚→オキシトシン分泌が起きる（SONOSのミラーリング技術の神経科学的深化版）。',tags:['ミラーニューロン','SONOSと連携','類似性']},
+  {cat:'ミラーニューロン',emoji:'😊',name:'笑顔の伝染×感情的共鳴',type:'ミラーニューロン×感情伝染×オキシトシン',desc:'笑顔は最も強力な感情的伝染を引き起こす表情。相手の笑顔がミラーニューロンを通じて自分の笑顔を引き出し両者のドーパミン+エンドルフィン分泌を同時に引き起こす。「笑顔の人といると楽しくなる」の神経科学的根拠。',tags:['ミラーニューロン','感情伝染','ドーパミン']},
+  // 痛み×快楽
+  {cat:'痛み×快楽',emoji:'💔',name:'社会的痛みの回避設計',type:'前帯状皮質×拒絶×信頼構築',desc:'社会的拒絶（返信なし・無視・批判）が身体的痛みと同じ前帯状皮質を活性化させる（Eisenberger 2003）。逆に一貫した応答・傾聴・共感が「拒絶の不在＝安全感」として前帯状皮質の痛み反応を抑制し信頼感を形成する。',tags:['社会的痛み','信頼構築','SONOSと連携']},
+  {cat:'痛み×快楽',emoji:'🌶',name:'TRPV1×甘い痛みの恋愛応用',type:'辛味×温度×TRPV1×ときめき増幅',desc:'カプサイシン（辛味）・高温・強い圧力がTRPV1受容器を活性化させ「適度な侵害刺激＝快楽」という快楽-痛み境界体験を作る。GEUSTOの辛い食事×HAPTOSの「少し強めのタッチ」が心地よい緊張感を作る第六感的な感覚設計。',tags:['TRPV1','GEUSTOと連携','刺激設計']},
+];
+let curLibCat='すべて';
+function initLibrary(){
+  const filter=document.getElementById('senseFilter');
+  filter.innerHTML=LIB_CATS.map((c,i)=>`<button class="sf-btn${i===0?' on':''}" onclick="filterLib('${c}',this)">${c}</button>`).join('');
+  renderLib('すべて');
+}
+function filterLib(cat,btn){
+  curLibCat=cat;
+  document.querySelectorAll('.sf-btn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  renderLib(cat);
+}
+function renderLib(cat){
+  const items=cat==='すべて'?LIB:LIB.filter(i=>i.cat===cat);
+  document.getElementById('libGrid').innerHTML=items.map((item,idx)=>`
+    <div class="lc" id="lc${idx}">
+      <div class="lc-top" onclick="toggleLC(${idx})">
+        <span class="lc-emoji">${item.emoji}</span>
+        <div style="flex:1"><div class="lc-brand">${item.cat}</div><div class="lc-name">${item.name}</div><div class="lc-type">${item.type}</div></div>
+      </div>
+      <div class="lc-body"><div class="lc-desc">${item.desc}</div><div class="lc-tags">${item.tags.map(t=>`<span class="lc-tag">${t}</span>`).join('')}</div></div>
+    </div>`).join('');
+}
+function toggleLC(idx){document.getElementById('lc'+idx).classList.toggle('open');}
+
+/* ════ DECKS ════ */
+const DECKS={
+  intero:[
+    {tag:'🫀 内受容感覚 #1',q:'内受容感覚（Interoception）とは何か？恋愛との関係は？',a:'体の内側（心臓・肺・腸・筋肉・血管）からの信号を島皮質前部が処理する感覚（Craig 2002, Nature Reviews Neuroscience）。「胸が高鳴る・お腹がざわつく・なんとなく体が反応する」という全ての感覚の神経科学的正体。五感（外受容感覚）に対する「内側からの感覚」として第六感の最も確立された実体。恋愛において「体が反応する」という感覚が最も原始的で信頼性の高い判断情報源。',src:'CRAIG 2002 NATURE REVIEWS',frags:['内受容感覚トレーニング','マインドフルネス×体の感覚']},
+    {tag:'🫀 内受容感覚 #2',q:'「胸キュン」の神経科学的完全説明は？',a:'心臓の感覚神経（迷走神経心臓枝+交感神経）が心拍変化・心臓壁の伸展を感知→島皮質前部に送信→感情として意識化される。好意を持つ人を見た時の交感神経活性（心拍上昇）が「この人が好き」という感情の身体的根拠として機能する。島皮質は感情×自己感覚×内受容感覚の統合センターであり五感統合（SONOS×HAPTOS×GEUSTO）の収束点でもある。',src:'HEARTBEAT INTEROCEPTION',frags:['腹式呼吸×内受容感覚開発']},
+    {tag:'🫀 内受容感覚 #3',q:'内受容感覚の精度（感度）と恋愛直感の精度が相関するGarfinkel（2015）研究の内容は？',a:'自分の心拍を正確に感知できる能力（内受容感覚精度）が高い人ほど感情的直感の精度が高いことを確認した研究（Garfinkel et al. 2015）。「なんとなくこの人が好き・合わない」という感覚の精度は島皮質の内受容感覚処理能力によって決まる。マインドフルネス・腹式呼吸・ヨガが島皮質の灰白質を増加させ内受容感覚の感度を高める。',src:'GARFINKEL 2015',frags:['内受容感覚トレーニング','腹式呼吸×内受容感覚開発']},
+    {tag:'🫀 内受容感覚 #4',q:'Williams & Bargh（2008 Science）の「温度×社会的温もり」実験の内容と恋愛への応用は？',a:'コーネル大学の実験で温かいコーヒーを手に持った参加者が同じ人物を「より温かい・親切な・思いやりがある人」と評価した。物理的温度と「温かい人」という社会的評価が島皮質で処理される温度内受容感覚として統合されることの証明。HAPTOSの「体温に近い温かいタッチ」やGEUSTOの「温かい飲み物を手渡す」行為が島皮質の「温もり＝安全」シグナルを通じて社会的評価を上げる。',src:'WILLIAMS BARGH 2008 SCIENCE',frags:['温度×社会的温もり戦略','腹式呼吸×内受容感覚開発']},
+  ],
+  gut:[
+    {tag:'🧠 腸-脳軸 #1',q:'腸管神経系（ENS）が「第二の脳」と呼ばれる神経解剖学的根拠は？',a:'腸管神経系は約5億個のニューロン（脊髄の約1億個より多い）を持ち脳に次ぐ規模の神経系。体のセロトニンの約95%が腸で産生・貯蔵される。脳からの独立した消化機能の制御能力を持ち「ガット・フィーリング（腸の感覚）」という表現が日英両言語で普遍的に使われることの神経科学的根拠。',src:'ENS GUT BRAIN',frags:['腸内環境×恋愛感情の基盤作り']},
+    {tag:'🧠 腸-脳軸 #2',q:'迷走神経を通じた腸-脳軸の通信が「80〜90%が腸→脳への上行信号」である意味は？',a:'迷走神経の80〜90%は腸→脳への上行信号（脳→腸はわずか10〜20%）。「お腹がざわつく・胃が締め付けられる」という感覚は腸管神経→迷走神経→脳幹→島皮質という経路で意識化される。HAPTOSとSONOSで活性化した迷走神経が腸の感覚感度も高める五感統合の意外な連鎖。「直感（腸の感覚）」が脳からではなく腸から脳への信号である神経解剖学的根拠。',src:'VAGUS NERVE GUT BRAIN',frags:['迷走神経刺激×腸-脳軸改善','共食×腸-脳軸×直感の強化']},
+    {tag:'🧠 腸-脳軸 #3',q:'腸内細菌（マイクロバイオーム）がセロトニン産生に影響し恋愛感情の基盤を変える経路は？',a:'特定の腸内細菌（Lactobacillus・Bifidobacterium等）が腸クロム親和性細胞のセロトニン産生を促進する。腸内細菌の多様性が高い状態ではセロトニン産生が安定し「幸福感・安定した気分・社交性」が向上する。発酵食品（ヨーグルト・味噌・納豆）と食物繊維の摂取が腸内環境を改善しGEUSTOの食戦略と統合した第六感的基盤として機能する。',src:'MICROBIOME SEROTONIN',frags:['腸内環境×恋愛感情の基盤作り','共食×腸-脳軸×直感の強化']},
+  ],
+  proprio:[
+    {tag:'⚖️ 固有感覚 #1',q:'固有感覚（Proprioception）が「体が覚えている恋愛の記憶」として機能する神経科学的根拠は？',a:'筋紡錘・ゴルジ腱器官・関節受容器からの固有感覚信号が小脳に「運動記憶」として保存される。HAPTOSの20秒ハグ・秒速5cmのCT繊維タッチのパターンが固有感覚記憶として小脳に蓄積され「この人のタッチを体が覚えている」という感覚が形成される。バソプレシン絆形成と固有感覚記憶の統合が「この人しかいない」という感覚の最深部を構成する。',src:'PROPRIOCEPTION MEMORY',frags:['ダンス×固有感覚×恋愛絆','握手×固有感覚×第一印象']},
+    {tag:'⚖️ 固有感覚 #2',q:'ダンス（動作の同期）がオキシトシンを分泌させ恋愛絆を形成するHove & Risen（2009）研究の内容は？',a:'Hove & Risen（2009）の研究で他者と動作を同期させることが信頼感・親密感・援助意欲を増加させることが確認された。固有感覚の共同体験（二人の動きが合う感覚）がミラーニューロン（動作の共鳴）×オキシトシン（信頼の絆）×バソプレシン（固有感覚的な「この人の動きを知っている」）を同時に活性化させる。',src:'HOVE RISEN 2009',frags:['ダンス×固有感覚×恋愛絆']},
+  ],
+  vestibular:[
+    {tag:'🌀 前庭感覚 #1',q:'前庭感覚の不安定化が吊り橋効果を引き起こす神経科学的メカニズムは？',a:'内耳の半規管（回転感知）と耳石器（直線加速度・重力感知）が不安定な状態（揺れ・高所・不均衡）を感知→前庭核から交感神経への出力が増加→ノルアドレナリン分泌→心拍上昇・体温上昇・「誰かに頼りたい感覚」が生じる。この生理的覚醒が「恋愛のときめき」として誤帰属される前庭感覚的吊り橋効果。Dutton & Aron（1974）の吊り橋実験の前庭感覚版として観覧車・船・ジェットコースターが機能する。',src:'VESTIBULAR AROUSAL',frags:['観覧車×前庭感覚×吊り橋効果','ボート×水上デート×前庭感覚']},
+    {tag:'⏱ 時間感覚 #2',q:'「一緒にいると時間が早く感じる」のドーパミン×時間感覚の神経科学的根拠は？',a:'基底核の線条体（特に被殻）が時間処理に関与し「内的タイマー」として機能する。ドーパミン分泌が増加すると線条体ニューロンの発火頻度が上がり同じ経過時間を「短く感じさせる」（時間の主観的短縮）。逆に待ち時間（ドーパミン低下）では時間が長く感じられる。「この人といると時間を忘れる」という体験は「強いドーパミン分泌が起きている=深い恋愛感情の生物学的シグナル」。',src:'DOPAMINE TIME PERCEPTION',frags:['「時間を忘れる体験」の設計']},
+  ],
+  mirror:[
+    {tag:'🪞 ミラーニューロン #1',q:'ミラーニューロン（Rizzolatti 1992）が「感情的伝染」の神経基盤として機能する仕組みは？',a:'Rizzolatti et al.（1992）がマカクザルで発見したミラーニューロンは相手の動作・表情・感情を観察するだけで自分の脳の対応するニューロンが発火する。ヒトでは特に前頭葉（F5野相当）・下頭頂葉・島皮質にミラーニューロン系が存在。「なんとなく相手の気持ちが伝わってきた」という感覚の神経科学的正体。',src:'RIZZOLATTI 1992',frags:['ミラーリング×意図的同調戦略','笑顔の伝染×感情的共鳴']},
+    {tag:'🪞 ミラーニューロン #2',q:'ポリヴェーガル理論（Porges 1994）の腹側迷走神経複合体（VVC）が「場の雰囲気を読む」第六感の解剖学的実体である根拠は？',a:'VVC（腹側迷走神経複合体）が相手の表情・声のトーン・姿勢・呼吸のリズムから「安全か危険か」を無意識に0.05秒以内で判定する社会神経システムとして機能する（ポリヴェーガル理論 Porges 1994）。「なんとなく居心地が良い・この人は安全・この場所が落ち着く」という第六感的感覚の神経解剖学的実体がVVCによる無意識の社会神経評価。',src:'PORGES 1994 POLYVAGAL VVC',frags:['ミラーリング×意図的同調戦略']},
+    {tag:'🪞 ミラーニューロン #3',q:'心拍同期×脳波同調×呼吸同期という段階的生理的共鳴が生む「一体感」の神経科学的根拠は？',a:'Feldman（2011）の研究で親密な接触中に心拍同期が起きることが確認された。さらに共同作業・親密な会話中に脳波同調（theta波・alpha波の同期）が観察される（EEG研究）。呼吸同期→心拍同期→脳波同調という段階的な生理的共鳴が「溶ける感覚・一体感・この人と同じ世界にいる感じ」という第六感的体験を生成する。SONOSの「呼吸同期×迷走神経」がこの連鎖の起点。',src:'FELDMAN 2011 SYNCHRONY',frags:['ミラーリング×意図的同調戦略']},
+  ],
+  pain:[
+    {tag:'💔 痛み×快楽 #1',q:'Eisenberger et al.（2003 Science）の「社会的痛み」研究が示す内容は？',a:'UCLAの研究で仮想ゲームから排除（社会的拒絶）された参加者の前帯状皮質（dACC）と右腹外側前頭前野が身体的痛みと同じパターンで活性化することをfMRIで確認。「振られると本当に心が痛い・別れが辛い・無視されると傷つく」という表現が神経学的に正確であることの証明。社会的痛みの鎮痛薬として身体的痛みの鎮痛薬（アセトアミノフェン）が効果を示した研究もある。',src:'EISENBERGER 2003 SCIENCE',frags:['社会的痛みの回避設計']},
+    {tag:'💔 痛み×快楽 #2',q:'「会いたい・会えないと辛い」がμオピオイド受容体系の離脱症状である神経薬理学的根拠は？',a:'愛着関係にある人との接触がオキシトシン+エンドルフィン（内因性オピオイド）を分泌させμオピオイド受容体を活性化させる。接触の消失（別れ・長期離別）がこの受容体系の刺激低下→実際の離脱症状（不安・焦燥・身体的不快感）を引き起こす。「会いたい・禁断症状」という感覚が神経薬理学的な実体を持つことの証明。キスのドーパミンがコカインと同じ回路を使うという恋愛の「中毒性」の正体。',src:'OPIOID ATTACHMENT WITHDRAWAL',frags:['社会的痛みの回避設計']},
+  ],
+  glossary:[
+    {tag:'📖 用語 #1',q:'「島皮質（Insula）」が第六感の最終統合センターである理由は？',a:'島皮質前部が①内受容感覚（心臓・腸・体温）②触覚（CT繊維経路）③味覚（一次味覚野）④感情（扁桃体との双方向接続）⑤共感（ミラーニューロン系）⑥自己感覚（身体自己）を全て処理する「感覚×感情の統合センター」。五感（EIDOS×FORMA×SONOS×HAPTOS×GEUSTO）に第六感（内受容感覚×腸-脳軸×固有感覚）を加えた「7感覚」が全て島皮質に収束する。',src:'INSULA SIXTH SENSE',frags:['内受容感覚トレーニング']},
+    {tag:'📖 用語 #2',q:'「ガット・フィーリング」の神経解剖学的正体は？',a:'「腸の感覚」という直感的表現の神経解剖学的実体：腸管神経系（5億ニューロン）→迷走神経（80〜90%が上行）→脳幹（孤束核・迷走神経背側核）→島皮質（内受容感覚の意識化）という経路で処理される「腸からの情報」が意識的な直感として現れる現象。「なんとなく嫌な予感・なんとなく合う感じ」という直感が腸管神経系の高度な情報処理の結果として生成される第六感。',src:'GUT FEELING ANATOMY',frags:['腸内環境×恋愛感情の基盤作り']},
+    {tag:'📖 用語 #3',q:'「感情的伝染（Emotional Contagion）」とミラーニューロンの関係は？',a:'感情的伝染：他者の感情が「感染」するように自分の感情状態を変化させる現象。ミラーニューロン（観察するだけで同じニューロンが発火）+島皮質（感情状態の体への翻訳）+VVC（迷走神経の社会神経系）の三者が協働することで「相手が笑うと自分も楽しくなる・相手が悲しむと自分も悲しくなる」という感情的伝染が起きる。恋愛において感情的伝染の感受性が高い人ほど深いオキシトシン的絆を形成しやすい。',src:'EMOTIONAL CONTAGION',frags:['笑顔の伝染×感情的共鳴','ミラーリング×意図的同調戦略']},
+  ],
+};
+
+/* ════ FLASHCARD ENGINE ════ */
+let curDeck=[],cIdx=0;
+function loadDeck(name,btn){
+  curDeck=[...(DECKS[name]||[])];
+  cIdx=0;
+  document.querySelectorAll('.dt').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  document.getElementById('deckCnt').textContent=curDeck.length+'枚';
+  showCard();
+}
+function showCard(){
+  if(!curDeck.length)return;
+  const c=curDeck[cIdx];
+  document.getElementById('cfTag').textContent=c.tag;
+  document.getElementById('cfQ').textContent=c.q;
+  document.getElementById('cfA').textContent=c.a;
+  document.getElementById('cfSrc').textContent=c.src;
+  const fragEl=document.getElementById('cfFrags');
+  if(c.frags&&c.frags.length){
+    fragEl.innerHTML=`<div class="cf-frags-lbl">🔮 関連プロトコル</div><div class="cf-frag-chips">${c.frags.map(f=>`<span class="cf-frag-chip">${f}</span>`).join('')}</div>`;
+    fragEl.style.display='block';
+  }else{fragEl.style.display='none';}
+  document.getElementById('cardFront').classList.remove('hidden');
+  document.getElementById('cardBack').classList.add('hidden');
+  document.getElementById('flipBtn').textContent='答えを見る 🔮';
+  document.getElementById('ctrlPg').textContent=(cIdx+1)+' / '+curDeck.length;
+  updateDots();
+}
+function flipCard(){
+  const front=document.getElementById('cardFront');
+  const back=document.getElementById('cardBack');
+  const btn=document.getElementById('flipBtn');
+  if(!front.classList.contains('hidden')){front.classList.add('hidden');back.classList.remove('hidden');btn.textContent='次のカードへ →';}
+  else nextCard();
+}
+function nextCard(){cIdx=Math.min(cIdx+1,curDeck.length-1);showCard();}
+function prevCard(){cIdx=Math.max(cIdx-1,0);showCard();}
+function updateDots(){
+  const dots=document.getElementById('dots');
+  const total=Math.min(curDeck.length,8);
+  dots.innerHTML=Array.from({length:total},(_,i)=>`<div class="dot${i===cIdx%total?' on':''}"></div>`).join('');
+}
+function initDecks(){
+  const tabs=document.getElementById('deckTabs');
+  const list=[
+    {key:'intero',label:'🫀 内受容感覚'},
+    {key:'gut',label:'🧠 腸-脳軸'},
+    {key:'proprio',label:'⚖️ 固有感覚'},
+    {key:'vestibular',label:'🌀 前庭×時間感覚'},
+    {key:'mirror',label:'🪞 ミラーニューロン'},
+    {key:'pain',label:'💔 痛み×快楽'},
+    {key:'glossary',label:'📖 用語辞典'},
+  ];
+  tabs.innerHTML=list.map((d,i)=>`<button class="dt${i===0?' on':''}" onclick="loadDeck('${d.key}',this)">${d.label}</button>`).join('');
+  loadDeck('intero',tabs.querySelector('.dt'));
+}
+
+/* ════ QUIZ ════ */
+const QS=[
+  {q:'内受容感覚（Interoception）の処理センターである島皮質前部が「胸キュン」を生成する経路は？',opts:['心臓→扁桃体→意識化','心臓の感覚神経→迷走神経心臓枝/交感神経→島皮質前部→感情として意識化。心拍上昇という身体シグナルが「この人が好き」という感情の身体的根拠として機能する（Craig 2002）','心臓→脳→感情'],ans:1,exp:'島皮質は内受容感覚×五感統合（HAPTOS×GEUSTO×SONOS）の収束点でもある。「体が反応する」という感覚が恋愛判断で最も信頼性の高い情報源。内受容感覚の精度が感情的直感の精度と相関する（Garfinkel 2015）。',frags:['内受容感覚トレーニング']},
+  {q:'腸管神経系（ENS）が「第二の脳」と呼ばれる理由は？',opts:['腸が大事だから','約5億個のニューロン（脊髄の5倍）を持ち体のセロトニンの約95%を産生・貯蔵する。迷走神経の80〜90%が腸→脳の上行信号であり「ガット・フィーリング（腸の感覚）」という直感の神経解剖学的実体がここにある','消化器系が重要だから'],ans:1,exp:'腸内細菌がセロトニン産生に影響するため食事（GEUSTO）が腸内環境を通じて恋愛感情の基盤となるセロトニンレベルを変化させる。「美味しいものを一緒に食べる」が第六感レベルで恋愛基盤を整える。',frags:['腸内環境×恋愛感情の基盤作り','共食×腸-脳軸×直感の強化']},
+  {q:'Williams & Bargh（2008 Science）の実験が示す「温かいコーヒー効果」の神経科学的根拠は？',opts:['温かいと気分が良くなる','温かい物体を手に持つことで体温内受容感覚が活性化され「社会的温もり」の知覚が同じ島皮質の処理経路を通じて高まり同一人物をより「温かい人」と評価する','コーヒーに特別な効果がある'],ans:1,exp:'物理的温度と社会的温もりの知覚が島皮質で同一処理される内受容感覚の統合効果。HAPTOSの体温に近い温かいタッチ×GEUSTOの温かい飲み物の手渡しが「温かい人＝信頼できる人」という評価を島皮質経由で形成する。',frags:['温度×社会的温もり戦略']},
+  {q:'「一緒にいると時間が早く感じる」という体験のドーパミン×時間感覚の神経科学的説明は？',opts:['楽しいから','ドーパミン分泌が増加すると基底核（線条体）の時間処理ニューロンの発火頻度が上がり同じ経過時間を「短く感じさせる」時間の主観的短縮が起きる。この感覚は「強いドーパミン分泌＝深い恋愛感情」という生物学的シグナル','気のせい'],ans:1,exp:'逆に待ち時間（ドーパミン低下状態）が長く感じられるのも同じ機構。「この人を待つ時間が長い＝ドーパミン的渇望状態」。「時間を忘れる体験の設計」がフロー理論と連動した恋愛記憶形成の鍵。',frags:['「時間を忘れる体験」の設計']},
+  {q:'Eisenberger et al.（2003 Science）の「社会的痛み」研究の最重要な発見は？',opts:['拒絶は辛い','社会的拒絶（仲間はずれ）が身体的痛みと同じ前帯状皮質（dACC）を活性化させることをfMRIで確認。「振られると本当に心が痛い・無視されると傷つく」が神経学的事実であることの証明。アセトアミノフェン（身体的鎮痛剤）が社会的痛みにも効果を示した研究もある','感情は大事'],ans:1,exp:'社会的痛みと身体的痛みの共有神経経路が「恋愛の傷」の実体。これを理解することで「傷つけない×安心感を与える」HAPTOSとSONOSの実践が「前帯状皮質の痛み反応抑制」という神経医学的な実践として再解釈できる。',frags:['社会的痛みの回避設計']},
+  {q:'ポリヴェーガル理論（Porges 1994）の腹側迷走神経複合体（VVC）が「場の雰囲気を読む」第六感の解剖学的実体である根拠は？',opts:['雰囲気は読めるものだから','VVCが相手の表情・声のトーン・姿勢・呼吸から「安全か危険か」を0.05秒以内で無意識に判定する社会神経システムとして機能する。「なんとなく居心地が良い・この人は安全」という直感の完全な神経解剖学的実体がVVCによる無意識的社会神経評価','勘が鋭い人がいる'],ans:1,exp:'HAPTOSの全ての技術（段階的距離縮小・CT繊維刺激・20秒ハグ）はVVC（腹側迷走神経複合体）を活性化させる「安全の神経学的シグナル」を送る設計。第六感的な「安心感」の生成が五感統合の深部で行われていた。',frags:['ミラーリング×意図的同調戦略']},
+  {q:'固有感覚（Proprioception）が「体が覚えている恋愛の記憶」として機能する神経科学的根拠は？',opts:['体が記憶する','筋紡錘・ゴルジ腱器官からの固有感覚信号が小脳に運動記憶として保存される。20秒ハグ・秒速5cmのCT繊維タッチのパターンが小脳に蓄積され「この人のタッチを体が覚えている」という感覚が形成される。バソプレシン絆形成と固有感覚記憶の統合が「この人しかいない」の最深部を構成する','体は正直だから'],ans:1,exp:'ダンス（Hove & Risen 2009）に見られるように動作の同期・固有感覚の共同体験がオキシトシン×バソプレシン×ミラーニューロンを同時活性化させる第六感的な絆形成機構。',frags:['ダンス×固有感覚×恋愛絆']},
+  {q:'μオピオイド受容体系と恋愛の「中毒性・禁断症状」の関係は？',opts:['恋愛は依存性がある','愛着対象との接触がオキシトシン+エンドルフィン（内因性オピオイド）を分泌させμオピオイド受容体を活性化させる。接触の消失が受容体系の刺激低下→実際の離脱症状（不安・焦燥・身体的不快感）を引き起こす。「会いたい・禁断症状」の神経薬理学的実体','気持ちの問題'],ans:1,exp:'コカインと同じ報酬回路を使うキスのドーパミン×オピオイド系の「禁断症状」という二重の「中毒性」が恋愛初期の強烈な感情体験を作る。SENSESの五感統合がこの中毒性を「健全な絆形成」に変換する設計の根拠。',frags:['社会的痛みの回避設計']},
+  {q:'「笑顔の伝染」がミラーニューロン×感情的伝染として機能する神経科学的経路は？',opts:['笑顔は嬉しいから','相手の笑顔→視覚野（顔認識）→ミラーニューロン（同じニューロン発火）→顔面運動野（自分の笑顔）→島皮質（感情の体への翻訳）→ドーパミン+エンドルフィン分泌という経路で「感情的伝染」が起きる。両者のドーパミン+エンドルフィン分泌が同時に起きる双方向効果がある','笑顔が好きだから'],ans:1,exp:'SONOSの「傾聴80%×ユーモア」が笑いを引き出すことが最強の感情的伝染を利用した恋愛戦略。自分が楽しそうにすることで相手のミラーニューロンが自動的に「楽しい状態」を生成する第六感的な感情操作。',frags:['笑顔の伝染×感情的共鳴']},
+  {q:'「島皮質」が第六感の最終統合センターである完全な解剖学的根拠は？',opts:['島皮質が大事だから','島皮質前部が①内受容感覚（心臓・腸・体温）②CT繊維触覚③味覚（一次味覚野）④感情（扁桃体双方向接続）⑤共感（ミラーニューロン）⑥自己感覚を全て処理する。五感（EIDOS×FORMA×SONOS×HAPTOS×GEUSTO）に第六感（内受容感覚×腸-脳軸×固有感覚）を加えた全感覚が島皮質に収束する','感覚の中枢だから'],ans:1,exp:'SEXTUSの全ての第六感（内受容感覚×腸-脳軸×固有感覚×前庭感覚×ミラーニューロン×痛み×時間感覚）が最終的に島皮質に収束する。五感シリーズとSEXTUSの「最終合流点」が島皮質という神経解剖学的証明。',frags:['内受容感覚トレーニング']},
+];
+let qIdx=0,score=0;
+function startQuiz(){qIdx=0;score=0;renderQ();}
+function renderQ(){
+  const area=document.getElementById('quizArea');
+  if(qIdx>=QS.length){area.innerHTML=`<div class="qfin"><div class="qfin-score">${score} / ${QS.length}</div><div class="qfin-msg">${score===QS.length?'完璧！第六感マスター 🔮':score>=7?'優秀！第六感の科学を理解しています ✨':'もう一度挑戦しよう 💪'}</div><button class="qrestart" onclick="startQuiz()">もう一度</button></div>`;return;}
+  const q=QS[qIdx];
+  area.innerHTML=`<div class="qhd"><div style="font-family:var(--fd);font-size:.95rem;font-weight:700">問 ${qIdx+1} / ${QS.length}</div><div class="qsc" id="qSc">${score} / ${qIdx}</div></div>
+  <div class="qcard"><p class="qq">${q.q}</p>${q.opts.map((o,i)=>`<button class="qopt" onclick="ansQ(this,${i},${q.ans})">${o}</button>`).join('')}
+  <div class="qexp" id="qexp">${q.exp}</div>
+  <div id="qfrags"></div>
+  <button class="qnxt" id="qnxt" onclick="nextQ()">次の問題へ →</button></div>`;
+}
+function ansQ(btn,chosen,correct){
+  document.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  if(chosen===correct){btn.classList.add('correct');score++;}
+  else{btn.classList.add('wrong');document.querySelectorAll('.qopt')[correct].classList.add('correct');}
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnxt').classList.add('show');
+  document.getElementById('qSc').textContent=score+' / '+(qIdx+1);
+  const q=QS[qIdx];
+  if(q.frags&&q.frags.length){
+    document.getElementById('qfrags').innerHTML=`<div class="cf-frags-lbl" style="margin-top:.5rem">🔮 関連プロトコル</div><div class="cf-frag-chips">${q.frags.map(f=>`<span class="cf-frag-chip">${f}</span>`).join('')}</div>`;
+  }
+}
+function nextQ(){qIdx++;renderQ();}
+
+/* ════ NAV ════ */
+const PGS=['home','science','learn','library','quiz','ai'];;
+function nav(id,bIdx){
+  PGS.forEach(p=>{const el=document.getElementById('pg-'+p);if(el)el.classList.remove('on');});
+  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('on'));
+  const pg=document.getElementById('pg-'+id);
+  if(pg){pg.classList.add('on');const sb=pg.querySelector('.sb');if(sb)sb.scrollTop=0;}
+  const btns=document.querySelectorAll('.bni');
+  if(btns[bIdx])btns[bIdx].classList.add('on');
+}
+
+/* ════ BOOT ════ */
+function boot(){
+  const sp=document.getElementById('splash');
+  sp.style.cssText='opacity:0;transition:opacity .45s;pointer-events:none';
+  setTimeout(()=>{
+    sp.style.display='none';
+    document.getElementById('app').classList.add('on');
+    document.getElementById('tipIco').textContent=TIPS[0].ico;
+    document.getElementById('tipTxt').textContent=TIPS[0].txt;
+    initLibrary();
+    initDecks();
+    startQuiz();
+  },450);
+}
+
+/* ── AI CHAT: SEXTUS ── */
+const AI_ENDPOINT_sextus = 'https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI';
+const AI_KEY_sextus = 'HeartsHouse2026Key';
+const AI_SYS_sextus = `あなたはSEXTUS第六感専門AIコーチです。
+専門知識：内受容感覚（島皮質前部）・腸-脳軸95%セロトニン・固有感覚（小脳運動記憶）・前庭感覚・ミラーニューロン×感情的伝染・VVC（腹側迷走神経複合体）安全の神経学・社会的痛み（Eisenberger2003）・心拍変動HRV・「体の反応」の神経科学的正体。
+回答：「なんとなく」の感覚を脳科学で解説。直感を鍛える実践法も提示。日本語200〜400文字。`;
+const AI_QUICK_sextus = [`🔮 直感が言っていることを分析して`,`🫀 胸のドキドキの意味`,`🧠 腸の反応を読む`,`👁 なんとなく合う感覚の正体`,`🌀 場の雰囲気を変える方法`];
+let aiHistory_sextus = [];
+let aiLoading_sextus = false;
+
+function initAI_sextus(){
+  // クイックボタン生成
+  const qc = document.getElementById('aiQuickBtns');
+  if(qc) qc.innerHTML = AI_QUICK_sextus.map(q=>
+    `<button onclick="aiQuick_sextus(this.textContent.replace(/^[^\s]+\s/,''))" style="padding:.38rem .72rem;border-radius:9999px;background:var(--surface2);border:1px solid var(--border2);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap">${q}</button>`
+  ).join('');
+}
+
+function aiQuick_sextus(text){
+  document.getElementById('aiInp').value = text;
+  aiSend_sextus();
+}
+
+function aiAddMsg_sextus(text, role){
+  const msgs = document.getElementById('aiMsgs');
+  if(!msgs) return null;
+  const div = document.createElement('div');
+  const colors = {user:'linear-gradient(135deg,var(--eidos,#B8860B),var(--eidos-l,#D4A017))',ai:'var(--surface)',thinking:'var(--surface2)'};
+  div.style.cssText = `background:${colors[role]||colors.ai};border:1px solid var(--border);border-radius:var(--r-lg);padding:.78rem .9rem;font-family:var(--fu);font-size:.77rem;color:${role==='user'?'#fff':'var(--txt)'};line-height:1.68;align-self:${role==='user'?'flex-end':'flex-start'};max-width:90%;border-bottom-${role==='user'?'right':'left'}-radius:4px;font-style:${role==='thinking'?'italic':'normal'}`;
+  div.innerHTML = text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);
+  msgs.parentElement.scrollTop = msgs.parentElement.scrollHeight;
+  return div;
+}
+
+async function aiSend_sextus(){
+  if(aiLoading_sextus) return;
+  const inp = document.getElementById('aiInp');
+  const text = inp?.value?.trim();
+  if(!text) return;
+  aiAddMsg_sextus(text,'user');
+  inp.value=''; inp.style.height='auto';
+  const thinking = aiAddMsg_sextus('🧠 分析中...','thinking');
+  aiLoading_sextus=true;
+  const btn=document.getElementById('aiSendBtn');
+  if(btn)btn.disabled=true;
+  aiHistory_sextus.push({role:'user',parts:[{text}]});
+  try{
+    const prompt = AI_SYS_sextus+'\n\n【会話履歴】\n'+
+      aiHistory_sextus.slice(-6).map(h=>(h.role==='user'?'ユーザー: ':'AI: ')+h.parts[0].text).join('\n')+
+      '\n\n最後のユーザーの質問に答えてください。';
+    const res = await fetch(AI_ENDPOINT_sextus,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Access-Key':AI_KEY_sextus},
+      body:JSON.stringify({prompt,model:'gemini-2.0-flash',maxTokens:600})
+    });
+    const data = await res.json();
+    thinking?.remove();
+    const t = data?.data?.candidates?.[0]?.content?.parts?.[0]?.text||data?.data?.text||'';
+    if(t){aiAddMsg_sextus(t);aiHistory_sextus.push({role:'model',parts:[{text:t}]});}
+    else aiAddMsg_sextus('⚠️ 回答を取得できませんでした。');
+  }catch(e){thinking?.remove();aiAddMsg_sextus('⚠️ 通信エラーです。');}
+  aiLoading_sextus=false;
+  if(btn)btn.disabled=false;
+}
+
+// グローバル公開（onclickから呼べるように）
+window.aiSend = aiSend_sextus;
+window.aiQuick_sextus = aiQuick_sextus;
+
+window.aiSend = aiSend_sextus;
+
+
+/* ═ AI_SEXTUS ═ */
+(function(){
+var EP='{"url":"https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI"}';
+var AIEP='https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI';
+var AIKEY='HeartsHouse2026Key';
+var AISYS='あなたはSEXTUS第六感専門AIコーチです。内受容感覚・腸-脳軸・固有感覚・ミラーニューロン・VVC安全の神経学・社会的痛みの専門家。直感を脳科学で解説し実践法を提示。日本語200〜400文字。';
+var AIQS_sextus=["直感を分析して","胸のドキドキの意味","腸の反応を読む","なんとなく合う感覚の正体","場の雰囲気を変える方法"];
+var aiHist=[];var aiLoad=false;
+
+function initAI(){
+  var qc=document.getElementById('aiQB_sextus');
+  if(!qc)return;
+  qc.innerHTML=AIQS_sextus.map(function(q){
+    return '<button style="padding:.38rem .72rem;border-radius:9999px;background:var(--surface2,#f0edf9);border:1px solid var(--border2);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap" onclick="document.getElementById(\'aiInp_sextus\').value=\''+q+'\';aiSend_sextus()">'+q+'</button>';
+  }).join('');
+}
+
+function addMsg(text,role){
+  var msgs=document.getElementById('aiMsgs_sextus');
+  if(!msgs)return null;
+  var div=document.createElement('div');
+  div.style.cssText='background:'+(role==='user'?'#6d28d9':role==='thinking'?'var(--surface2,#eee)':'var(--surface,#fff)')+';border:1px solid var(--border);border-radius:var(--r-lg,14px);padding:.78rem .9rem;font-family:var(--fu);font-size:.77rem;color:'+(role==='user'?'#fff':'var(--txt)')+';line-height:1.68;max-width:90%;font-style:'+(role==='thinking'?'italic':'normal');
+  div.innerHTML=text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);
+  var sb=msgs.parentElement;if(sb)sb.scrollTop=sb.scrollHeight;
+  return div;
+}
+
+window.aiSend_sextus=function(){
+  if(aiLoad)return;
+  var inp=document.getElementById('aiInp_sextus');
+  var text=inp?inp.value.trim():'';
+  if(!text)return;
+  addMsg(text,'user');
+  if(inp){inp.value='';inp.style.height='auto';}
+  var thinking=addMsg('分析中...','thinking');
+  aiLoad=true;
+  aiHist.push({role:'user',parts:[{text:text}]});
+  var hist=aiHist.slice(-6).map(function(h){return (h.role==='user'?'ユーザー: ':'AI: ')+h.parts[0].text;}).join('\n');
+  var body=JSON.stringify({prompt:AISYS+'\n\n'+hist+'\n\nユーザーの最後の質問に答えてください。',model:'gemini-2.0-flash',maxTokens:600});
+  fetch(AIEP,{method:'POST',headers:{'Content-Type':'application/json','X-Access-Key':AIKEY},body:body})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(thinking)thinking.remove();
+      var t=(data&&data.data&&data.data.candidates&&data.data.candidates[0]&&data.data.candidates[0].content&&data.data.candidates[0].content.parts[0]&&data.data.candidates[0].content.parts[0].text)||'';
+      if(t){addMsg(t,'ai');aiHist.push({role:'model',parts:[{text:t}]});}
+      else addMsg('回答を取得できませんでした。','ai');
+      aiLoad=false;
+    })
+    .catch(function(){
+      if(thinking)thinking.remove();
+      addMsg('通信エラーです。','ai');
+      aiLoad=false;
+    });
+};
+
+window.aiSend=window.aiSend_sextus;
+window.initAI_sextus=initAI;
+initAI();
+})();
+
+</script>
+</body>
+</html>
