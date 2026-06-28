@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F8F7FF">
+<title>SENSES — Love Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F8F7FF; --bg2:#EEEAF9; --bg3:#E5E0F5;
+  --surface:#FFFFFF; --surface2:#F1EDF9;
+  --border:rgba(100,80,180,.13); --border2:rgba(100,80,180,.22);
+  --txt:#1a1230; --txt2:#4a3f6b; --txt3:#8b7dac;
+  /* 五感カラー */
+  --eidos:#B8860B;   --eidos-l:#D4A017;  --eidos-xl:rgba(184,134,11,.08);
+  --forma:#2563eb;   --forma-l:#60a5fa;  --forma-xl:rgba(37,99,235,.08);
+  --sonos:#16a34a;   --sonos-l:#4ade80;  --sonos-xl:rgba(22,163,74,.08);
+  --haptos:#ea580c;  --haptos-l:#fb923c; --haptos-xl:rgba(234,88,12,.08);
+  --geusto:#dc2626;  --geusto-l:#f87171; --geusto-xl:rgba(220,38,38,.08);
+  /* アクセント */
+  --gold:#B8860B; --gold-l:#D4A017; --gold-xl:rgba(184,134,11,.08);
+  --violet:#7c3aed; --violet-xl:rgba(124,58,237,.08);
+  --rose:#BE123C;  --rose-xl:rgba(190,18,60,.07);
+  --teal:#0F766E;  --teal-xl:rgba(15,118,110,.08);
+  --amber:#B45309; --amber-xl:rgba(180,83,9,.08);
+  /* フォント */
+  --fd:'Playfair Display',serif;
+  --fu:'DM Sans','Noto Sans JP',sans-serif;
+  /* 形状 */
+  --r-sm:10px; --r-md:14px; --r-lg:18px; --r-xl:24px; --r-full:9999px;
+  --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);font-family:var(--fu);overflow:hidden;height:100dvh}
+strong{color:var(--txt)}
+
+/* ── SPLASH ── */
+#splash{position:fixed;inset:0;z-index:300;background:linear-gradient(135deg,#f0ebff,#e8f5f0);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;transition:opacity .45s}
+.sp-bottle{font-size:4.5rem;filter:drop-shadow(0 0 24px rgba(184,134,11,.35))}
+.sp-title{font-family:var(--fd);font-size:3rem;font-weight:700;letter-spacing:.08em;background:linear-gradient(135deg,var(--eidos),var(--forma-l),var(--sonos-l),var(--haptos-l),var(--geusto-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sp-sub{font-family:var(--fu);font-size:.78rem;font-weight:600;letter-spacing:.18em;color:var(--txt3);text-transform:uppercase}
+.sp-tagline{font-family:var(--fd);font-size:1rem;font-style:italic;color:var(--txt2);text-align:center;line-height:1.6;max-width:280px}
+.sp-btn{margin-top:.5rem;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--eidos),var(--geusto));border:none;border-radius:var(--r-full);font-family:var(--fu);font-size:1rem;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.04em}
+.sp-orbs{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.09}
+
+/* ── APP ── */
+#app{display:none;flex-direction:column;height:100dvh}
+#app.on{display:flex}
+.pages{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow:hidden;display:none}
+.page.on{display:flex;flex-direction:column}
+.sb{flex:1;overflow-y:auto;padding:0 1.1rem 1rem;-webkit-overflow-scrolling:touch}
+.sb::-webkit-scrollbar{display:none}
+.spacer{height:1.2rem}
+
+/* ── NAV ── */
+.bnav{display:flex;background:#EEEAF9;border-top:1px solid rgba(100,80,180,.15);padding:0 .2rem calc(var(--sab) + .4rem);padding-top:.3rem}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.38rem .2rem;background:none;border:none;cursor:pointer;transition:all .15s;position:relative}
+.bni-ico{font-size:1.25rem;line-height:1;transition:transform .15s}
+.bni-lbl{font-family:var(--fu);font-size:.52rem;font-weight:600;color:var(--txt3);letter-spacing:.02em;transition:color .15s}
+.bni-dot{width:4px;height:4px;border-radius:50%;background:transparent;margin-top:.1rem;transition:background .15s}
+.bni.on .bni-lbl{color:var(--gold)}
+.bni.on .bni-dot{background:var(--gold)}
+.bni.on .bni-ico{transform:scale(1.12)}
+
+/* ── PAGE HEADER ── */
+.pg-hd{padding:calc(var(--sat) + .9rem) 0 .6rem}
+.pg-title{font-family:var(--fd);font-size:1.45rem;font-weight:700;color:var(--txt)}
+
+/* ── CARD ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:.65rem}
+.card-hd{display:flex;align-items:center;gap:.75rem;padding:.9rem 1rem}
+.card-ico{width:36px;height:36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.card-hd-title{font-family:var(--fu);font-size:.88rem;font-weight:700;color:var(--txt)}
+.card-hd-sub{font-family:var(--fu);font-size:.65rem;color:var(--txt3);margin-top:.12rem}
+.card-bd{padding:.1rem 1rem 1rem}
+
+/* ── HOME ── */
+.home-hero{background:linear-gradient(160deg,#EDE8F9 0%,#E0F0EE 100%);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.5rem 1.2rem;margin-bottom:.65rem;position:relative;overflow:hidden}
+.hero-orbs{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.home-top{display:flex;align-items:center;gap:.8rem;margin-bottom:.9rem}
+.home-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--eidos),var(--geusto));display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;box-shadow:0 0 20px rgba(184,134,11,.3)}
+.home-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--txt)}
+.home-sub{font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.12rem}
+.hero-title{font-family:var(--fd);font-size:1.35rem;line-height:1.45;margin-bottom:.8rem}
+.hero-title em{font-style:italic;background:linear-gradient(135deg,var(--eidos-l),var(--geusto-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hs-row{display:flex;gap:.5rem;margin-bottom:.9rem}
+.hs{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.6rem .5rem;text-align:center}
+.hs-n{display:block;font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--gold)}
+.hs-l{display:block;font-family:var(--fu);font-size:.52rem;color:var(--txt3);margin-top:.1rem;font-weight:600}
+/* Tips */
+.tip-box{background:linear-gradient(135deg,var(--surface),var(--bg3));border:1px solid var(--border2);border-radius:var(--r-md);padding:.85rem;cursor:pointer;display:flex;gap:.65rem;align-items:flex-start}
+.tip-ico{font-size:1.2rem;flex-shrink:0;margin-top:.05rem}
+.tip-txt{font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7;font-style:italic}
+/* 五感グリッド */
+.sense-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.65rem}
+.sense-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.8rem .85rem;cursor:pointer;transition:transform .12s,border-color .15s;display:flex;flex-direction:column;gap:.35rem}
+.sense-card:active{transform:scale(.97)}
+.sense-ico{font-size:1.4rem}
+.sense-name{font-family:var(--fd);font-size:.88rem;font-weight:700;color:var(--txt)}
+.sense-sub{font-family:var(--fu);font-size:.6rem;color:var(--txt3);line-height:1.5}
+.sense-badge{font-family:var(--fu);font-size:.55rem;font-weight:700;padding:.12rem .45rem;border-radius:var(--r-full);width:fit-content}
+/* モジュール */
+.mod{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.8rem .9rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:all .15s;margin-bottom:.5rem;position:relative;overflow:hidden}
+.mod:active{transform:scale(.98)}
+.mod-ac{position:absolute;left:0;top:0;bottom:0;width:3px}
+.mod-ico{width:36px;height:36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.mod-name{font-family:var(--fu);font-size:.82rem;font-weight:700;color:var(--txt)}
+.mod-sub{font-family:var(--fu);font-size:.63rem;color:var(--txt3);margin-top:.1rem}
+.mod-arr{margin-left:auto;color:var(--txt3);font-size:1.1rem;flex-shrink:0}
+.mod-badge{font-family:var(--fu);font-size:.55rem;font-weight:700;padding:.15rem .5rem;border-radius:var(--r-full);margin-left:auto;flex-shrink:0}
+
+/* ── TONIGHT PAGE ── */
+.sel-chips{display:flex;flex-wrap:wrap;gap:.38rem}
+.sel-chip{padding:.42rem .9rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .16s}
+.sel-chip.on{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:700}
+.sel-go{width:100%;padding:.9rem;border-radius:var(--r-full);background:linear-gradient(135deg,var(--eidos),var(--geusto));border:none;font-family:var(--fu);font-size:.9rem;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.03em;margin-top:.5rem}
+/* 結果カード */
+.res-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:.5rem}
+.res-head{padding:.7rem .9rem;display:flex;align-items:center;gap:.6rem}
+.res-sense-ico{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.res-sense-name{font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.res-item-name{font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--txt)}
+.res-body{padding:0 .9rem .75rem}
+.res-reason{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65}
+.res-science{font-family:var(--fu);font-size:.63rem;color:var(--gold);font-weight:600;margin-top:.3rem}
+
+/* ── SCIENCE PAGE ── */
+.neuro-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.5rem}
+.ng{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.7rem .75rem}
+.ng-ico{font-size:1.3rem;margin-bottom:.3rem}
+.ng-name{font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.15rem}
+.ng-chem{font-family:var(--fu);font-size:.55rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.ng-desc{font-family:var(--fu);font-size:.64rem;color:var(--txt2);line-height:1.55}
+
+/* ── SCENARIO PAGE ── */
+.phase-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:.65rem}
+.phase-head{padding:.85rem 1rem;display:flex;align-items:center;gap:.7rem;cursor:pointer}
+.phase-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:.88rem;font-weight:700;color:#fff;flex-shrink:0}
+.phase-title{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--txt)}
+.phase-sub{font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.1rem}
+.phase-body{padding:0 1rem 1rem;display:none}
+.phase-body.open{display:block}
+.sense-row{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.55rem}
+.sense-tag{font-family:var(--fu);font-size:.58rem;font-weight:700;padding:.2rem .55rem;border-radius:var(--r-full);white-space:nowrap;flex-shrink:0}
+.sense-detail{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6;flex:1}
+.hormone-bar{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.4rem}
+.h-tag{font-family:var(--fu);font-size:.58rem;font-weight:600;padding:.15rem .5rem;border-radius:var(--r-full);background:var(--surface2);border:1px solid var(--border);color:var(--txt3)}
+
+/* ── LEARN PAGE ── */
+.learn-hd{padding:calc(var(--sat) + .75rem) 1.25rem .65rem;display:flex;align-items:center;justify-content:space-between}
+.deck-tabs{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .65rem;scrollbar-width:none}
+.deck-tabs::-webkit-scrollbar{display:none}
+.dt{padding:.45rem .9rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt3);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.dt.on{background:var(--gold);border-color:var(--gold);color:#fff}
+.card-area{padding:0 1.25rem;flex:1;overflow-y:auto}
+.card-area::-webkit-scrollbar{display:none}
+.card-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;margin-bottom:.65rem}
+.card-face{padding:1.4rem 1.35rem;display:flex;flex-direction:column;flex:1;transition:opacity .15s}
+.card-face.hidden{display:none}
+.card-face-back{background:linear-gradient(135deg,rgba(184,134,11,.05),rgba(220,38,38,.03))}
+.cf-tag{font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--txt3);margin-bottom:.5rem}
+.cf-q{font-family:var(--fd);font-size:1.05rem;font-weight:600;color:var(--txt);line-height:1.45;flex:1}
+.cf-a{font-family:var(--fu);font-size:.78rem;color:var(--txt2);line-height:1.7;flex:1}
+.cf-src{font-family:var(--fu);font-size:.6rem;color:var(--txt3);margin-top:.5rem;font-weight:600;letter-spacing:.05em}
+.cf-frags{margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--border)}
+.cf-frags-lbl{font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:.45rem;display:flex;align-items:center;gap:.3rem}
+.cf-frags-lbl::before{content:'✨'}
+.cf-frag-chips{display:flex;flex-wrap:wrap;gap:.3rem}
+.cf-frag-chip{font-family:var(--fu);font-size:.63rem;font-weight:600;padding:.25rem .65rem;border-radius:var(--r-full);background:var(--surface2);border:1px solid var(--border);color:var(--txt2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.cf-frag-chip:active{background:var(--gold);border-color:var(--gold);color:#fff}
+.flip-btn{width:100%;padding:.9rem;background:var(--bg2);border:none;border-top:1px solid var(--border);font-family:var(--fu);font-size:.82rem;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:.02em}
+.card-ctrl{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.25rem}
+.ctrl-btn{width:40px;height:40px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt2)}
+.ctrl-pg{font-family:var(--fu);font-size:.75rem;color:var(--txt3);font-weight:600}
+.dots{display:flex;gap:.3rem;justify-content:center;padding:.3rem 0}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--border2);transition:all .2s}
+.dot.on{background:var(--gold);width:14px;border-radius:3px}
+
+/* ── LIBRARY PAGE ── */
+.sense-filter{display:flex;gap:.35rem;overflow-x:auto;padding:0 0 .5rem;scrollbar-width:none;margin-bottom:.3rem}
+.sense-filter::-webkit-scrollbar{display:none}
+.sf-btn{padding:.38rem .85rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.7rem;font-weight:600;color:var(--txt3);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.sf-btn.on{color:#fff;font-weight:700}
+.lib-grid{display:flex;flex-direction:column;gap:.5rem}
+.lc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:border-color .15s}
+.lc.open{border-color:var(--border2)}
+.lc-top{display:flex;align-items:center;gap:.75rem;padding:.8rem .9rem;cursor:pointer}
+.lc-emoji{font-size:1.4rem;flex-shrink:0}
+.lc-brand{font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--txt3)}
+.lc-name{font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--txt)}
+.lc-type{font-family:var(--fu);font-size:.6rem;color:var(--txt3);margin-top:.08rem}
+.lc-sense{font-family:var(--fu);font-size:.55rem;font-weight:700;padding:.12rem .45rem;border-radius:var(--r-full);margin-left:auto;flex-shrink:0;color:#fff}
+.lc-body{padding:0 .9rem .9rem;display:none}
+.lc.open .lc-body{display:block}
+.lc-desc{font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7;margin-bottom:.5rem}
+.lc-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.5rem}
+.lc-tag{font-family:var(--fu);font-size:.6rem;font-weight:600;padding:.2rem .55rem;border-radius:var(--r-full);background:var(--surface2);border:1px solid var(--border);color:var(--txt3)}
+
+/* ── QUIZ ── */
+.quiz-wrap{padding:0 1.1rem;flex:1;overflow-y:auto}
+.quiz-wrap::-webkit-scrollbar{display:none}
+.qhd{display:flex;justify-content:space-between;align-items:center;padding:.7rem 0}
+.qsc{font-family:var(--fu);font-size:.78rem;font-weight:600;color:var(--gold)}
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:1.3rem 1.2rem;margin-bottom:.6rem}
+.qq{font-family:var(--fd);font-size:1.05rem;font-weight:600;color:var(--txt);line-height:1.5;margin-bottom:1rem}
+.qopt{width:100%;text-align:left;padding:.8rem .9rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-md);font-family:var(--fu);font-size:.76rem;color:var(--txt2);cursor:pointer;margin-bottom:.45rem;transition:all .15s;line-height:1.5}
+.qopt:last-child{margin-bottom:0}
+.qopt.correct{background:rgba(22,163,74,.1);border-color:#16a34a;color:#15803d}
+.qopt.wrong{background:rgba(220,38,38,.08);border-color:#dc2626;color:#b91c1c}
+.qexp{font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7;padding:.8rem .9rem;background:var(--bg2);border-radius:var(--r-md);margin-top:.6rem;display:none}
+.qexp.show{display:block}
+.qfrags-area{margin-top:.5rem;display:none}
+.qnxt{width:100%;padding:.85rem;background:var(--gold);border:none;border-radius:var(--r-full);font-family:var(--fu);font-size:.85rem;font-weight:700;color:#fff;cursor:pointer;margin-top:.6rem;display:none}
+.qnxt.show{display:block}
+.qfin{text-align:center;padding:2rem 1rem}
+.qfin-score{font-family:var(--fd);font-size:2.5rem;font-weight:700;color:var(--gold)}
+.qfin-msg{font-family:var(--fu);font-size:.8rem;color:var(--txt2);margin:.5rem 0 1.5rem}
+.qrestart{padding:.9rem 2rem;background:var(--surface);border:1.5px solid var(--gold);border-radius:var(--r-full);font-family:var(--fu);font-size:.85rem;font-weight:700;color:var(--gold);cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- ══ SPLASH ══ -->
+<div id="splash">
+  <div class="sp-orbs">
+    <div class="orb" style="width:300px;height:300px;background:var(--eidos);top:-80px;left:-80px"></div>
+    <div class="orb" style="width:200px;height:200px;background:var(--geusto);bottom:-60px;right:-60px"></div>
+    <div class="orb" style="width:150px;height:150px;background:var(--sonos);top:40%;left:60%"></div>
+  </div>
+  <div class="sp-bottle"><svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+    <!-- 五感を表す5つの円 -->
+    <circle cx="40" cy="40" r="32" stroke="url(#sg)" stroke-width="2" fill="none" opacity=".4"/>
+    <circle cx="40" cy="40" r="22" stroke="url(#sg)" stroke-width="1.5" fill="none" opacity=".3"/>
+    <!-- 中心の星 -->
+    <path d="M40 18 L43 33 L58 33 L46 42 L50 57 L40 48 L30 57 L34 42 L22 33 L37 33 Z" fill="url(#sg)" opacity=".9"/>
+    <!-- 五感アイコン配置 -->
+    <text x="40" y="12" text-anchor="middle" font-size="8" fill="#B8860B">🧴</text>
+    <text x="68" y="42" text-anchor="middle" font-size="8" fill="#2563eb">👔</text>
+    <text x="57" y="68" text-anchor="middle" font-size="8" fill="#16a34a">🎵</text>
+    <text x="23" y="68" text-anchor="middle" font-size="8" fill="#ea580c">🤲</text>
+    <text x="12" y="42" text-anchor="middle" font-size="8" fill="#dc2626">👅</text>
+    <defs>
+      <linearGradient id="sg" x1="0" y1="0" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#B8860B"/>
+        <stop offset="25%" stop-color="#2563eb"/>
+        <stop offset="50%" stop-color="#16a34a"/>
+        <stop offset="75%" stop-color="#ea580c"/>
+        <stop offset="100%" stop-color="#dc2626"/>
+      </linearGradient>
+    </defs>
+  </svg></div>
+  <div class="sp-title">SENSES</div>
+  <div class="sp-sub">Love Intelligence</div>
+  <div class="sp-tagline">「五感を制する者が、<br>恋愛を制する」</div>
+  <button class="sp-btn" onclick="boot()">はじめる →</button>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+  <div class="pages">
+
+    <!-- ══ HOME ══ -->
+    <div class="page on" id="pg-home">
+      <div class="sb">
+        <div class="home-hero">
+          <div class="hero-orbs">
+            <div class="orb" style="width:180px;height:180px;background:var(--eidos);top:-60px;right:-40px;opacity:.1"></div>
+            <div class="orb" style="width:120px;height:120px;background:var(--geusto);bottom:-40px;left:-30px;opacity:.08"></div>
+          </div>
+          <div class="home-top">
+            <div class="home-av">✨</div>
+            <div>
+              <div class="home-title">SENSES</div>
+              <div class="home-sub">LOVE INTELLIGENCE — 五感統合恋愛科学</div>
+            </div>
+          </div>
+          <div class="hero-title">五感が統合した時、<br><em>恋愛は自動化される。</em></div>
+          <div class="hs-row">
+            <div class="hs"><span class="hs-n">5</span><span class="hs-l">感覚統合</span></div>
+            <div class="hs"><span class="hs-n">120+</span><span class="hs-l">プロトコル</span></div>
+            <div class="hs"><span class="hs-n">10</span><span class="hs-l">学習デッキ</span></div>
+            <div class="hs"><span class="hs-n">50+</span><span class="hs-l">研究根拠</span></div>
+          </div>
+          <div class="tip-box" onclick="rotateTip()">
+            <span class="tip-ico" id="tipIco">✨</span>
+            <span class="tip-txt" id="tipTxt"></span>
+          </div>
+        </div>
+
+        <!-- 五感カード -->
+        <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin-bottom:.5rem">五感アプリ一覧</div>
+        <div class="sense-grid">
+          <div class="sense-card" onclick="nav('tonight',1)" style="border-color:rgba(184,134,11,.25)">
+            <div class="sense-ico">🎯</div>
+            <div class="sense-name">今夜の戦略</div>
+            <div class="sense-sub">五感全て同時提案</div>
+            <div class="sense-badge" style="background:var(--eidos-xl);color:var(--eidos-l)">メイン機能</div>
+          </div>
+          <div class="sense-card" onclick="nav('scenario',2)" style="border-color:rgba(124,58,237,.25)">
+            <div class="sense-ico">📅</div>
+            <div class="sense-name">シナリオ設計</div>
+            <div class="sense-sub">初回〜深化まで段階別</div>
+            <div class="sense-badge" style="background:var(--violet-xl);color:#a78bfa">完全版</div>
+          </div>
+          <div class="sense-card" onclick="nav('science',3)" style="border-color:rgba(37,99,235,.25)">
+            <div class="sense-ico">🧠</div>
+            <div class="sense-name">統合の科学</div>
+            <div class="sense-sub">多感覚統合神経科学</div>
+            <div class="sense-badge" style="background:var(--forma-xl);color:var(--forma-l)">必読</div>
+          </div>
+          <div class="sense-card" onclick="nav('seventh',5)" style="border-color:rgba(124,58,237,.35);grid-column:span 2">
+            <div style="display:flex;align-items:center;gap:.7rem">
+              <div style="font-size:1.4rem">🔮</div>
+              <div>
+                <div style="font-family:var(--fd);font-size:.92rem;font-weight:700">七感統合</div>
+                <div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">五感＋内受容感覚＋身体共鳴 — 意識の全層を動かす完全設計</div>
+              </div>
+              <div class="sense-badge" style="background:rgba(124,58,237,.1);color:#a78bfa;margin-left:auto;flex-shrink:0">NEW</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mod" onclick="nav('library',6)"><div class="mod-ac" style="background:var(--gold)"></div><div class="mod-ico" style="background:var(--eidos-xl)">🌐</div><div><div class="mod-name">五感ライブラリ</div><div class="mod-sub">全アプリのアイテムを横断検索</div></div><span class="mod-badge" style="background:var(--eidos-xl);color:var(--eidos-l)">NEW</span><span class="mod-arr">›</span></div>
+        <div class="mod" onclick="nav('quiz',8)"><div class="mod-ac" style="background:var(--rose)"></div><div class="mod-ico" style="background:var(--rose-xl)">⚡</div><div><div class="mod-name">統合クイズ</div><div class="mod-sub">五感全分野 — 20問</div></div><span class="mod-arr">›</span></div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- ══ TONIGHT PAGE ══ -->
+    <div class="page" id="pg-tonight">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="background:linear-gradient(135deg,var(--eidos-l),var(--geusto-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">🎯 今夜の完全戦略</div><div style="font-family:var(--fu);font-size:.75rem;color:var(--txt3);margin-top:.25rem">3タップで五感全ての戦略を同時提案</div></div>
+
+        <div class="card" id="tonightSelector">
+          <div class="card-hd"><div class="card-ico" style="background:var(--eidos-xl)">🎛</div><div><div class="card-hd-title">今夜の状況を選ぶ</div><div class="card-hd-sub">3ステップで五感完全戦略を生成</div></div></div>
+          <div class="card-bd" style="display:flex;flex-direction:column;gap:1rem">
+            <div>
+              <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:.5rem">Step 1 — 今夜のシーン</div>
+              <div class="sel-chips">
+                <button class="sel-chip" data-group="scene" data-val="first">🌸 初デート</button>
+                <button class="sel-chip" data-group="scene" data-val="date2">💬 2〜3回目</button>
+                <button class="sel-chip" data-group="scene" data-val="confess">💝 告白</button>
+                <button class="sel-chip" data-group="scene" data-val="deep">🔥 深い関係</button>
+                <button class="sel-chip" data-group="scene" data-val="special">🌙 特別な夜</button>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:.5rem">Step 2 — 相手のタイプ</div>
+              <div class="sel-chips">
+                <button class="sel-chip" data-group="type" data-val="clean">✨ 清潔感重視</button>
+                <button class="sel-chip" data-group="type" data-val="smart">🧠 知的系</button>
+                <button class="sel-chip" data-group="type" data-val="sense">🎨 感性系</button>
+                <button class="sel-chip" data-group="type" data-val="warm">🤝 温かみ系</button>
+              </div>
+            </div>
+            <div>
+              <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:.5rem">Step 3 — 今夜の目標</div>
+              <div class="sel-chips">
+                <button class="sel-chip" data-group="goal" data-val="trust">🤝 信頼を作る</button>
+                <button class="sel-chip" data-group="goal" data-val="excite">⚡ ときめかせる</button>
+                <button class="sel-chip" data-group="goal" data-val="bond">🔗 絆を深める</button>
+                <button class="sel-chip" data-group="goal" data-val="memory">💫 忘れさせない</button>
+              </div>
+            </div>
+            <button class="sel-go" onclick="runTonightSelector()">✨ 五感完全戦略を生成する</button>
+          </div>
+        </div>
+
+        <div id="tonightResult" style="display:none">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin:.8rem 0 .5rem">🎯 今夜の五感完全戦略</div>
+          <div id="tonightResultCards"></div>
+          <div id="tonightIntegration" style="background:linear-gradient(135deg,var(--surface),var(--bg3));border:1px solid var(--border2);border-radius:var(--r-lg);padding:1rem;margin-top:.5rem"></div>
+          <button onclick="resetTonightSelector()" style="width:100%;margin-top:.65rem;padding:.75rem;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-full);font-family:var(--fu);font-size:.8rem;font-weight:600;color:var(--txt2);cursor:pointer">← 選び直す</button>
+        </div>
+
+        <!-- 排卵期トラッカー：現代vs古代比較 -->
+        <div class="card" style="margin-top:.65rem">
+          <div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">🌕</div><div><div class="card-hd-title">排卵期トラッカー</div><div class="card-hd-sub">現代サイクル × 古代月同期サイクルの比較</div></div></div>
+          <div class="card-bd">
+
+            <!-- 設定パネル -->
+            <div id="cycleSetup">
+              <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:.5rem">① 人種デフォルト または カスタム</div>
+              <div class="sel-chips" style="margin-bottom:.7rem">
+                <button class="sel-chip" data-cgroup="race" data-days="30.3" onclick="selectRace(this,'アジア系（日本人含む）',30.3)">🇯🇵 アジア系</button>
+                <button class="sel-chip" data-cgroup="race" data-days="28.7" onclick="selectRace(this,'白人・黒人・中東系',28.7)">🌍 白人/黒人/中東</button>
+                <button class="sel-chip" data-cgroup="race" data-days="29.4" onclick="selectRace(this,'ヒスパニック系',29.4)">🌎 ヒスパニック系</button>
+                <button class="sel-chip" data-cgroup="race" data-days="0" onclick="selectRace(this,'カスタム',0)">✏️ カスタム入力</button>
+              </div>
+              <div id="customDaysWrap" style="display:none;margin-bottom:.7rem">
+                <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-bottom:.3rem">周期日数（日）</div>
+                <input id="customDays" type="number" min="21" max="45" value="28" style="width:100%;padding:.6rem .8rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-md);font-family:var(--fu);font-size:.85rem;color:var(--txt);outline:none">
+              </div>
+              <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:.5rem">② 最終生理開始日</div>
+              <input id="lastPeriod" type="date" style="width:100%;padding:.6rem .8rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-md);font-family:var(--fu);font-size:.85rem;color:var(--txt);outline:none;margin-bottom:.7rem">
+              <button onclick="calcCycle()" style="width:100%;padding:.85rem;background:linear-gradient(135deg,var(--rose),var(--eidos));border:none;border-radius:var(--r-full);font-family:var(--fu);font-size:.88rem;font-weight:700;color:#fff;cursor:pointer">🌕 今日の状態を計算する</button>
+            </div>
+
+            <!-- 結果パネル -->
+            <div id="cycleResult" style="display:none">
+              <!-- 現代サイクル vs 古代サイクル 比較ヘッダー -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem">
+                <div style="background:var(--forma-xl);border:1px solid rgba(37,99,235,.2);border-radius:var(--r-md);padding:.7rem;text-align:center">
+                  <div style="font-size:1.4rem">📱</div>
+                  <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;color:var(--forma-l);margin-top:.2rem">現代サイクル</div>
+                  <div style="font-family:var(--fu);font-size:.58rem;color:var(--txt3);margin-top:.1rem">人工照明・現代生活</div>
+                  <div style="font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--forma-l);margin-top:.3rem" id="modernDaysLabel"></div>
+                </div>
+                <div style="background:var(--eidos-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-md);padding:.7rem;text-align:center">
+                  <div style="font-size:1.4rem">🌕</div>
+                  <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;color:var(--eidos-l);margin-top:.2rem">古代サイクル</div>
+                  <div style="font-family:var(--fu);font-size:.58rem;color:var(--txt3);margin-top:.1rem">月同期・自然光</div>
+                  <div style="font-family:var(--fd);font-size:1.1rem;font-weight:700;color:var(--eidos-l);margin-top:.3rem">29.5日周期</div>
+                </div>
+              </div>
+
+              <!-- 今日の状態 -->
+              <div id="cycleStatusCard" style="border-radius:var(--r-lg);padding:1rem;margin-bottom:.6rem;border:1.5px solid"></div>
+
+              <!-- タイムライン比較 -->
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.85rem;margin-bottom:.6rem">
+                <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem">📊 現代 vs 古代 タイムライン比較</div>
+                <div id="cycleTimeline"></div>
+              </div>
+
+              <!-- 月相情報 -->
+              <div id="lunarCard" style="background:var(--eidos-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-md);padding:.85rem;margin-bottom:.6rem"></div>
+
+              <!-- 五感戦略との連携 -->
+              <div id="cycleSenseStrategy" style="background:linear-gradient(135deg,var(--rose-xl),var(--eidos-xl));border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.85rem;margin-bottom:.6rem"></div>
+
+              <!-- 研究根拠 -->
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem;margin-bottom:.5rem">
+                <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">📚 研究根拠</div>
+                <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt3);line-height:1.65">
+                  現代値：Harvard T.H. Chan × Apple Women's Health Study（165,668サイクル・12,608人 / npj Digital Medicine 2023）<br>
+                  古代値：Helfrich-Förster et al. Science Advances 2021 / 2025（月同期研究）<br>
+                  日本人：Mitake et al. Reproductive Medicine and Biology 2023
+                </div>
+              </div>
+
+              <button onclick="resetCycle()" style="width:100%;padding:.7rem;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-full);font-family:var(--fu);font-size:.78rem;font-weight:600;color:var(--txt2);cursor:pointer">← 入力し直す</button>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- ══ SCIENCE PAGE ══ -->
+    <div class="page" id="pg-science">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="color:var(--forma-l)">🧠 統合の科学</div></div>
+
+        <!-- 多感覚統合効果 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--forma-xl)">🔬</div><div><div class="card-hd-title">多感覚統合効果（Multisensory Integration）</div><div class="card-hd-sub">感覚数が増えるほど記憶強度が指数関数的に増大する</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="background:var(--forma-xl);border:1px solid rgba(37,99,235,.15);border-radius:var(--r-md);padding:.85rem">
+              <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--forma-l);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">🔬 Calvert et al. fMRI研究 / Stein & Meredith（1993）</div>
+              <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7">複数の感覚が<strong>同時に</strong>処理される時、単一感覚の線形的な合計を超えた<strong>「超加算的な統合効果（superadditivity）」</strong>が起きることがfMRIで確認された。上丘（superior colliculus）と大脳皮質の多感覚ニューロンが同時に活性化し記憶強度・感情強度・ホルモン分泌量が指数関数的に増大する。</div>
+            </div>
+            <div class="neuro-grid">
+              <div class="ng"><div class="ng-ico">1️⃣</div><div class="ng-name">1感覚のみ</div><div class="ng-chem" style="color:var(--txt3)">LINEAR</div><div class="ng-desc">単独の記憶痕跡。海馬への保存強度：基準値1.0</div></div>
+              <div class="ng"><div class="ng-ico">2️⃣</div><div class="ng-name">2感覚同時</div><div class="ng-chem" style="color:var(--forma-l)">×2〜3</div><div class="ng-desc">例：香り+視覚。プルースト効果の強化版。記憶強度が2〜3倍。</div></div>
+              <div class="ng"><div class="ng-ico">3️⃣</div><div class="ng-name">3感覚同時</div><div class="ng-chem" style="color:var(--haptos-l)">×5〜8</div><div class="ng-desc">例：香り+視覚+声。扁桃体の感情反応が最大化。記憶強度5〜8倍。</div></div>
+              <div class="ng"><div class="ng-ico">5️⃣</div><div class="ng-name">五感統合</div><div class="ng-chem" style="color:var(--eidos-l)">指数関数的</div><div class="ng-desc">「一生忘れられない記憶」の神経科学的保証。全ホルモン同時最大値。</div></div>
+            </div>
+          </div>
+        </div></div>
+
+        <!-- ホルモンカスケード設計 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--eidos-xl)">💊</div><div><div class="card-hd-title">五感×ホルモンカスケード設計</div><div class="card-hd-sub">各感覚がどのホルモンを活性化させるか</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.45rem">
+            <div style="display:flex;gap:.65rem;align-items:center;background:var(--eidos-xl);border-radius:var(--r-sm);padding:.65rem .75rem"><span style="font-size:1.1rem;flex-shrink:0">🧴</span><div style="flex:1"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--eidos-l)">EIDOS 嗅覚</div><div style="font-family:var(--fu);font-size:.66rem;color:var(--txt2);margin-top:.1rem">視床を経由せず扁桃体直接→最速0.03秒でオキシトシン+ドーパミン誘発。プルースト効果で海馬に永久保存。</div></div><div style="font-family:var(--fu);font-size:.58rem;font-weight:700;color:var(--eidos-l);text-align:right;flex-shrink:0">OXY<br>DOP</div></div>
+            <div style="display:flex;gap:.65rem;align-items:center;background:var(--forma-xl);border-radius:var(--r-sm);padding:.65rem .75rem"><span style="font-size:1.1rem;flex-shrink:0">👔</span><div style="flex:1"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--forma-l)">FORMA 視覚</div><div style="font-family:var(--fu);font-size:.66rem;color:var(--txt2);margin-top:.1rem">0.1秒で扁桃体判定→ハロー効果→ドーパミン報酬。瞳孔拡大の相互効果で夜に最大化。</div></div><div style="font-family:var(--fu);font-size:.58rem;font-weight:700;color:var(--forma-l);text-align:right;flex-shrink:0">DOP<br>NOR</div></div>
+            <div style="display:flex;gap:.65rem;align-items:center;background:var(--sonos-xl);border-radius:var(--r-sm);padding:.65rem .75rem"><span style="font-size:1.1rem;flex-shrink:0">🎵</span><div style="flex:1"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--sonos-l)">SONOS 聴覚</div><div style="font-family:var(--fu);font-size:.66rem;color:var(--txt2);margin-top:.1rem">囁き声→耳介CT繊維→迷走神経→オキシトシン最大化。名前呼び→N200ニューラル反応。</div></div><div style="font-family:var(--fu);font-size:.58rem;font-weight:700;color:var(--sonos-l);text-align:right;flex-shrink:0">OXY<br>END</div></div>
+            <div style="display:flex;gap:.65rem;align-items:center;background:var(--haptos-xl);border-radius:var(--r-sm);padding:.65rem .75rem"><span style="font-size:1.1rem;flex-shrink:0">🤲</span><div style="flex:1"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--haptos-l)">HAPTOS 触覚</div><div style="font-family:var(--fu);font-size:.66rem;color:var(--txt2);margin-top:.1rem">CT繊維→島皮質→視床下部→オキシトシン直接産生。20秒ハグでバソプレシン絆形成。</div></div><div style="font-family:var(--fu);font-size:.58rem;font-weight:700;color:var(--haptos-l);text-align:right;flex-shrink:0">OXY<br>VAS</div></div>
+            <div style="display:flex;gap:.65rem;align-items:center;background:var(--geusto-xl);border-radius:var(--r-sm);padding:.65rem .75rem"><span style="font-size:1.1rem;flex-shrink:0">👅</span><div style="flex:1"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--geusto-l)">GEUSTO 味覚</div><div style="font-family:var(--fu);font-size:.66rem;color:var(--txt2);margin-top:.1rem">キス5種ホルモン同時分泌。コプリン×テストステロン転移。翌朝共食で記憶永久固定。</div></div><div style="font-family:var(--fu);font-size:.58rem;font-weight:700;color:var(--geusto-l);text-align:right;flex-shrink:0">ALL<br>MAX</div></div>
+          </div>
+        </div></div>
+
+        <!-- 恋愛自動化システム -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🔄</div><div><div class="card-hd-title">恋愛の完全自動化システム</div><div class="card-hd-sub">五感シグネチャーが「条件付け」として脳に定着する</div></div></div><div class="card-bd">
+          <div style="background:var(--violet-xl);border:1px solid rgba(124,58,237,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.7rem">
+            <div style="font-family:var(--fd);font-size:.92rem;font-style:italic;color:var(--txt);line-height:1.65;margin-bottom:.4rem">「会うたびに五感全てでオキシトシン+バソプレシン+エンドルフィン+ドーパミンが同時発動する絆のシステムが相手の脳内に形成される。」</div>
+            <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3)">— 五感統合戦略の完成形</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.45rem">
+            <div style="display:flex;gap:.6rem;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:var(--eidos);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.65rem;font-weight:700;flex-shrink:0">1</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6">シグネチャーセント（EIDOS）→ プルースト効果で「この香り＝あなた＝楽しい記憶」が条件付け</div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:var(--forma);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.65rem;font-weight:700;flex-shrink:0">2</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6">シグネチャースタイル（FORMA）→ 視覚版プルースト効果で「この姿＝安心感・信頼」が自動起動</div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:var(--sonos);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.65rem;font-weight:700;flex-shrink:0">3</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6">シグネチャーボイス（SONOS）→ 声を聞くたびにオキシトシンが再起動・バソプレシン絆強化</div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:var(--haptos);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.65rem;font-weight:700;flex-shrink:0">4</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6">タッチの記憶（HAPTOS）→ 触れるたびにCT繊維×オキシトシンが「温もりの記憶」を強化</div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:var(--geusto);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.65rem;font-weight:700;flex-shrink:0">5</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6">キス×食の記憶（GEUSTO）→ MHC相性確認＋全ホルモン最大分泌が「この人しかいない」を固定</div></div>
+          </div>
+        </div></div>
+
+        <!-- 排卵期×五感統合のタイミング -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">📅</div><div><div class="card-hd-title">排卵期 × 五感統合の最適タイミング</div><div class="card-hd-sub">全感覚の感受性が同時に最大化する生理学的根拠</div></div></div><div class="card-bd">
+          <div style="display:grid;gap:.45rem">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--rose);margin-bottom:.25rem">🧴 EIDOS：嗅覚感度が最大値（エストロゲン↑）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">排卵期にエストロゲンが最高値→嗅覚上皮の感受性が最大化。香水の効果が最も強く届く時期。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--geusto-l);margin-bottom:.25rem">👅 GEUSTO：コプリン×テストステロン効果最大化</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">コプリン組成変化（Cutler 1998）で男性テストステロン上昇効果が最大。腟粘膜感受性・潤滑も最大。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--sonos-l);margin-bottom:.25rem">🎵 SONOS：声のピッチ変化→テストステロン最大上昇（Pipitone 2008）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">排卵期の女性の声変化が男性のテストステロンを最も強く上昇させる。</div></div>
+            <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--gold);margin-bottom:.25rem">✨ 全感覚統合：五感が同時に最大感受性を持つ</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">「五感統合戦略が最大効果を発揮するタイミング」が生理周期によって決まる。この時期にEIDOS×FORMA×SONOS×HAPTOS×GEUSTOの全てが揃うと指数関数的な効果が発揮される。</div></div>
+          </div>
+        </div></div>
+
+        <!-- 五感の解剖学的経路比較 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">🗺</div><div><div class="card-hd-title">五感の解剖学的経路比較</div><div class="card-hd-sub">各感覚が扁桃体に届くまでの経路・速度・ホルモンの違い</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.45rem">
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--eidos-xl);border-radius:var(--r-sm);padding:.65rem .75rem">
+              <span style="font-size:1rem;flex-shrink:0">🧴</span>
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem">
+                  <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--eidos-l)">EIDOS 嗅覚</div>
+                  <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--eidos-l);background:var(--eidos-xl);padding:.1rem .45rem;border-radius:var(--r-full);border:1px solid rgba(184,134,11,.3)">⚡ 0.03秒</div>
+                </div>
+                <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">嗅神経→嗅球→<strong>視床を経由せず扁桃体直接</strong>。唯一の視床バイパス経路。海馬（記憶）にも直結。プルースト効果の解剖学的根拠。五感で最速かつ最も原始的な感情経路。</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--forma-xl);border-radius:var(--r-sm);padding:.65rem .75rem">
+              <span style="font-size:1rem;flex-shrink:0">👔</span>
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem">
+                  <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--forma-l)">FORMA 視覚</div>
+                  <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--forma-l);background:var(--forma-xl);padding:.1rem .45rem;border-radius:var(--r-full);border:1px solid rgba(37,99,235,.3)">⚡ 0.1秒</div>
+                </div>
+                <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">網膜→外側膝状体（視床）→V1〜V5（視覚野）→IT野（物体認識）→扁桃体。高速副経路（外側膝状体→扁桃体）が並行。情報量最大（脳の処理能力の30%が視覚に割当）。</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--sonos-xl);border-radius:var(--r-sm);padding:.65rem .75rem">
+              <span style="font-size:1rem;flex-shrink:0">🎵</span>
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem">
+                  <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--sonos-l)">SONOS 聴覚</div>
+                  <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--sonos-l);background:var(--sonos-xl);padding:.1rem .45rem;border-radius:var(--r-full);border:1px solid rgba(22,163,74,.3)">⚡ 0.05秒</div>
+                </div>
+                <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">蝸牛→蝸牛神経核→内側膝状体（視床）→聴覚野。<strong>耳介CT繊維→迷走神経耳介枝→脳幹→視床下部（オキシトシン直接）</strong>という特別経路が並行。</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--haptos-xl);border-radius:var(--r-sm);padding:.65rem .75rem">
+              <span style="font-size:1rem;flex-shrink:0">🤲</span>
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem">
+                  <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--haptos-l)">HAPTOS 触覚</div>
+                  <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--haptos-l);background:var(--haptos-xl);padding:.1rem .45rem;border-radius:var(--r-full);border:1px solid rgba(234,88,12,.3)">🐢 1〜2秒</div>
+                </div>
+                <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">皮膚CT繊維（無髄：伝導速度1〜2m/s）→脊髄→脳幹→<strong>島皮質（感情的タッチの処理）</strong>→視床下部。最も遅いが最もオキシトシン産生に直接的な経路。</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--geusto-xl);border-radius:var(--r-sm);padding:.65rem .75rem">
+              <span style="font-size:1rem;flex-shrink:0">👅</span>
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem">
+                  <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--geusto-l)">GEUSTO 味覚</div>
+                  <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--geusto-l);background:var(--geusto-xl);padding:.1rem .45rem;border-radius:var(--r-full);border:1px solid rgba(220,38,38,.3)">🔗 6経路同時</div>
+                </div>
+                <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">鼓索神経・舌神経・舌咽神経・迷走神経・三叉神経・後鼻腔嗅覚の<strong>6経路が同時活性化</strong>（キス時）。孤束核→島皮質→扁桃体→視床下部で全統合。人体最大の多感覚統合点。</div>
+              </div>
+            </div>
+            <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.65rem .75rem;margin-top:.1rem">
+              <div style="font-family:var(--fu);font-size:.65rem;font-weight:700;color:var(--gold);margin-bottom:.2rem">✨ 全経路の収束点：迷走神経 × 扁桃体 × 島皮質</div>
+              <div style="font-family:var(--fu);font-size:.64rem;color:var(--txt2);line-height:1.6">EIDOS（嗅球→扁桃体）× SONOS（迷走神経耳介枝）× HAPTOS（島皮質→迷走神経系）× GEUSTO（舌根→迷走神経）の全経路が<strong>迷走神経・扁桃体・島皮質の三点に収束</strong>する。五感統合の解剖学的中枢がこの三点。</div>
+            </div>
+          </div>
+        </div></div>
+
+        <!-- 恋愛脳の解剖学 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🧠</div><div><div class="card-hd-title">恋愛脳の解剖学</div><div class="card-hd-sub">扁桃体・海馬・視床下部・側坐核・島皮質の位置関係と機能</div></div></div><div class="card-bd">
+          <div style="display:grid;gap:.45rem">
+            <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--rose);margin-bottom:.25rem">💓 扁桃体（Amygdala）— 感情の関門・0.05秒の判定装置</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">側頭葉内側・海馬の前方に位置するアーモンド形の核。<strong>「好き/嫌い・安全/危険・信頼/不信」を前頭前野（理性）より先に判定</strong>。五感の全経路が収束する感情的評価の最初のフィルター。扁桃体の判定をクリアしない限り次の恋愛段階（海馬への記憶保存・視床下部のホルモン分泌）が始まらない。</div></div>
+            <div style="background:var(--amber-xl);border:1px solid rgba(180,83,9,.15);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--amber);margin-bottom:.25rem">🧬 海馬（Hippocampus）— 恋愛記憶の永久保存装置</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">扁桃体に隣接する海馬状の構造。<strong>陳述記憶（「あの時の体験」）の長期固定化を担当</strong>。オキシトシン+バソプレシンが分泌された状態での体験が海馬に最も強く保存される（感情記憶の強化）。嗅覚は海馬に直接接続しているためプルースト効果が最強。睡眠中のNREM波がこの固定化を完成させる。</div></div>
+            <div style="background:var(--indigo-xl);border:1px solid rgba(30,58,110,.15);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--forma-l);margin-bottom:.25rem">⚗️ 視床下部（Hypothalamus）— ホルモン産生の制御塔</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">脳の中央底部に位置する小さな核群。<strong>室傍核・視索上核がオキシトシン・バソプレシンを産生</strong>し後葉（神経下垂体）から血中に放出。全ての五感経路が最終的にここのオキシトシン産生ニューロンに収束する。恋愛感情の化学的実行者。</div></div>
+            <div style="background:var(--sonos-xl);border:1px solid rgba(22,163,74,.15);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--sonos-l);margin-bottom:.25rem">⚡ 側坐核（Nucleus Accumbens）— ドーパミン報酬の中枢</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">前脳基底核の一部。腹側被蓋野（VTA）からのドーパミン入力を受ける<strong>報酬・動機・快楽・欲求の中枢</strong>。「また会いたい・また触れたい・また会話したい」という欲求の解剖学的実体。恋愛初期の「依存性」がコカインと同じ報酬回路を使う理由がここにある。</div></div>
+            <div style="background:var(--haptos-xl);border:1px solid rgba(234,88,12,.15);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--haptos-l);margin-bottom:.25rem">🌊 島皮質（Insula）— 五感統合の最終センター</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">外側溝の深部に埋まった葉状の皮質。<strong>SONOS（囁き声）×HAPTOS（CT繊維）×GEUSTO（味覚・一次味覚野）の全経路が収束</strong>。自己感覚・感情・共感・身体意識・痛み・快楽を統合。「気持ちいい・安心する・もっとそばにいたい」という感情の処理センター。キスの瞬間に最も強く活性化する脳領域の一つ。</div></div>
+            <div style="background:var(--geusto-xl);border:1px solid rgba(220,38,38,.15);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--geusto-l);margin-bottom:.25rem">🔗 腹側被蓋野（VTA）— 恋愛の「エンジン」</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">中脳に位置するドーパミン産生ニューロンの集団。<strong>側坐核・前頭前野・海馬・扁桃体に広くドーパミンを投射</strong>するメゾリンビック経路の起点。Helen Fisher fMRI研究（2005）で恋愛初期の人のVTAが依存症と同じパターンで活性化することを確認。「恋は盲目」の神経解剖学的証明。</div></div>
+          </div>
+        </div></div>
+
+        <!-- 上丘×多感覚統合の神経解剖 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">🔬</div><div><div class="card-hd-title">上丘 × 多感覚統合の神経解剖</div><div class="card-hd-sub">なぜ五感が「同時」に届く時だけ超加算的効果が起きるのか</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.15);border-radius:var(--r-md);padding:.85rem">
+              <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">🔬 Stein & Meredith（1993）/ Calvert et al. fMRI研究</div>
+              <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7"><strong>上丘（Superior Colliculus）</strong>の多感覚ニューロンが複数の感覚情報を同時受信する時に「超加算的（superadditive）」な発火パターンを示す。これが五感統合の「1+1+1+1+1≫5」という指数関数的効果の解剖学的起源。</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🎯 上丘の解剖学的位置と多感覚ニューロン</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">上丘は中脳背側（四丘体の前上部）に位置し視覚・聴覚・体性感覚の情報を受ける多感覚ニューロンが密集する。<strong>複数の感覚が「同時」かつ「同じ空間・時間」に到達した時のみ超加算的発火が起きる</strong>。「香りをつけた人が囁きながら触れる」という同時性が必須要件。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">⏰ 「同時性」が超加算的効果の絶対条件</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">各感覚の処理速度の違い（嗅覚0.03秒・視覚0.1秒・触覚1〜2秒）を考慮すると「同時に体験される」ためには感覚ごとに届くタイミングがズレる。それでも超加算的効果が起きるのは<strong>大脳皮質レベルの多感覚統合（連合野）</strong>が時間的ウィンドウ（数百ミリ秒）内の信号を「同時」として処理するため。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🔗 連合野（Association Areas）— 五感統合の大脳皮質基盤</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">頭頂側頭後頭連合野（PTO領域）が視覚・聴覚・体性感覚を統合。前頭前野連合野が感情・記憶・動機と統合して「恋愛という複合体験」を作り上げる。この連合野の統合処理が「あの夜の全てが好きだった」という多感覚的な感情記憶の解剖学的正体。</div></div>
+            <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--gold);margin-bottom:.25rem">✨ 五感統合の解剖学的完全設計</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65"><strong>嗅覚（0.03秒）→扁桃体直接 →「好き」の起爆剤</strong><br><strong>視覚（0.1秒）→ドーパミン →「また見たい」欲求</strong><br><strong>聴覚（0.05秒）→迷走神経→オキシトシン →「安心・絆」</strong><br><strong>触覚（1〜2秒）→CT繊維→島皮質→オキシトシン →「深い愛着」</strong><br><strong>味覚（6経路同時）→迷走神経→全ホルモン最大 →「一体感」</strong><br>→ 上丘×連合野で超加算的統合 → <strong>「一生忘れられない記憶」</strong></div></div>
+          </div>
+        </div></div>
+
+        <!-- 愛着理論 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🔗</div><div><div class="card-hd-title">愛着理論 × 恋愛パターンの根本</div><div class="card-hd-sub">Bowlby / Ainsworth — 全ての恋愛行動の「根っこ」</div></div></div><div class="card-bd">
+          <div style="background:var(--violet-xl);border:1px solid rgba(124,58,237,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.75rem">
+            <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--violet);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">📚 Bowlby（1969）/ Ainsworth（1978）/ Hazan & Shaver（1987）</div>
+            <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7">乳幼児期の養育者との関係が形成する「内的作業モデル（IWM）」が成人の恋愛パターンを決定する。<strong style="color:var(--txt)">「人は安全基地を求める」という本能</strong>が恋愛関係の全ての行動の根底にある。成人の愛着スタイルは4種に分類され、五感統合戦略への反応が各スタイルで異なる。</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.55rem">
+            <div style="background:linear-gradient(135deg,rgba(22,163,74,.1),rgba(22,163,74,.05));border:1.5px solid rgba(22,163,74,.3);border-radius:var(--r-md);padding:.85rem">
+              <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:#16a34a;margin-bottom:.35rem">🟢 安全型（Secure）— 約55〜60%</div>
+              <div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65;margin-bottom:.4rem">幼少期に一貫した養育を受けた。「自分は愛される価値がある・他者は信頼できる」という内的モデル。親密感を求めながらも独立性を保てる。別れを恐れず依存もしない。</div>
+              <div style="font-family:var(--fu);font-size:.65rem;color:#16a34a;font-weight:600">五感戦略：全ての技術が自然に機能。段階的スキンシップを素直に受け取る。オキシトシン蓄積が最もスムーズ。</div>
+            </div>
+            <div style="background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(37,99,235,.05));border:1.5px solid rgba(37,99,235,.3);border-radius:var(--r-md);padding:.85rem">
+              <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--forma-l);margin-bottom:.35rem">🔵 不安型（Anxious/Preoccupied）— 約20%</div>
+              <div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65;margin-bottom:.4rem">養育が不安定・予測不能だった。「自分は愛される価値が低い・相手が離れるかもしれない」という過剰な心配。過度な確認行動・感情的な強さ・「もっと近くにいてほしい」という欲求が強い。</div>
+              <div style="font-family:var(--fu);font-size:.65rem;color:var(--forma-l);font-weight:600">五感戦略：一貫性（シグネチャーセント×スタイル×声）が最重要。安定した反復接触が不安を解消しオキシトシン信頼基盤を構築。</div>
+            </div>
+            <div style="background:linear-gradient(135deg,rgba(180,83,9,.1),rgba(180,83,9,.05));border:1.5px solid rgba(180,83,9,.3);border-radius:var(--r-md);padding:.85rem">
+              <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--amber);margin-bottom:.35rem">🟡 回避型（Dismissive/Avoidant）— 約25%</div>
+              <div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65;margin-bottom:.4rem">感情的なニーズを無視された経験。「自分は自立している・他者に頼る必要はない」という防衛的な独立性。親密な関係を求めながらも深まることを無意識に回避する。感情表現が少ない。</div>
+              <div style="font-family:var(--fu);font-size:.65rem;color:var(--amber);font-weight:600">五感戦略：急な距離縮小は逃避を誘発。プロクセミクスの段階的接近が特に重要。自然な共食×傾聴で扁桃体の防衛機制を徐々に緩める。</div>
+            </div>
+            <div style="background:linear-gradient(135deg,rgba(190,18,60,.08),rgba(190,18,60,.04));border:1.5px solid rgba(190,18,60,.25);border-radius:var(--r-md);padding:.85rem">
+              <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--rose);margin-bottom:.35rem">🔴 混乱型（Fearful/Disorganized）— 約5〜10%</div>
+              <div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65;margin-bottom:.4rem">養育者自身が恐怖の源だった経験。「愛されたい＋傷つくのが怖い」という矛盾した内的モデル。親密さを求めながら同時に恐れる。関係が近づくと逃げ、遠ざかると追いかける。</div>
+              <div style="font-family:var(--fu);font-size:.65rem;color:var(--rose);font-weight:600">五感戦略：安全感の確立（HAPTOS×SONOS）が絶対最優先。傾聴×名前を呼ぶ×一貫した接触が扁桃体の「安全な人物」学習を最もゆっくりと進める。</div>
+            </div>
+          </div>
+        </div></div>
+
+        <!-- 単純接触効果 × 類似性の法則 × 投資モデル -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--sonos-xl)">🔄</div><div><div class="card-hd-title">単純接触効果・類似性の法則・投資モデル</div><div class="card-hd-sub">恋愛を深める3つの普遍的な心理法則</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.55rem">
+            <div style="background:var(--sonos-xl);border:1px solid rgba(22,163,74,.15);border-radius:var(--r-md);padding:.85rem">
+              <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--sonos-l);margin-bottom:.35rem">🔁 単純接触効果（Mere Exposure Effect）— Zajonc 1968</div>
+              <div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65;margin-bottom:.35rem">接触頻度が増えるほど好意度が上昇するという普遍的な心理効果。<strong>嫌悪感がない場合に限り、会う回数×接触時間が恋愛感情の強さに正比例</strong>する。神経科学的根拠：反復接触→扁桃体の「安全」評価が蓄積→オキシトシン受容体増感→好意度上昇のループ。シグネチャーセント×スタイル×声の反復が最強の単純接触効果を生む。</div>
+              <div style="font-family:var(--fu);font-size:.63rem;color:var(--sonos-l);font-weight:600">五感応用：シグネチャー（香り×声×スタイル）の一貫した反復が「会うたびに好きになる」生物学的仕組みを作る。</div>
+            </div>
+            <div style="background:var(--forma-xl);border:1px solid rgba(37,99,235,.15);border-radius:var(--r-md);padding:.85rem">
+              <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--forma-l);margin-bottom:.35rem">🪞 類似性の法則（Similarity-Attraction）— Byrne 1971</div>
+              <div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65;margin-bottom:.35rem">価値観・態度・趣味・話し方が似ている相手に惹かれるという普遍的な原理。<strong>知覚される類似性が高いほど好意度・信頼感・関係満足度が高まる</strong>（Berscheid & Walster 1969）。ミラーリング（SONOS）が有効な深層心理的根拠：相手の言葉・リズム・感情を反映することで「この人は私に似ている」という知覚的類似性を意図的に高める。</div>
+              <div style="font-family:var(--fu);font-size:.63rem;color:var(--forma-l);font-weight:600">五感応用：ミラーリング×共通の音楽体験（SONOS）×共食（GEUSTO）が「私たちは似ている」という感覚を最速で作る。</div>
+            </div>
+            <div style="background:var(--haptos-xl);border:1px solid rgba(234,88,12,.15);border-radius:var(--r-md);padding:.85rem">
+              <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--haptos-l);margin-bottom:.35rem">💰 投資モデル（Investment Model）— Rusbult 1980</div>
+              <div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65;margin-bottom:.35rem">関係へのコミットメント（継続意思）は<strong>①満足度（ニーズが満たされているか）×②投資量（費やした時間・感情・記憶）×③代替手段の質（他の選択肢の魅力度）</strong>の3軸で決まる（Journal of Personality and Social Psychology）。投資量を高める最強の行動が「共に作った記憶の数と質」——五感統合体験が最高品質の投資になる。</div>
+              <div style="font-family:var(--fu);font-size:.63rem;color:var(--haptos-l);font-weight:600">五感応用：五感統合による「一生忘れられない共有体験」が投資量を最大化しコミットメントを高める最強の戦略。</div>
+            </div>
+          </div>
+        </div></div>
+
+        <!-- Gottman研究 × 長期関係の維持 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">💑</div><div><div class="card-hd-title">Gottman研究 × 長期関係の維持</div><div class="card-hd-sub">「四騎士」と「ポジティブの比率」— 関係崩壊の予測と防止</div></div></div><div class="card-bd">
+          <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.7rem">
+            <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">📚 John Gottman（ワシントン大）— カップル研究40年・離婚予測精度94%</div>
+            <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7">Gottmanは何千組ものカップルを数十年追跡し<strong>「関係崩壊を予測する4つのコミュニケーションパターン（四騎士）」</strong>を特定した。これを避け「黄金比（ポジティブ:ネガティブ＝5:1）」を維持する関係が長期的に幸福である。</div>
+          </div>
+          <div style="display:grid;gap:.45rem;margin-bottom:.6rem">
+            <div style="background:var(--surface2);border-left:3px solid var(--rose);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--rose);margin-bottom:.2rem">☠️ 第1騎士：批判（Criticism）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">「あなたはいつも〜」という人格攻撃。行動への不満（不服申し立て）を人格批判に変換する最悪のパターン。扁桃体の「攻撃された」反応を引き起こし防衛機制を起動させる。</div></div>
+            <div style="background:var(--surface2);border-left:3px solid #dc2626;border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:#dc2626;margin-bottom:.2rem">☠️ 第2騎士：軽蔑（Contempt）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">皮肉・嘲笑・目を回す・侮辱。<strong>Gottman研究で関係崩壊を最も強く予測する単一の行動</strong>。相手の人間としての価値を否定するメッセージ。扁桃体が「根本的な拒絶」として処理する。</div></div>
+            <div style="background:var(--surface2);border-left:3px solid var(--amber);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--amber);margin-bottom:.2rem">⚠️ 第3騎士：防御（Defensiveness）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">責任を否定し反撃する（「それはあなたも同じだ」）。批判への反応として起きやすいが問題を悪化させる。ミラーニューロンが「相互攻撃モード」に入る。</div></div>
+            <div style="background:var(--surface2);border-left:3px solid #6B6880;border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--txt3);margin-bottom:.2rem">☠️ 第4騎士：逃避（Stonewalling）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">感情的なシャットダウン・壁を作る・無視。交感神経が過活性化（生理的洪水状態）した時の自動防衛反応。一旦20〜30分の休憩が必要な生理学的状態。</div></div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(22,163,74,.1),rgba(22,163,74,.05));border:1px solid rgba(22,163,74,.2);border-radius:var(--r-md);padding:.75rem">
+            <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:#16a34a;margin-bottom:.3rem">✅ 黄金比（5:1）と「修復の試み」</div>
+            <div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">幸福なカップルはポジティブな交流（感謝・笑い・触れ合い・共感）とネガティブな交流の比率が<strong>5:1以上</strong>。五感統合（EIDOS×FORMA×SONOS×HAPTOS×GEUSTO）の全ての実践がこのポジティブ比率を高める科学的な方法。「修復の試み（repair attempt）」——ユーモア・謝罪・スキンシップによる緊張緩和——も関係維持に不可欠。</div>
+          </div>
+        </div></div>
+
+        <!-- パートナー選択の性差 × 進化心理学 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--eidos-xl)">🧬</div><div><div class="card-hd-title">パートナー選択基準の性差 × 進化心理学</div><div class="card-hd-sub">Buss（1989）37文化・10,047名 — 男女で根本的に異なる選択基準</div></div></div><div class="card-bd">
+          <div style="background:var(--eidos-xl);border:1px solid rgba(184,134,11,.15);border-radius:var(--r-md);padding:.85rem;margin-bottom:.6rem">
+            <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--eidos-l);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem">📚 David Buss（1989）— 37文化・10,047名の配偶者選択研究</div>
+            <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.7">文化・人種・宗教を超えた<strong style="color:var(--txt)">普遍的な配偶者選択基準の性差</strong>を確認。男性と女性で「異なる進化的問題」を解決するために異なる基準が発達した。この理解が五感統合戦略の「何を最大化すべきか」を決定する。</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem">
+            <div style="background:var(--forma-xl);border:1px solid rgba(37,99,235,.2);border-radius:var(--r-md);padding:.7rem">
+              <div style="font-family:var(--fu);font-size:.64rem;font-weight:700;color:var(--forma-l);margin-bottom:.3rem">👁 女性が男性に求める</div>
+              <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt2);line-height:1.6">①資源調達能力（収入・地位）<br>②誠実さ・信頼性<br>③知性・問題解決力<br>④身体的健康・清潔感<br>⑤情緒的安定性<br>⑥保護能力・力強さ<br><span style="color:var(--forma-l);font-weight:600">→FORMA×SONOS×HAPTOSが対応</span></div>
+            </div>
+            <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.2);border-radius:var(--r-md);padding:.7rem">
+              <div style="font-family:var(--fu);font-size:.64rem;font-weight:700;color:var(--rose);margin-bottom:.3rem">💋 男性が女性に求める</div>
+              <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt2);line-height:1.6">①若さ・外見的魅力<br>②健康・生殖能力シグナル<br>③忠実さ・貞節<br>④温かさ・包容力<br>⑤感情的成熟性<br>⑥類似した価値観<br><span style="color:var(--rose);font-weight:600">→排卵期×EIDOS×GEUSTOと連動</span></div>
+            </div>
+          </div>
+          <div style="background:#F5F2FC;border:1px solid rgba(100,80,180,.12);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem"><div style="font-family:var(--fu);font-size:.65rem;font-weight:700;color:var(--txt);margin-bottom:.2rem">🧬 なぜ性差が存在するか — 親投資理論（Trivers 1972）</div><div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.6">女性は妊娠・授乳で莫大な「親投資」をするため質の高い遺伝子+資源提供能力を持つパートナーを慎重に選ぶ。男性は投資コストが低いため数・多様性を求める傾向（長期的パートナーには誠実さ等を重視）。この非対称性が全ての性差の進化的起源。</div></div>
+          <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.65rem .75rem"><div style="font-family:var(--fu);font-size:.65rem;font-weight:700;color:var(--gold);margin-bottom:.2rem">✨ 五感統合との完全対応</div><div style="font-family:var(--fu);font-size:.64rem;color:var(--txt2);line-height:1.6">FORMA→資源+保護シグナル／SONOS（低い声・傾聴）→知性+誠実+情緒安定シグナル／EIDOS（清潔感・AND）→健康な遺伝子シグナル／HAPTOS（段階的）→信頼性シグナル／GEUSTO（食の質・キス）→資源能力+MHC相性シグナル</div></div>
+        </div></div>
+
+        <!-- 社会浸透理論 × 自己決定理論 × 不確実性低減理論 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--sonos-xl)">🧅</div><div><div class="card-hd-title">社会浸透・自己決定・不確実性低減の3理論</div><div class="card-hd-sub">Altman（1973）/ Deci & Ryan（1985）/ Berger（1975）</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.55rem">
+            <div style="background:var(--sonos-xl);border:1px solid rgba(22,163,74,.15);border-radius:var(--r-md);padding:.8rem">
+              <div style="font-family:var(--fu);font-size:.67rem;font-weight:700;color:var(--sonos-l);margin-bottom:.3rem">🧅 社会浸透理論（Altman & Taylor 1973）— タマネギモデル</div>
+              <div style="font-family:var(--fu);font-size:.67rem;color:var(--txt2);line-height:1.65;margin-bottom:.35rem">自己開示はタマネギの皮を剥くように<strong>表層（広く浅い）→中層（価値観・感情）→核心（恐れ・傷・最深の夢）</strong>と段階的に深化する。急に核心に触れると防衛反応が起きる。36の質問（Aron 1997）がLevel1→3という段階設計になっている理論的根拠がここにある。</div>
+              <div style="display:flex;gap:.4rem;flex-wrap:wrap"><span style="font-family:var(--fu);font-size:.6rem;font-weight:600;padding:.15rem .5rem;border-radius:var(--r-full);background:rgba(22,163,74,.15);color:var(--sonos-l)">表層→SONOS（ユーモア）</span><span style="font-family:var(--fu);font-size:.6rem;font-weight:600;padding:.15rem .5rem;border-radius:var(--r-full);background:rgba(22,163,74,.15);color:var(--sonos-l)">中層→HAPTOS（偶発タッチ）</span><span style="font-family:var(--fu);font-size:.6rem;font-weight:600;padding:.15rem .5rem;border-radius:var(--r-full);background:rgba(22,163,74,.15);color:var(--sonos-l)">核心→GEUSTO（ファーストキス）</span></div>
+            </div>
+            <div style="background:var(--amber-xl);border:1px solid rgba(180,83,9,.15);border-radius:var(--r-md);padding:.8rem">
+              <div style="font-family:var(--fu);font-size:.67rem;font-weight:700;color:var(--amber);margin-bottom:.3rem">🎯 自己決定理論（Deci & Ryan 1985）— 3つの基本欲求</div>
+              <div style="font-family:var(--fu);font-size:.67rem;color:var(--txt2);line-height:1.65;margin-bottom:.35rem">人間の基本的心理欲求：<strong>①自律性（自分で選んでいる感覚）②有能感（できている感覚）③関係性（つながっている感覚）</strong>。恋愛においてこの3欲求を満たしてくれる相手への内発的な「好き」が最も深く持続する。</div>
+              <div style="display:flex;gap:.4rem;flex-wrap:wrap"><span style="font-family:var(--fu);font-size:.6rem;font-weight:600;padding:.15rem .5rem;border-radius:var(--r-full);background:rgba(180,83,9,.15);color:var(--amber)">自律性→押しつけない距離感（HAPTOS）</span><span style="font-family:var(--fu);font-size:.6rem;font-weight:600;padding:.15rem .5rem;border-radius:var(--r-full);background:rgba(180,83,9,.15);color:var(--amber)">有能感→知的会話（SONOS）</span><span style="font-family:var(--fu);font-size:.6rem;font-weight:600;padding:.15rem .5rem;border-radius:var(--r-full);background:rgba(180,83,9,.15);color:var(--amber)">関係性→傾聴+タッチ（全感覚）</span></div>
+            </div>
+            <div style="background:var(--violet-xl);border:1px solid rgba(124,58,237,.15);border-radius:var(--r-md);padding:.8rem">
+              <div style="font-family:var(--fu);font-size:.67rem;font-weight:700;color:var(--violet);margin-bottom:.3rem">❓ 不確実性低減理論（Berger & Calabrese 1975）× ドーパミン</div>
+              <div style="font-family:var(--fu);font-size:.67rem;color:var(--txt2);line-height:1.65;margin-bottom:.35rem">人は初対面の他者への<strong>不確実性を低減しようとする動機</strong>で情報収集行動を取る。しかし<strong>適度な不確実性がドーパミン的な「もっと知りたい」引き付け力</strong>を生む。「少し謎めいている」ことが恋愛初期の最大の引き付け要因。</div>
+              <div style="display:flex;gap:.4rem;flex-wrap:wrap"><span style="font-family:var(--fu);font-size:.6rem;font-weight:600;padding:.15rem .5rem;border-radius:var(--r-full);background:rgba(124,58,237,.15);color:var(--violet)">沈黙・間（SONOS）</span><span style="font-family:var(--fu);font-size:.6rem;font-weight:600;padding:.15rem .5rem;border-radius:var(--r-full);background:rgba(124,58,237,.15);color:var(--violet)">謎めいた香水（EIDOS:Gozo）</span><span style="font-family:var(--fu);font-size:.6rem;font-weight:600;padding:.15rem .5rem;border-radius:var(--r-full);background:rgba(124,58,237,.15);color:var(--violet)">オールブラック（FORMA）</span></div>
+            </div>
+            <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.65rem .75rem"><div style="font-family:var(--fu);font-size:.64rem;font-weight:700;color:var(--gold);margin-bottom:.2rem">✨ 統合：「安心感」と「ときめき」を両立させる</div><div style="font-family:var(--fu);font-size:.64rem;color:var(--txt2);line-height:1.6">自己決定理論の「安心感・関係性」と不確実性理論の「謎めいた引き付け力」は一見矛盾するが、解剖学的には<strong>副交感神経ベースライン（安心）の上に交感神経の適度な興奮（ときめき）が乗る</strong>状態として両立する。五感統合が「信頼できる人なのになぜかときめく」という最高の恋愛状態を設計する理由。</div></div>
+          </div>
+        </div></div>
+
+        <!-- 嫉妬の進化心理学 × 神経科学 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">🔥</div><div><div class="card-hd-title">嫉妬の進化心理学 × 神経科学</div><div class="card-hd-sub">Buss（1992）男女差 × バソプレシン × 所有欲の神経解剖</div></div></div><div class="card-bd">
+          <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.7rem">
+            <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">📚 Buss et al.（1992, Psychological Science）× 神経内分泌学</div>
+            <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7">嫉妬は<strong>「自分が持っている価値ある関係・資源を失うかもしれない」</strong>という脅威に対する進化的な防衛感情。男女で嫉妬の<strong>引き金が根本的に異なる</strong>ことをBussが実証した。この違いを理解することが嫉妬の適切な「点火」と「消火」の戦略を立てる基礎になる。</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem">
+            <div style="background:var(--forma-xl);border:1px solid rgba(37,99,235,.2);border-radius:var(--r-md);padding:.8rem">
+              <div style="font-family:var(--fu);font-size:.64rem;font-weight:700;color:var(--forma-l);margin-bottom:.3rem">♂ 男性の嫉妬の引き金</div>
+              <div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.6"><strong>性的不貞</strong>（Buss 1992）<br>「他の男性と肉体関係を持った」という想像で生理的反応（発汗・心拍上昇）が最も強い。進化的根拠：<strong>父性不確実性（paternity uncertainty）</strong>——自分の遺伝子ではない子に投資するリスク。バソプレシン受容体遺伝子の多型と所有欲の強さが相関する研究がある。</div>
+            </div>
+            <div style="background:var(--haptos-xl);border:1px solid rgba(234,88,12,.2);border-radius:var(--r-md);padding:.8rem">
+              <div style="font-family:var(--fu);font-size:.64rem;font-weight:700;color:var(--haptos-l);margin-bottom:.3rem">♀ 女性の嫉妬の引き金</div>
+              <div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.6"><strong>感情的不貞</strong>（Buss 1992）<br>「他の女性と深く愛し合っている」という想像で生理的反応が最も強い。進化的根拠：<strong>資源喪失リスク</strong>——パートナーの感情的・経済的資源が他者に向かうことで自分と子どもへの投資が失われるリスク。</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.45rem">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🧠 嫉妬の神経解剖 — 扁桃体×腹外側前頭前野×バソプレシン</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.65">嫉妬の感情処理には<strong>扁桃体（脅威の感情的評価）×腹外側前頭前野（社会的比較）×視床下部（コルチゾール・アドレナリン放出）</strong>が関与する。バソプレシン（絆維持ホルモン）が「この相手を失いたくない」という所有感・独占欲の神経化学的基盤として機能する。バソプレシンレベルが高い個体ほど嫉妬反応が強い相関がある（動物研究）。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">⚡ 「適切な嫉妬」の進化的機能</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.65">嫉妬は完全に悪い感情ではなく<strong>「関係への投資を高める」という進化的な機能</strong>を持つ。Bussの研究で「ある程度の嫉妬→関係維持行動（より魅力的に振る舞う・より多くの注意を向ける）の増加」が確認されている。五感統合戦略の実践自体が「この人と一緒にいると特別だ」という感覚を作り関係維持動機を高める。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🔥 「軽い嫉妬」を戦略的に活用する心理学</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.65">不確実性低減理論（Berger 1975）と組み合わせると、<strong>「完全に自分だけを見ている」より「少し謎めいていて引き付けられる部分がある」</strong>状態が適度な不確実性×ドーパミン的緊張感を作る。オールブラック（FORMA）×謎めいた香水（EIDOS：Gozo・Ambra）×沈黙の間（SONOS）が「戦略的な適度な謎感」を作り相手の関係維持動機を刺激する。</div></div>
+            <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--gold);margin-bottom:.25rem">✨ 長期関係での嫉妬管理 — Gottman研究との統合</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.65">Gottmanの研究では<strong>過度な嫉妬・所有欲（四騎士の「防御・批判」と連動）</strong>が関係崩壊を予測する。バソプレシン絆形成（HAPTOS×GEUSTO）が強固であるほど嫉妬反応が「安心感」に基づくものになり過剰反応が減る。五感統合による深い絆形成が「嫉妬の激しさ」を「愛着の深さ」へと変換する長期戦略の根拠。</div></div>
+          </div>
+        </div></div>
+
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- ══ SCENARIO PAGE ══ -->
+    <div class="page" id="pg-scenario">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="color:#a78bfa">📅 シナリオ設計</div><div style="font-family:var(--fu);font-size:.75rem;color:var(--txt3);margin-top:.25rem">初回デートから深い絆まで — 五感の完全時系列</div></div>
+        <div id="phaseCards"></div>
+
+        <!-- 長期関係の維持プロトコル -->
+        <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin:.9rem 0 .5rem">🔄 長期関係の維持プロトコル</div>
+
+        <!-- マンネリの神経科学 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🧠</div><div><div class="card-hd-title">マンネリの神経科学 — なぜ慣れが起きるのか</div><div class="card-hd-sub">ドーパミン適応化×オキシトシン維持×新規性の意図的追加</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="background:var(--violet-xl);border:1px solid rgba(124,58,237,.15);border-radius:var(--r-md);padding:.85rem">
+              <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--violet);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem">🔬 神経科学的根拠</div>
+              <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.7"><strong>ドーパミン系は新規性に反応し慣れに適応化する</strong>（予測誤差報酬機構）。同じ刺激の繰り返しでドーパミン放出量が低下——これがマンネリの神経科学的正体。一方<strong>オキシトシン・バソプレシン系は反復接触で増感</strong>する（逆方向）。戦略：ドーパミン系に新規性を与えながらオキシトシン系の蓄積を維持する「二層設計」が長期関係の神経科学的核心。</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.45rem">
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem"><div style="font-family:var(--fu);font-size:.63rem;font-weight:700;color:var(--rose);margin-bottom:.2rem">❌ マンネリの4パターン</div><div style="font-family:var(--fu);font-size:.62rem;color:var(--txt2);line-height:1.55">① 同じ香水のみ使い続ける<br>② 決まった場所・食事<br>③ スキンシップの省略<br>④ 会話が報告・連絡のみ</div></div>
+              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem"><div style="font-family:var(--fu);font-size:.63rem;font-weight:700;color:var(--sonos-l);margin-bottom:.2rem">✅ 維持の4戦略</div><div style="font-family:var(--fu);font-size:.62rem;color:var(--txt2);line-height:1.55">① シグネチャー進化（核心維持）<br>② 新しい共有体験の追加<br>③ 意図的なスキンシップ設計<br>④ 自己開示の継続的深化</div></div>
+            </div>
+          </div>
+        </div></div>
+
+        <!-- 週次ルーティン -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--sonos-xl)">📅</div><div><div class="card-hd-title">週次・月次の五感維持ルーティン</div><div class="card-hd-sub">オキシトシン蓄積×ドーパミン新規性の具体的スケジュール</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <!-- 週次 -->
+            <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--sonos-l);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.1rem">📆 週次ルーティン（オキシトシン維持）</div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border-radius:var(--r-sm);padding:.6rem .75rem"><div style="width:26px;height:26px;border-radius:50%;background:var(--eidos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0">🧴</div><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:600;color:var(--txt);margin-bottom:.1rem">EIDOS：シグネチャーセントを毎回纏う</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">週1〜2回の会う度に同じシグネチャー香水。プルースト効果の反復強化。単純接触効果×嗅覚条件付けの累積。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border-radius:var(--r-sm);padding:.6rem .75rem"><div style="width:26px;height:26px;border-radius:50%;background:var(--haptos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0">🤲</div><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:600;color:var(--txt);margin-bottom:.1rem">HAPTOS：20秒ハグを会うたびに必ず実施</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">Grewen研究の20秒ハグがオキシトシン+バソプレシン維持の最低限の刺激量。省略するとバソプレシン系が徐々に弱化する。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border-radius:var(--r-sm);padding:.6rem .75rem"><div style="width:26px;height:26px;border-radius:50%;background:var(--sonos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0">🎵</div><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:600;color:var(--txt);margin-bottom:.1rem">SONOS：週1回の「深い会話」枠を確保</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">社会浸透理論の「核心層」に触れる自己開示の継続。「最近何が一番楽しかった？」などLevel2〜3の質問で自己開示の深化を維持。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border-radius:var(--r-sm);padding:.6rem .75rem"><div style="width:26px;height:26px;border-radius:50%;background:var(--geusto);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0">👅</div><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:600;color:var(--txt);margin-bottom:.1rem">GEUSTO：週1回の共食（新しい食体験を追加）</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">Dunbar共食効果の維持×ドーパミン的新規性（新しいレストラン・料理）の組み合わせ。「いつもの場所」より「新しい体験」の比率を意識的に高める。</div></div></div>
+
+            <div style="height:.5rem"></div>
+            <!-- 月次 -->
+            <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--eidos-l);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.1rem">🌕 月次ルーティン（ドーパミン新規性の注入）</div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border-radius:var(--r-sm);padding:.6rem .75rem"><div style="width:26px;height:26px;border-radius:50%;background:var(--forma);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0">👔</div><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:600;color:var(--txt);margin-bottom:.1rem">FORMA：月1回「印象が変わる」スタイルの更新</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">シグネチャースタイルの「核心」は維持しつつ色・素材・アクセントを変える。「この人は変わり続ける」というドーパミン的新規性を視覚的に提供。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border-radius:var(--r-sm);padding:.6rem .75rem"><div style="width:26px;height:26px;border-radius:50%;background:var(--eidos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0">🧴</div><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:600;color:var(--txt);margin-bottom:.1rem">EIDOS：月1回「旅行の香り」など期間限定香水</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">シグネチャーセントに加えて特別な体験用の「イベント香水」を追加。新しい体験+新しい香り=最強の新規記憶形成（プルースト効果の新版を作り続ける）。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border-radius:var(--r-sm);padding:.6rem .75rem"><div style="width:26px;height:26px;border-radius:50%;background:var(--haptos);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0">🌙</div><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:600;color:var(--txt);margin-bottom:.1rem">五感統合：月1回の「特別な夜」の設計</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">五感全てが揃う「特別な夜」を月1回意図的に設計。キャンドルディナー×シグネチャーセント×夜のスタイル×囁き声×20秒ハグという五感統合フロー。ピーク・エンドの法則でこの夜が月の記憶の「ピーク」になる。</div></div></div>
+          </div>
+        </div></div>
+
+        <!-- シグネチャー進化戦略 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--eidos-xl)">✨</div><div><div class="card-hd-title">シグネチャー進化戦略</div><div class="card-hd-sub">「同じだけど少し変わる」がバソプレシン維持×ドーパミン刺激を両立する</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.45rem">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--eidos-l);margin-bottom:.2rem">🧴 EIDOS：香水の「核心×バリエーション」設計</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">核心：シグネチャーセント（毎回）→バソプレシン絆シグナルとしてインプット。バリエーション：季節・シーン・特別な夜用の追加香水。同じ香水族（ムスク×アンバー系等）の中で少し異なる作品を試す。「この人の香りはいつも好きだけど少し変わる」というドーパミン的新鮮さを作る。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--forma-l);margin-bottom:.2rem">👔 FORMA：コアスタイル×シーズン更新</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">核心：シルエット・色系統・素材感（カシミヤ×ニット等）を一定に保つ。更新：季節の新色・新素材を「同じトーン」で追加。「あの人っぽいけど新しい」という視覚的ドーパミン刺激。シグネチャーを持つ人だけがこの進化の恩恵を最大化できる。</div></div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--sonos-l);margin-bottom:.2rem">🎵 SONOS：会話の深化×ユーモアの進化</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">核心：低い声×傾聴×名前を呼ぶ（オキシトシン維持）。進化：「私たちだけがわかる内輪の話題」の蓄積×新しい知識・体験の共有×ユーモアの積み重ね。「この人と話すたびに新しい発見がある」というドーパミン的知的興奮を作り続ける。</div></div>
+            <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--gold);margin-bottom:.2rem">✨ 神経科学的根拠：「予測可能な驚き」の最適設計</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">脳の報酬系は「完全に予測可能な刺激」（慣れ）でも「完全に予測不可能な刺激」（不安）でもなく<strong>「ある程度予測できるが少し予想外」</strong>という刺激で最大のドーパミンを放出する（部分強化スケジュール）。シグネチャーの核心（予測可能）+バリエーション（少し予想外）という設計がこの最適状態を作る。</div></div>
+          </div>
+        </div></div>
+
+        <!-- Gottman的な日常実践 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">💑</div><div><div class="card-hd-title">Gottman研究の日常実践プロトコル</div><div class="card-hd-sub">黄金比5:1を維持する具体的な行動リスト</div></div></div><div class="card-bd">
+          <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.15);border-radius:var(--r-md);padding:.85rem;margin-bottom:.65rem">
+            <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.7"><strong>黄金比5:1の実践</strong>：ポジティブな交流（感謝・笑い・触れ合い・共感・称賛）とネガティブな交流の比率を5:1以上に保つことが長期関係の幸福を予測する最強の指標（Gottman研究）。</div>
+          </div>
+          <div style="display:grid;gap:.4rem">
+            <div style="background:var(--surface2);border-left:3px solid var(--teal);border-radius:var(--r-sm);padding:.65rem .8rem"><div style="font-family:var(--fu);font-size:.65rem;font-weight:700;color:var(--teal);margin-bottom:.15rem">✅ 日次：小さなポジティブの積み重ね</div><div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">「ありがとう」を具体的に伝える / 笑顔で迎える / 一日の終わりに「良かったこと」を一つ共有 / 短い連絡でも「今日どうだった？」と聞く</div></div>
+            <div style="background:var(--surface2);border-left:3px solid var(--sonos);border-radius:var(--r-sm);padding:.65rem .8rem"><div style="font-family:var(--fu);font-size:.65rem;font-weight:700;color:var(--sonos-l);margin-bottom:.15rem">✅ 週次：深い繋がりの維持</div><div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">週1回の「電話なし・スマホなし」の2人の時間 / 相手の夢・目標を更新して聞く / 一緒に笑えるコンテンツを共有 / 20秒ハグを意識的に実施</div></div>
+            <div style="background:var(--surface2);border-left:3px solid var(--eidos);border-radius:var(--r-sm);padding:.65rem .8rem"><div style="font-family:var(--fu);font-size:.65rem;font-weight:700;color:var(--eidos-l);margin-bottom:.15rem">✅ 月次：関係の更新と深化</div><div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">新しい共同体験（初めての場所・初めての食事・初めてのアクティビティ）/ 「最近あなたについて気づいたこと」を伝える / お互いの成長を認める言葉 / 五感統合「特別な夜」の設計</div></div>
+            <div style="background:var(--surface2);border-left:3px solid var(--rose);border-radius:var(--r-sm);padding:.65rem .8rem"><div style="font-family:var(--fu);font-size:.65rem;font-weight:700;color:var(--rose);margin-bottom:.15rem">⚠️ 避けるべき四騎士の予防</div><div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">批判→「行動への不満」を「あなたは〜」の人格批判にしない / 軽蔑→絶対に皮肉・嘲笑をしない（最大の関係崩壊因子）/ 防御→「確かにそうだね」という部分的承認から始める / 逃避→生理的洪水状態（心拍数100以上）になったら「20分休憩してから話し合う」</div></div>
+          </div>
+        </div></div>
+
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- ══ LEARN PAGE ══ -->
+    <div class="page" id="pg-learn">
+      <div class="learn-hd"><div class="pg-title" style="font-size:1.2rem">統合 Learn</div><div style="font-family:var(--fu);font-size:.76rem;color:var(--txt3)" id="deckCnt"></div></div>
+      <div class="deck-tabs" id="deckTabs"></div>
+      <div class="card-area" id="cardArea">
+        <div class="card-wrap">
+          <div class="card-face" id="cardFront">
+            <p class="cf-tag" id="cfTag"></p>
+            <p class="cf-q" id="cfQ"></p>
+          </div>
+          <div class="card-face card-face-back hidden" id="cardBack">
+            <p class="cf-tag" style="color:var(--gold)">ANSWER</p>
+            <p class="cf-a" id="cfA"></p>
+            <p class="cf-src" id="cfSrc"></p>
+            <div class="cf-frags" id="cfFrags" style="display:none"></div>
+          </div>
+          <button class="flip-btn" id="flipBtn" onclick="flipCard()">答えを見る ✨</button>
+        </div>
+        <div class="dots" id="dots"></div>
+        <div class="card-ctrl">
+          <button class="ctrl-btn" onclick="prevCard()">‹</button>
+          <span class="ctrl-pg" id="ctrlPg"></span>
+          <button class="ctrl-btn" onclick="nextCard()">›</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LIBRARY PAGE ══ -->
+    <div class="page" id="pg-library">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="color:var(--gold)">🌐 五感ライブラリ</div><div style="font-family:var(--fu);font-size:.75rem;color:var(--txt3);margin-top:.25rem">全アプリのアイテムを横断検索・比較</div></div>
+        <div class="sense-filter" id="senseFilter"></div>
+        <div class="lib-grid" id="libGrid"></div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- ══ SEVENTH SENSE PAGE ══ -->
+    <div class="page" id="pg-seventh">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="background:linear-gradient(135deg,#a78bfa,#2dd4bf);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">🔮 七感統合</div><div style="font-family:var(--fu);font-size:.75rem;color:var(--txt3);margin-top:.25rem">五感＋第六感（内受容）＋第七感（身体共鳴）の完全統合</div></div>
+
+        <!-- 七感の定義 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🔮</div><div><div class="card-hd-title">七感統合とは何か</div><div class="card-hd-sub">外受容感覚×内受容感覚×固有感覚 — 意識の全層を動かす設計</div></div></div><div class="card-bd">
+          <div style="background:var(--violet-xl);border:1px solid rgba(124,58,237,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.7rem">
+            <div style="font-family:var(--fd);font-size:.92rem;font-style:italic;color:var(--txt);line-height:1.65;margin-bottom:.4rem">「五感で意識を動かし、第六感で体を動かし、第七感で魂を動かす。」</div>
+            <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3)">— SEXTUS × SENSES 七感統合の完成形</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:.45rem">
+            <div style="display:flex;gap:.65rem;align-items:center;background:var(--surface2);border-radius:var(--r-sm);padding:.65rem .75rem">
+              <span style="font-size:1rem;flex-shrink:0">1〜5</span>
+              <div><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt)">五感（外受容感覚）— EIDOS×FORMA×SONOS×HAPTOS×GEUSTO</div><div style="font-family:var(--fu);font-size:.64rem;color:var(--txt2);margin-top:.1rem;line-height:1.5">外界からの情報を受け取る感覚。嗅覚×視覚×聴覚×触覚×味覚の五経路が扁桃体・島皮質・視床下部に収束しオキシトシン×バソプレシン×ドーパミンを生成する。</div></div>
+            </div>
+            <div style="display:flex;gap:.65rem;align-items:center;background:var(--surface2);border-radius:var(--r-sm);padding:.65rem .75rem">
+              <span style="font-size:1rem;flex-shrink:0">6</span>
+              <div><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:#a78bfa">第六感（内受容感覚）— SEXTUS</div><div style="font-family:var(--fu);font-size:.64rem;color:var(--txt2);margin-top:.1rem;line-height:1.5">体の内側（心臓・腸・筋肉・温度）からの信号を島皮質が処理する感覚。「胸キュン・腸の直感・なんとなく合う感覚」の神経科学的実体。腸-脳軸×固有感覚×前庭感覚を含む。</div></div>
+            </div>
+            <div style="display:flex;gap:.65rem;align-items:center;background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(13,148,136,.06));border:1px solid rgba(124,58,237,.15);border-radius:var(--r-sm);padding:.65rem .75rem">
+              <span style="font-size:1rem;flex-shrink:0">7</span>
+              <div><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:#2dd4bf">第七感（身体的共鳴感覚）— 心拍同期×脳波同調×生命的同調</div><div style="font-family:var(--fu);font-size:.64rem;color:var(--txt2);margin-top:.1rem;line-height:1.5">二人の生理的システムが同調する「身体共鳴」の感覚。心拍同期（Feldman 2011）×脳波同調×呼吸同期×テロメア共有（長期関係研究）という「生命レベルの同調」が起きた時の「一体感・溶ける感覚・この人しかいない」という体験の最深部。</div></div>
+            </div>
+          </div>
+        </div></div>
+
+        <!-- 七感×ホルモンの完全経路 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">🔬</div><div><div class="card-hd-title">七感 × ホルモンカスケードの完全設計</div><div class="card-hd-sub">各感覚がどのホルモンをどの経路で生成するか — 全7経路</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.4rem">
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--eidos-xl);border-radius:var(--r-sm);padding:.6rem .75rem"><span style="font-size:1rem;flex-shrink:0">🧴</span><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:700;color:var(--eidos-l)">EIDOS 嗅覚 — 視床バイパス0.03秒</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">嗅球→扁桃体直接→海馬（プルースト効果）。オキシトシン+ドーパミン。最速の感情経路。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--forma-xl);border-radius:var(--r-sm);padding:.6rem .75rem"><span style="font-size:1rem;flex-shrink:0">👔</span><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:700;color:var(--forma-l)">FORMA 視覚 — V1〜V5×IT野×扁桃体高速ルート0.1秒</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">網膜→LGN→V4（色彩）→IT野→扁桃体。ドーパミン+ノルアドレナリン。ミラーニューロンで触覚予測。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--sonos-xl);border-radius:var(--r-sm);padding:.6rem .75rem"><span style="font-size:1rem;flex-shrink:0">🎵</span><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:700;color:var(--sonos-l)">SONOS 聴覚 — 耳介CT繊維→迷走神経耳介枝→視床下部直接</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">囁き声→CT繊維→迷走神経→オキシトシン産生ニューロン直接刺激。オキシトシン+エンドルフィン。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--haptos-xl);border-radius:var(--r-sm);padding:.6rem .75rem"><span style="font-size:1rem;flex-shrink:0">🤲</span><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:700;color:var(--haptos-l)">HAPTOS 触覚 — CT繊維→脊髄→脳幹→島皮質→視床下部</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">有毛皮膚CT繊維→島皮質→オキシトシン。20秒ハグ→バソプレシン絆形成。最も直接的な産生経路。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--geusto-xl);border-radius:var(--r-sm);padding:.6rem .75rem"><span style="font-size:1rem;flex-shrink:0">👅</span><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:700;color:var(--geusto-l)">GEUSTO 味覚 — 6神経経路同時×島皮質（一次味覚野）</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">鼓索神経×舌咽神経×迷走神経×三叉神経×後鼻腔嗅覚の6経路同時。全ホルモン最大値。人体最大の多感覚統合点。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.12);border-radius:var(--r-sm);padding:.6rem .75rem"><span style="font-size:1rem;flex-shrink:0">🫀</span><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:700;color:#a78bfa">第六感 内受容感覚 — 心臓×腸×体温→島皮質</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">迷走神経心臓枝×腸管神経系×温度受容器→島皮質前部→「体が反応する」感覚の意識化。セロトニン（腸産生95%）の安定化。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start;background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(13,148,136,.08));border:1px solid rgba(124,58,237,.2);border-radius:var(--r-sm);padding:.6rem .75rem"><span style="font-size:1rem;flex-shrink:0">🌊</span><div><div style="font-family:var(--fu);font-size:.67rem;font-weight:700;color:#2dd4bf">第七感 身体共鳴 — 心拍同期×脳波同調×呼吸同期</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">生理的同調（Feldman 2011）→迷走神経×ポリヴェーガル×VVC→オキシトシン+バソプレシン最大値。「一体感・溶ける感覚」の神経生物学的完成形。</div></div></div>
+          </div>
+        </div></div>
+
+        <!-- 島皮質 — 七感の最終収束点 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🧠</div><div><div class="card-hd-title">島皮質 — 七感全ての最終収束点</div><div class="card-hd-sub">五感×内受容感覚×身体共鳴が一点に集まる神経解剖学的証明</div></div></div><div class="card-bd">
+          <div style="background:var(--violet-xl);border:1px solid rgba(124,58,237,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.65rem">
+            <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">🔬 島皮質が処理する全感覚・感情のリスト</div>
+            <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.8">
+              ① 味覚（一次味覚野・GEUSTOの核心）<br>
+              ② CT繊維触覚（HAPTOSの感情的タッチ）<br>
+              ③ 囁き声・聴覚感情処理（SONOSの一部）<br>
+              ④ 内受容感覚（心臓・腸・体温 — 第六感の核心）<br>
+              ⑤ 痛み・快楽の統合（SEXTUSの痛み×快楽）<br>
+              ⑥ 感情（扁桃体との双方向接続）<br>
+              ⑦ 共感・ミラーニューロン系の感情的処理<br>
+              ⑧ 自己感覚・身体自己（第七感の土台）<br>
+              <strong style="color:var(--txt)">→ 七感統合の「意識的体験」が全てここで生成される</strong>
+            </div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">✨ 七感統合の完成形が生む「一生忘れられない体験」</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.7">五感（外界から）×第六感（体の内側から）×第七感（二人の間で）という三層の感覚が同時に島皮質に収束した時、単一感覚の指数関数的倍数を超えた「言葉では表現できない体験」が生成される。Calvert et al.の超加算的統合効果の最大形態。「一生忘れられない記憶」「この人しかいない」という感情の神経生物学的完成形がここにある。</div></div>
+        </div></div>
+
+        <!-- 七感統合の実践フロー -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">🌊</div><div><div class="card-hd-title">七感統合の実践フロー</div><div class="card-hd-sub">食事から心拍同期まで — 七感が順番に統合される最強の設計</div></div></div><div class="card-bd">
+          <div style="display:flex;flex-direction:column;gap:.45rem">
+            <div style="display:flex;gap:.6rem;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:var(--eidos);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.65rem;font-weight:700;flex-shrink:0;min-width:24px">1</div><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:600;color:var(--txt);margin-bottom:.15rem">EIDOS×第六感：シグネチャーセント→嗅球→扁桃体+腸の反応起動</div><div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">香りが0.03秒で扁桃体に届くと同時に腸管神経系が「この人の匂い＝安全×好き」というMHC相性の腸の判断を下す。五感+第六感の最初の統合点。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:var(--forma);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.65rem;font-weight:700;flex-shrink:0;min-width:24px">2</div><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:600;color:var(--txt);margin-bottom:.15rem">FORMA×内受容感覚：視覚評価→心拍上昇→島皮質で「胸キュン」生成</div><div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">服装・姿勢の視覚評価（0.1秒）が交感神経を活性化し心拍を上昇させる。この心拍変化が内受容感覚（第六感）として島皮質で「ときめき」として意識化される。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:var(--sonos);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.65rem;font-weight:700;flex-shrink:0;min-width:24px">3</div><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:600;color:var(--txt);margin-bottom:.15rem">SONOS×VVC：声→腹側迷走神経複合体→「安全の神経学」発動</div><div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">低い温かい声がVVC（ポリヴェーガル）を活性化させ「この人は安全だ」という第六感的な社会神経判定が下される。呼吸が穏やかになり副交感神経優位が始まる。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:var(--haptos);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.65rem;font-weight:700;flex-shrink:0;min-width:24px">4</div><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:600;color:var(--txt);margin-bottom:.15rem">HAPTOS×固有感覚：タッチ→CT繊維+固有感覚→体が記憶し始める</div><div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">CT繊維（感情的タッチ）が島皮質×視床下部を活性化させながら固有感覚（第六感）が「この人のタッチパターン」を小脳に刻み始める。オキシトシン蓄積加速。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:var(--geusto);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.65rem;font-weight:700;flex-shrink:0;min-width:24px">5</div><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:600;color:var(--txt);margin-bottom:.15rem">GEUSTO×腸-脳軸：キス→6神経経路+腸の深層評価→MHC確定</div><div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">キスの6経路同時活性化が全ホルモン最大値を生成。口腔内のMHC評価+テストステロン転移が腸-脳軸（第六感）での「根本的な相性判定」を完成させる。</div></div></div>
+            <div style="display:flex;gap:.6rem;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:#7c3aed;color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.65rem;font-weight:700;flex-shrink:0;min-width:24px">7</div><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:600;color:#2dd4bf;margin-bottom:.15rem">第七感：呼吸同期→心拍同期→脳波同調→「一体感」の完成</div><div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.55">SONOSの呼吸同期が心拍同期→脳波同調という段階的な生理的共鳴を引き起こす（Feldman 2011）。「溶ける感覚・一体感・この人しかいない」という七感統合の最終形態が完成する。オキシトシン+バソプレシン+エンドルフィンが全て最大値で同時分泌。</div></div></div>
+          </div>
+        </div></div>
+
+        <!-- SEXTUSとの接続 -->
+        <div class="card"><div class="card-hd"><div class="card-ico" style="background:rgba(124,58,237,.12)">🔮</div><div><div class="card-hd-title">SEXTUS — 第六感アプリとの連携</div><div class="card-hd-sub">七感統合を深めるための専用学習アプリ</div></div></div><div class="card-bd">
+          <div style="background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(13,148,136,.06));border:1px solid rgba(124,58,237,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.6rem">
+            <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.7">SEXTUSアプリでは七感統合の「第六感・第七感」を構成する以下の感覚を詳しく学べます：<br><strong>🫀 内受容感覚</strong>（島皮質×胸キュン×直感）<br><strong>🧠 腸-脳軸</strong>（第二の脳×ガット・フィーリング）<br><strong>⚖️ 固有感覚</strong>（体が覚えている記憶）<br><strong>🌀 前庭感覚×時間感覚</strong>（揺れ×時間が早い理由）<br><strong>🪞 ミラーニューロン×VVC</strong>（感情的伝染×場の雰囲気）<br><strong>💔 社会的痛み</strong>（恋愛の傷の神経科学）</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem">
+            <div style="background:var(--surface2);border-radius:var(--r-sm);padding:.6rem;text-align:center"><div style="font-size:1.1rem">🫀</div><div style="font-family:var(--fu);font-size:.58rem;font-weight:600;color:var(--txt3);margin-top:.2rem">内受容感覚</div></div>
+            <div style="background:var(--surface2);border-radius:var(--r-sm);padding:.6rem;text-align:center"><div style="font-size:1.1rem">🧠</div><div style="font-family:var(--fu);font-size:.58rem;font-weight:600;color:var(--txt3);margin-top:.2rem">腸-脳軸</div></div>
+            <div style="background:var(--surface2);border-radius:var(--r-sm);padding:.6rem;text-align:center"><div style="font-size:1.1rem">⚖️</div><div style="font-family:var(--fu);font-size:.58rem;font-weight:600;color:var(--txt3);margin-top:.2rem">固有感覚</div></div>
+            <div style="background:var(--surface2);border-radius:var(--r-sm);padding:.6rem;text-align:center"><div style="font-size:1.1rem">🌀</div><div style="font-family:var(--fu);font-size:.58rem;font-weight:600;color:var(--txt3);margin-top:.2rem">前庭感覚</div></div>
+            <div style="background:var(--surface2);border-radius:var(--r-sm);padding:.6rem;text-align:center"><div style="font-size:1.1rem">🪞</div><div style="font-family:var(--fu);font-size:.58rem;font-weight:600;color:var(--txt3);margin-top:.2rem">ミラーニューロン</div></div>
+            <div style="background:var(--surface2);border-radius:var(--r-sm);padding:.6rem;text-align:center"><div style="font-size:1.1rem">💔</div><div style="font-family:var(--fu);font-size:.58rem;font-weight:600;color:var(--txt3);margin-top:.2rem">社会的痛み</div></div>
+          </div>
+        </div></div>
+
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- ══ ATTACHMENT QUIZ PAGE ══ -->
+    <div class="page" id="pg-attach">
+      <div class="sb">
+        <div class="pg-hd"><div class="pg-title" style="color:#a78bfa">🔗 愛着スタイル診断</div><div style="font-family:var(--fu);font-size:.75rem;color:var(--txt3);margin-top:.25rem">Hazan & Shaver（1987）ベース — 自分と相手のスタイルを診断</div></div>
+
+        <!-- 診断選択 -->
+        <div id="attachMenu" style="margin-bottom:.65rem">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+            <button onclick="startAttach('self')" style="background:var(--violet-xl);border:1.5px solid rgba(124,58,237,.3);border-radius:var(--r-lg);padding:1.2rem .9rem;cursor:pointer;text-align:left">
+              <div style="font-size:1.4rem;margin-bottom:.4rem">🪞</div>
+              <div style="font-family:var(--fd);font-size:.92rem;font-weight:700;color:var(--txt)">自分の診断</div>
+              <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt3);margin-top:.2rem">自分の愛着スタイルを知る</div>
+            </button>
+            <button onclick="startAttach('partner')" style="background:var(--rose-xl);border:1.5px solid rgba(190,18,60,.3);border-radius:var(--r-lg);padding:1.2rem .9rem;cursor:pointer;text-align:left">
+              <div style="font-size:1.4rem;margin-bottom:.4rem">💝</div>
+              <div style="font-family:var(--fd);font-size:.92rem;font-weight:700;color:var(--txt)">相手の診断</div>
+              <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt3);margin-top:.2rem">相手のスタイルから戦略を導く</div>
+            </button>
+          </div>
+          <!-- 結果表示エリア（保存済み結果） -->
+          <div id="savedResults" style="margin-top:.65rem"></div>
+        </div>
+
+        <!-- 診断フォーム -->
+        <div id="attachForm" style="display:none">
+          <div class="card">
+            <div class="card-hd">
+              <div class="card-ico" style="background:var(--violet-xl)" id="attachFormIco">🪞</div>
+              <div><div class="card-hd-title" id="attachFormTitle">自分の愛着スタイル診断</div><div class="card-hd-sub" id="attachFormSub">12問に直感で答えてください</div></div>
+            </div>
+            <div class="card-bd">
+              <!-- プログレス -->
+              <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.9rem">
+                <div style="flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">
+                  <div id="attachProgress" style="height:100%;background:linear-gradient(90deg,var(--violet),#a78bfa);border-radius:3px;transition:width .4s ease;width:0%"></div>
+                </div>
+                <span style="font-family:var(--fu);font-size:.68rem;color:var(--txt3);flex-shrink:0" id="attachQNum">1 / 12</span>
+              </div>
+              <!-- 質問 -->
+              <div style="font-family:var(--fd);font-size:1rem;font-weight:600;color:var(--txt);line-height:1.5;margin-bottom:1rem" id="attachQ"></div>
+              <!-- 選択肢 -->
+              <div id="attachOpts" style="display:flex;flex-direction:column;gap:.45rem"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 診断結果 -->
+        <div id="attachResult" style="display:none"></div>
+
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+    <!-- ══ QUIZ PAGE ══ -->
+    <div class="page" id="pg-quiz">
+      <div class="quiz-wrap">
+        <div class="qhd"><div style="font-family:var(--fd);font-size:1rem;font-weight:700">五感統合クイズ</div><div class="qsc" id="qSc">0 / 0</div></div>
+        <div id="quizArea"></div>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+
+  
+    <div class="page" id="pg-ai">
+      <div class="sb">
+        <div class="pg-hd">
+          <div class="pg-title" style="color:#9333ea">&#129302; AI コーチ</div>
+          <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt3);margin-top:.2rem">専門AIに相談</div>
+        </div>
+        <div id="aiMsgs_senses" style="display:flex;flex-direction:column;gap:.65rem;margin-bottom:.6rem">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.82rem .92rem;font-family:var(--fu);font-size:.78rem;color:var(--txt);line-height:1.68">
+            こんにちは。専門AIコーチです。状況を入力してください。
+          </div>
+        </div>
+        <div id="aiQB_senses" style="display:flex;gap:.38rem;flex-wrap:wrap;margin-bottom:.6rem"></div>
+        <div class="spacer"></div>
+      </div>
+      <div style="padding:.55rem .9rem calc(env(safe-area-inset-bottom)+4.2rem);background:var(--surface);border-top:1px solid var(--border);display:flex;gap:.45rem;align-items:flex-end;position:sticky;bottom:0">
+        <textarea id="aiInp_senses" style="flex:1;background:var(--bg2,#f5f3ff);border:1.5px solid var(--border2);border-radius:var(--r-lg);padding:.6rem .75rem;font-family:var(--fu);font-size:.8rem;color:var(--txt);resize:none;min-height:42px;max-height:110px;outline:none;line-height:1.5" placeholder="状況を入力..." rows="1" oninput="this.style.height=&apos;auto&apos;;this.style.height=Math.min(this.scrollHeight,110)+&apos;px&apos;" onkeydown="if(event.key===&apos;Enter&apos;&&!event.shiftKey){event.preventDefault();aiSend_senses();}"></textarea>
+        <button onclick="aiSend_senses()" style="width:42px;height:42px;border-radius:50%;background:#9333ea;border:none;color:#fff;font-size:1.05rem;cursor:pointer;flex-shrink:0">&#9658;</button>
+      </div>
+    </div>
+
+<nav class="bnav">
+    <button class="bni on" onclick="nav('home',0)"><span class="bni-ico">⬡</span><div class="bni-dot"></div><span class="bni-lbl">ホーム</span></button>
+    <button class="bni" onclick="nav('tonight',1)"><span class="bni-ico">🎯</span><div class="bni-dot"></div><span class="bni-lbl">今夜</span></button>
+    <button class="bni" onclick="nav('science',2)"><span class="bni-ico">🧠</span><div class="bni-dot"></div><span class="bni-lbl">科学</span></button>
+    <button class="bni" onclick="nav('scenario',3)"><span class="bni-ico">📅</span><div class="bni-dot"></div><span class="bni-lbl">戦略</span></button>
+    <button class="bni" onclick="nav('learn',4)"><span class="bni-ico">📚</span><div class="bni-dot"></div><span class="bni-lbl">学習</span></button>
+    <button class="bni" onclick="nav('seventh',5)"><span class="bni-ico">🔮</span><div class="bni-dot"></div><span class="bni-lbl">七感</span></button>
+    <button class="bni" onclick="nav('library',6)"><span class="bni-ico">🌐</span><div class="bni-dot"></div><span class="bni-lbl">全感覚</span></button>
+    <button class="bni" onclick="nav('attach',7)"><span class="bni-ico">🔗</span><div class="bni-dot"></div><span class="bni-lbl">診断</span></button>
+    <button class="bni" onclick="nav('quiz',8)"><span class="bni-ico">⚡</span><div class="bni-dot"></div><span class="bni-lbl">クイズ</span></button>
+
+  <button class="bni" onclick="nav('ai',9)"><span class="bni-ico">&#129302;</span><div class="bni-dot"></div><span class="bni-lbl">AI</span></button>
+</nav>
+</div>
+
+<script>
+/* ════ DATA ════ */
+const TIPS=[
+  {ico:'✨',txt:'「五感が統合した時、記憶強度は指数関数的に増大する。香り+視覚+声+タッチ+キスが同時に作用した体験は「一生忘れられない記憶」として海馬に永久保存される。（Calvert et al. fMRI研究）」'},
+  {ico:'🧴',txt:'「嗅覚は視床を経由せず0.03秒で扁桃体に直接届く唯一の感覚。プルースト効果により「この香り＝あなた」という条件付けが相手の脳に形成される。EIDOSが五感統合の起点。」'},
+  {ico:'👔',txt:'「女性は男性の服装を0.1秒で処理し扁桃体が感情判定を完了する。ハロー効果で服装が良いと知性・誠実さ・将来性まで全て高く評価される。FORMAが視覚的第一印象を設計する。」'},
+  {ico:'🎵',txt:'「囁き声の空気振動が耳介CT繊維を直接刺激しHAPTOSと同じ島皮質→視床下部→オキシトシン経路を活性化させる。SONOSの声×HAPTOSのタッチが耳元で統合する。」'},
+  {ico:'🤲',txt:'「CT繊維は秒速3〜5cmの優しい撫でに最大反応し視床下部のオキシトシン産生ニューロンを直接活性化させる。20秒ハグがバソプレシン絆形成の臨界点。HAPTOSが絆の触覚的基盤。」'},
+  {ico:'👅',txt:'「キス1回で5種のホルモンが同時分泌される。オキシトシン（抱擁の2〜3倍）・ドーパミン・ノルアドレナリン・エンドルフィン・テストステロン転移。GEUSTOが五感統合の最終完成形。」'},
+  {ico:'📅',txt:'「排卵期（生理周期14日目前後）に嗅覚感度最大×コプリン効果最大×声変化×CT繊維感受性最大が重なる。五感統合戦略が最大効果を発揮するタイミングが生理周期で決まる。」'},
+  {ico:'🔄',txt:'「食事→キス→スキンシップ→行為→抱擁→眠り→翌朝の共食という一連の流れが五感全チャネルでオキシトシン雪だるま効果を引き起こし相手の脳に「恋愛の完全自動化システム」を永久保存させる。」'},
+];
+let tipIdx=0;
+function rotateTip(){tipIdx=(tipIdx+1)%TIPS.length;const t=TIPS[tipIdx];document.getElementById('tipIco').textContent=t.ico;document.getElementById('tipTxt').textContent=t.txt;}
+
+/* ════ ATTACHMENT STYLE QUIZ ════ */
+const ATTACH_QS=[
+  {id:1,q:'誰かと親密になりたいと思うと、相手が離れていくのではないかと心配になる。',dim:'ANX'},
+  {id:2,q:'恋愛関係では、相手が本当に自分を好きかどうか常に確認したくなる。',dim:'ANX'},
+  {id:3,q:'相手から連絡が来ないと、何か悪いことが起きたのではないかと不安になる。',dim:'ANX'},
+  {id:4,q:'感情的にとても深く相手と結びつきたいという強い欲求がある。',dim:'ANX'},
+  {id:5,q:'感情的に誰かに依存されると、居心地が悪く感じる。',dim:'AVD'},
+  {id:6,q:'パートナーと非常に親密になることに対して、居心地が悪く感じる。',dim:'AVD'},
+  {id:7,q:'誰かに頼ることは難しい、あるいは頼りたくないと思う。',dim:'AVD'},
+  {id:8,q:'感情的に距離を置くことで自分を守っていると感じることが多い。',dim:'AVD'},
+  {id:9,q:'誰かを信頼することや、信頼されることが比較的自然にできる。',dim:'SEC'},
+  {id:10,q:'助けが必要な時に、大切な人に頼ることができる。',dim:'SEC'},
+  {id:11,q:'自分が愛される価値のある人間だと感じている。',dim:'SEC'},
+  {id:12,q:'恋愛関係において、感情のやり取りが自然にできると思う。',dim:'SEC'},
+];
+
+const ATTACH_STYLES={
+  secure:{name:'安全型',icon:'🟢',color:'#16a34a',pct:'55〜60%',
+    desc:'幼少期に一貫した養育を受けた。「自分は愛される価値がある・他者は信頼できる」という安定した内的モデル。親密感を求めながらも独立性を保てる。別れを過剰に恐れず依存もしない。',
+    strength:'関係の安定性・感情調整能力・相互的な自己開示',
+    growth:'より深い感情表現・脆弱さを見せる勇気',
+    strategy:{eidos:'シグネチャーセントの確立が最もスムーズ。Insulo×Gozo系で深い記憶の条件付けを。',forma:'清潔感×知性シグナルを素直に受け取る。シルエットとスタイルの一貫性が効果的。',sonos:'傾聴×深い自己開示の交換が自然に進む。36の質問プロトコルが最も機能する相手。',haptos:'段階的スキンシップを正しいテンポで受け取る。20秒ハグへの移行がスムーズ。',geusto:'共食→ファーストキスの黄金フローが最もスムーズに機能する相手。'}},
+  anxious:{name:'不安型',icon:'🔵',color:'#2563eb',pct:'約20%',
+    desc:'養育が不安定・予測不能だった経験を持つ。「相手が離れるかもしれない」という過剰な不安と「もっと近くにいてほしい」という強い欲求が共存する。確認行動・感情的な強さが特徴。',
+    strength:'感情の豊かさ・献身性・パートナーへの強い関心',
+    growth:'安心感の自己調整・過剰な確認行動の抑制',
+    strategy:{eidos:'毎回同じシグネチャーセントを維持することが最重要。「この香り＝安心できる人」の条件付けが不安を解消する。',forma:'シグネチャースタイルの一貫性が「変わらず存在する」という安心感を作る。急な変化は不安を誘発。',sonos:'傾聴×名前を呼ぶ×感情ラベリングで「ちゃんと見ている」を繰り返し伝える。一貫した接触頻度が鍵。',haptos:'段階を急がず一貫したペースで進む。偶発的タッチの繰り返しがオキシトシン蓄積を安定させる。',geusto:'共食の頻度を高める（Dunbar効果×単純接触効果）。共有した食体験の記憶が「また会いたい」欲求を安定化。'}},
+  avoidant:{name:'回避型',icon:'🟡',color:'#b45309',pct:'約25%',
+    desc:'感情的なニーズを無視された経験を持つ。「自分は自立している・他者に頼る必要はない」という防衛的な独立性。親密な関係を求めながらも深まることを無意識に回避する傾向がある。',
+    strength:'独立性・冷静さ・自己完結能力・長期的な安定性',
+    growth:'感情的な親密さを安全と感じる練習・脆弱さを許容する',
+    strategy:{eidos:'シトラス×アクア系の清潔感ある香りが扁桃体の防衛機制を最も緩めやすい。EDP系の強さは避ける。',forma:'清潔感×シンプルさ最優先。過度な演出は「距離を置きたい」感覚を強化する。',sonos:'質問攻めや感情的な迫り方は逃避を誘発。軽い話題×ユーモア×自然な間を大切に。傾聴80%が特に重要。',haptos:'プロクセミクスの段階的接近が最重要。急な距離縮小は最大の禁忌。超ゆっくりのペースで。',geusto:'共食で「義務のない親密感」を積み重ねる。プレッシャーのない自然な食事体験が回避型の扁桃体を最も安全に開く。'}},
+  disorganized:{name:'混乱型',icon:'🔴',color:'#BE123C',pct:'5〜10%',
+    desc:'養育者自身が恐怖の源だった経験を持つ。「愛されたい＋傷つくのが怖い」という矛盾した内的モデル。親密さを求めながら同時に恐れ、関係が近づくと逃げ、遠ざかると追いかける。',
+    strength:'感情の深さ・複雑さへの理解・強烈な感情体験',
+    growth:'安全な愛着関係の体験・専門的なサポートの活用',
+    strategy:{eidos:'一貫した優しい香り（ラベンダー×ウッディ系）が最も副交感神経を優位にする。変化を最小限に。',forma:'清潔感×シンプル×一貫性。視覚的な安心感を最優先。派手な演出は扁桃体の警戒反応を高める。',sonos:'傾聴×感情ラベリング×名前を呼ぶことを徹底。感情を急かさず「この人は安全だ」という学習を時間をかけて積み上げる。',haptos:'触覚的接近は最も慎重に。握手から始め各段階での反応を丁寧に観察。急がない。',geusto:'共食を「安全な親密感の練習の場」として活用。プレッシャーなく一緒に食べることの反復が最もゆっくりとした安全学習を促進。'}},
+};
+
+let attachMode='self',attachAnswers=[],attachQIdx=0,attachScores={ANX:0,AVD:0,SEC:0};
+
+function startAttach(mode){
+  attachMode=mode;attachAnswers=[];attachQIdx=0;attachScores={ANX:0,AVD:0,SEC:0};
+  const isSelf=mode==='self';
+  document.getElementById('attachMenu').style.display='none';
+  document.getElementById('attachForm').style.display='block';
+  document.getElementById('attachResult').style.display='none';
+  document.getElementById('attachFormIco').textContent=isSelf?'🪞':'💝';
+  document.getElementById('attachFormTitle').textContent=isSelf?'自分の愛着スタイル診断':'相手の愛着スタイル診断';
+  document.getElementById('attachFormSub').textContent=isSelf?'12問に直感で答えてください':'相手の行動・反応をもとに回答してください';
+  showAttachQ();
+}
+
+const ATTACH_OPTS=[{label:'全くそう思わない',val:1},{label:'あまりそう思わない',val:2},{label:'どちらでもない',val:3},{label:'ややそう思う',val:4},{label:'とてもそう思う',val:5}];
+
+function showAttachQ(){
+  const q=ATTACH_QS[attachQIdx];
+  document.getElementById('attachQ').textContent=`Q${q.id}. ${q.q}`;
+  document.getElementById('attachQNum').textContent=`${q.id} / 12`;
+  document.getElementById('attachProgress').style.width=`${(q.id-1)/12*100}%`;
+  document.getElementById('attachOpts').innerHTML=ATTACH_OPTS.map(o=>`<button onclick="ansAttach(${o.val})" style="width:100%;text-align:left;padding:.75rem .9rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--r-md);font-family:var(--fu);font-size:.76rem;color:var(--txt2);cursor:pointer;transition:all .15s;line-height:1.4"><span style="font-weight:600;color:var(--violet);margin-right:.5rem">${o.val}</span>${o.label}</button>`).join('');
+}
+
+function ansAttach(val){
+  const q=ATTACH_QS[attachQIdx];
+  attachAnswers.push({dim:q.dim,val});
+  attachQIdx++;
+  if(attachQIdx>=ATTACH_QS.length){calcAttach();}else{showAttachQ();}
+}
+
+function calcAttach(){
+  attachAnswers.forEach(a=>{attachScores[a.dim]=(attachScores[a.dim]||0)+a.val;});
+  const anx=attachScores.ANX/4,avd=attachScores.AVD/4,sec=attachScores.SEC/4;
+  let style;
+  if(sec>=3.5&&anx<3&&avd<3){style='secure';}
+  else if(anx>=3.5&&avd<3){style='anxious';}
+  else if(avd>=3.5&&anx<3){style='avoidant';}
+  else if(anx>=3&&avd>=3){style='disorganized';}
+  else{style='secure';}
+  showAttachResult(style,anx,avd,sec);
+}
+
+function showAttachResult(style,anx,avd,sec){
+  document.getElementById('attachForm').style.display='none';
+  const s=ATTACH_STYLES[style];
+  const isSelf=attachMode==='self';
+  const barHtml=(label,val,color)=>{const pct=Math.round((val/5)*100);return `<div style="margin-bottom:.4rem"><div style="display:flex;justify-content:space-between;margin-bottom:.18rem"><span style="font-family:var(--fu);font-size:.62rem;color:var(--txt3)">${label}</span><span style="font-family:var(--fu);font-size:.62rem;color:${color};font-weight:600">${val.toFixed(1)}/5</span></div><div style="height:7px;background:var(--bg3);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:4px"></div></div></div>`;};
+  const senseKeys={eidos:'🧴 EIDOS 嗅覚',forma:'👔 FORMA 視覚',sonos:'🎵 SONOS 聴覚',haptos:'🤲 HAPTOS 触覚',geusto:'👅 GEUSTO 味覚'};
+  const senseHtml=Object.entries(s.strategy).map(([k,v])=>`<div style="background:var(--surface2);border-radius:var(--r-sm);padding:.6rem .75rem;margin-bottom:.35rem"><div style="font-family:var(--fu);font-size:.63rem;font-weight:700;color:${s.color};margin-bottom:.15rem">${senseKeys[k]}</div><div style="font-family:var(--fu);font-size:.66rem;color:var(--txt2);line-height:1.6">${v}</div></div>`).join('');
+  document.getElementById('attachResult').style.display='block';
+  document.getElementById('attachResult').innerHTML=`
+    <div class="card" style="border-color:${s.color}40">
+      <div class="card-hd" style="background:${s.color}10;border-bottom:1px solid ${s.color}20">
+        <div style="font-size:2rem">${s.icon}</div>
+        <div><div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">${isSelf?'あなた':'相手'}の愛着スタイル</div><div style="font-family:var(--fd);font-size:1.2rem;font-weight:700;color:${s.color}">${s.name}</div><div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">人口比：${s.pct}（Hazan & Shaver 1987）</div></div>
+      </div>
+      <div class="card-bd">
+        <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7;margin-bottom:.75rem">${s.desc}</div>
+        <div style="background:var(--surface2);border-radius:var(--r-md);padding:.75rem;margin-bottom:.65rem">
+          <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">📊 診断スコア</div>
+          ${barHtml('安定・信頼（安全次元）',sec,'#16a34a')}
+          ${barHtml('不安・確認欲求（不安次元）',anx,'#2563eb')}
+          ${barHtml('回避・独立性（回避次元）',avd,'#b45309')}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-bottom:.65rem">
+          <div style="background:rgba(22,163,74,.08);border-radius:var(--r-sm);padding:.6rem"><div style="font-family:var(--fu);font-size:.6rem;font-weight:700;color:#16a34a;margin-bottom:.2rem">💪 強み</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">${s.strength}</div></div>
+          <div style="background:rgba(124,58,237,.08);border-radius:var(--r-sm);padding:.6rem"><div style="font-family:var(--fu);font-size:.6rem;font-weight:700;color:#a78bfa;margin-bottom:.2rem">🌱 成長ポイント</div><div style="font-family:var(--fu);font-size:.63rem;color:var(--txt2);line-height:1.5">${s.growth}</div></div>
+        </div>
+        <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">✨ ${isSelf?'自分への理解として':'相手への'}五感統合戦略</div>
+        ${senseHtml}
+        <div style="display:flex;gap:.45rem;margin-top:.65rem">
+          <button onclick="resetAttach()" style="flex:1;padding:.75rem;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-full);font-family:var(--fu);font-size:.78rem;font-weight:600;color:var(--txt2);cursor:pointer">← 再診断</button>
+          <button onclick="startAttach('${isSelf?'partner':'self'}')" style="flex:1;padding:.75rem;background:${s.color};border:none;border-radius:var(--r-full);font-family:var(--fu);font-size:.78rem;font-weight:600;color:#fff;cursor:pointer">${isSelf?'相手も診断':'自分も診断'} →</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function resetAttach(){
+  document.getElementById('attachMenu').style.display='block';
+  document.getElementById('attachForm').style.display='none';
+  document.getElementById('attachResult').style.display='none';
+}
+
+/* ════ CYCLE TRACKER ════ */
+let cycleRace='アジア系（日本人含む）';
+let cycleDays=30.3;
+
+// 今日の日付をデフォルト設定
+(function initDateInput(){
+  const today=new Date();
+  // デフォルトで14日前を最終生理開始日として設定
+  const def=new Date(today);
+  def.setDate(def.getDate()-14);
+  const y=def.getFullYear();
+  const m=String(def.getMonth()+1).padStart(2,'0');
+  const d=String(def.getDate()).padStart(2,'0');
+  const inp=document.getElementById('lastPeriod');
+  if(inp){inp.value=`${y}-${m}-${d}`;}
+})();
+
+function selectRace(btn,raceName,days){
+  cycleRace=raceName;
+  cycleDays=days;
+  document.querySelectorAll('[data-cgroup="race"]').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const customWrap=document.getElementById('customDaysWrap');
+  if(days===0){customWrap.style.display='block';}
+  else{customWrap.style.display='none';}
+  document.getElementById('modernDaysLabel').textContent=days===0?'カスタム':days+'日周期';
+}
+
+function getLunarPhase(date){
+  // 簡易月相計算（既知の新月日からの経過日数）
+  const known=new Date('2024-01-11'); // 既知の新月
+  const diff=Math.floor((date-known)/(1000*60*60*24));
+  const phase=((diff%29.53)+29.53)%29.53;
+  if(phase<1.5)return{name:'🌑 新月',phase:'new',day:Math.round(phase),ancient:'月経開始の古代同期点（新月＝生理開始の傾向）'};
+  if(phase<7)return{name:'🌒 三日月',phase:'waxing_crescent',day:Math.round(phase),ancient:'卵胞期・エネルギー上昇期'};
+  if(phase<9)return{name:'🌓 上弦の月',phase:'first_quarter',day:Math.round(phase),ancient:'卵胞後期・活力最大期'};
+  if(phase<13)return{name:'🌔 十三夜',phase:'waxing_gibbous',day:Math.round(phase),ancient:'排卵直前・古代では最も活発な時期'};
+  if(phase<16)return{name:'🌕 満月',phase:'full',day:Math.round(phase),ancient:'排卵期の古代同期点（満月＝排卵の傾向）⭐'};
+  if(phase<22)return{name:'🌖 十六夜',phase:'waning_gibbous',day:Math.round(phase),ancient:'黄体期・内省・充実の時期'};
+  if(phase<24)return{name:'🌗 下弦の月',phase:'last_quarter',day:Math.round(phase),ancient:'黄体後期・デトックス期'};
+  if(phase<28)return{name:'🌘 有明月',phase:'waning_crescent',day:Math.round(phase),ancient:'月経前・静寂・準備の時期'};
+  return{name:'🌑 新月前夜',phase:'new',day:Math.round(phase),ancient:'月経開始直前の古代同期点'};
+}
+
+// 古代サイクル：新月=月経開始、満月=排卵という仮定
+function getAncientCycleDay(today){
+  const known=new Date('2024-01-11'); // 既知の新月
+  const diff=Math.floor((today-known)/(1000*60*60*24));
+  const phase=((diff%29.53)+29.53)%29.53;
+  return{
+    day:Math.round(phase)+1,
+    total:29,
+    ovDay:15, // 満月前後
+    isOvulation:phase>=13&&phase<=16,
+    isFertile:phase>=11&&phase<=18,
+    isPeriod:phase<5||phase>=28,
+  };
+}
+
+function calcCycle(){
+  const periodInput=document.getElementById('lastPeriod').value;
+  if(!periodInput){alert('最終生理開始日を入力してください');return;}
+
+  const days=cycleDays===0?parseFloat(document.getElementById('customDays').value):cycleDays;
+  if(isNaN(days)||days<21||days>45){alert('周期日数は21〜45日の範囲で入力してください');return;}
+
+  const lastPeriod=new Date(periodInput);
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  lastPeriod.setHours(0,0,0,0);
+
+  const daysSince=Math.floor((today-lastPeriod)/(1000*60*60*24));
+  const cycleDay=daysSince+1; // 周期何日目か（1始まり）
+  const currentCycleDay=((daysSince%days)+days)%days+1;
+
+  // 排卵日計算（標準：周期長-14日）
+  const ovDay=Math.round(days-14);
+  const daysToOv=ovDay-currentCycleDay;
+
+  // 状態判定
+  const isPeriod=currentCycleDay<=5;
+  const isFollicular=currentCycleDay>5&&currentCycleDay<ovDay-1;
+  const isFertile=currentCycleDay>=ovDay-2&&currentCycleDay<=ovDay+2;
+  const isOvulation=Math.abs(currentCycleDay-ovDay)<=1;
+  const isLuteal=currentCycleDay>ovDay+2&&currentCycleDay<=days-2;
+  const isPremenstrual=currentCycleDay>days-2;
+
+  // 月相
+  const lunar=getLunarPhase(today);
+  const ancient=getAncientCycleDay(today);
+
+  // 現代値ラベル
+  document.getElementById('modernDaysLabel').textContent=days+'日周期';
+
+  // 状態カード
+  let statusColor,statusBg,statusIcon,statusTitle,statusDesc,senseBoost;
+  if(isPeriod){
+    statusColor='#6B6880';statusBg='rgba(107,104,128,.1)';statusIcon='🌑';
+    statusTitle='月経期（周期'+Math.round(currentCycleDay)+'日目）';
+    statusDesc='子宮内膜が剥離しプロスタグランジンが分泌される。エストロゲン・テストステロン共に低値。エネルギーは内向き。デートは穏やかなものが最適。';
+    senseBoost='HAPTOS（温熱タッチ）・SONOS（傾聴・癒しの声）が最も効果的。香りは軽め。';
+  }else if(isOvulation){
+    statusColor='#dc2626';statusBg='rgba(220,38,38,.12)';statusIcon='🔥';
+    statusTitle='🔥 排卵期（周期'+Math.round(currentCycleDay)+'日目）— 五感統合最大効果日';
+    statusDesc='エストロゲン最高値+テストステロン上昇。嗅覚感度最大（EIDOS効果最大）・コプリン分泌最大（GEUSTO×テストステロン転移最大）・声変化（SONOS×Pipitone 2008）・CT繊維感受性向上（HAPTOS）が全て重なる。五感統合戦略が最大効果を発揮する唯一のタイミング。';
+    senseBoost='🧴EIDOS：アンブロキサン系最大効果（Gozo/Insulo）| 🎵SONOS：囁き声最大反応 | 🤲HAPTOS：CT繊維感受性ピーク | 👅GEUSTO：コプリン×テストステロン転移最大';
+  }else if(isFertile){
+    statusColor='#ea580c';statusBg='rgba(234,88,12,.1)';statusIcon='⭐';
+    statusTitle='受精可能期（周期'+Math.round(currentCycleDay)+'日目）— 排卵まで'+Math.abs(daysToOv)+'日';
+    statusDesc='エストロゲン上昇中。嗅覚感度・性的感受性が高まり始める時期。五感統合戦略の効果が通常より高い。排卵の'+Math.abs(daysToOv)+'日前。';
+    senseBoost='五感戦略の効果が通常より20〜30%高い。特にEIDOS（香水）とHAPTOS（タッチ）の感受性が上昇中。';
+  }else if(isFollicular){
+    statusColor='#16a34a';statusBg='rgba(22,163,74,.1)';statusIcon='🌱';
+    statusTitle='卵胞期（周期'+Math.round(currentCycleDay)+'日目）— 排卵まで'+Math.abs(daysToOv)+'日';
+    statusDesc='エストロゲンが徐々に上昇。気分・エネルギー・社交性が向上する時期。新しいことへの開放性が高まる。排卵に向けてホルモンが上昇中。';
+    senseBoost='SONOS（会話・笑い・ユーモア）が最も効果的な時期。新しいデート体験で記憶形成を狙う好機。';
+  }else if(isLuteal){
+    statusColor='#7c3aed';statusBg='rgba(124,58,237,.1)';statusIcon='🌔';
+    statusTitle='黄体期（周期'+Math.round(currentCycleDay)+'日目）';
+    statusDesc='プロゲステロン優位。内省的・感情的な深まりの時期。オキシトシン感受性は維持される。親密なスキンシップと傾聴が特に効果的。';
+    senseBoost='HAPTOS（温もり・抱擁）・SONOS（深い傾聴・名前を呼ぶ）・GEUSTO（温かい食事・共食）が最大効果。';
+  }else{
+    statusColor='#BE123C';statusBg='rgba(190,18,60,.1)';statusIcon='🌘';
+    statusTitle='月経前期（周期'+Math.round(currentCycleDay)+'日目）';
+    statusDesc='プロゲステロン・エストロゲン共に急低下。感情の揺れが起きやすい。安心感・傾聴・温もりが最優先。刺激的なデートは避ける。';
+    senseBoost='HAPTOS（ゆっくりしたタッチ・抱擁）・SONOS（傾聴・共感・感情ラベリング）が最重要。刺激より安心感を優先。';
+  }
+
+  document.getElementById('cycleStatusCard').style.cssText=`background:${statusBg};border-color:${statusColor}40;border-radius:var(--r-lg);padding:1rem;margin-bottom:.6rem;border:1.5px solid`;
+  document.getElementById('cycleStatusCard').innerHTML=`
+    <div style="font-size:1.6rem;margin-bottom:.4rem">${statusIcon}</div>
+    <div style="font-family:var(--fu);font-size:.72rem;font-weight:700;color:${statusColor};margin-bottom:.35rem">${statusTitle}</div>
+    <div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65;margin-bottom:.5rem">${statusDesc}</div>
+    <div style="background:rgba(0,0,0,.2);border-radius:var(--r-sm);padding:.5rem .6rem">
+      <div style="font-family:var(--fu);font-size:.58rem;font-weight:700;color:${statusColor};margin-bottom:.2rem;text-transform:uppercase;letter-spacing:.06em">✨ 今日の五感戦略</div>
+      <div style="font-family:var(--fu);font-size:.67rem;color:var(--txt2);line-height:1.6">${senseBoost}</div>
+    </div>
+  `;
+
+  // タイムライン比較
+  const modernPct=Math.min((currentCycleDay/days)*100,100);
+  const ancientPct=Math.min((ancient.day/29.5)*100,100);
+  const modernOvPct=(ovDay/days)*100;
+  document.getElementById('cycleTimeline').innerHTML=`
+    <div style="margin-bottom:.65rem">
+      <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
+        <span style="font-family:var(--fu);font-size:.6rem;font-weight:600;color:var(--forma-l)">📱 現代 ${Math.round(currentCycleDay)}日目 / ${Math.round(days)}日</span>
+        <span style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">排卵日：${Math.round(ovDay)}日目</span>
+      </div>
+      <div style="height:10px;background:var(--bg3);border-radius:5px;position:relative;overflow:hidden">
+        <div style="position:absolute;left:0;top:0;height:100%;width:${modernPct}%;background:linear-gradient(90deg,var(--forma),var(--forma-l));border-radius:5px;transition:width .6s ease"></div>
+        <div style="position:absolute;left:${modernOvPct}%;top:0;height:100%;width:3px;background:var(--rose);transform:translateX(-50%)"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:.2rem">
+        <span style="font-family:var(--fu);font-size:.55rem;color:var(--txt3)">生理開始</span>
+        <span style="font-family:var(--fu);font-size:.55rem;color:var(--rose)">▲排卵</span>
+        <span style="font-family:var(--fu);font-size:.55rem;color:var(--txt3)">次の生理</span>
+      </div>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
+        <span style="font-family:var(--fu);font-size:.6rem;font-weight:600;color:var(--eidos-l)">🌕 古代 ${ancient.day}日目 / 29.5日（月同期）</span>
+        <span style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">満月=排卵（15日目）</span>
+      </div>
+      <div style="height:10px;background:var(--bg3);border-radius:5px;position:relative;overflow:hidden">
+        <div style="position:absolute;left:0;top:0;height:100%;width:${ancientPct}%;background:linear-gradient(90deg,#1a1a2e,#B8860B);border-radius:5px;transition:width .6s ease"></div>
+        <div style="position:absolute;left:${(15/29.5)*100}%;top:0;height:100%;width:3px;background:#B8860B;transform:translateX(-50%)"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:.2rem">
+        <span style="font-family:var(--fu);font-size:.55rem;color:var(--txt3)">🌑 新月</span>
+        <span style="font-family:var(--fu);font-size:.55rem;color:var(--eidos-l)">▲🌕満月</span>
+        <span style="font-family:var(--fu);font-size:.55rem;color:var(--txt3)">🌑 新月</span>
+      </div>
+    </div>
+    <div style="margin-top:.55rem;padding:.5rem .6rem;background:var(--bg2);border-radius:var(--r-sm)">
+      <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;color:var(--txt3);margin-bottom:.2rem">現代 vs 古代 — ズレ</div>
+      <div style="font-family:var(--fu);font-size:.66rem;color:var(--txt2);line-height:1.6">
+        現代サイクル：周期${Math.round(currentCycleDay)}日目（排卵まで${daysToOv>0?daysToOv+'日後':Math.abs(daysToOv)+'日前'}）<br>
+        古代サイクル：月周期${ancient.day}日目（${ancient.isOvulation?'🔥満月=古代排卵期':ancient.isFertile?'⭐古代受精可能期':ancient.isPeriod?'🌑古代月経期':'月の'+lunar.name}）<br>
+        <span style="color:${Math.abs(currentCycleDay-ancient.day)<=3?'#16a34a':'#ea580c'}">${Math.abs(currentCycleDay-ancient.day)<=3?'✓ 現代と古代のサイクルが近い同期状態':'現代と古代でズレあり — 人工照明の影響'}</span>
+      </div>
+    </div>
+  `;
+
+  // 月相カード
+  document.getElementById('lunarCard').innerHTML=`
+    <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem">
+      <span style="font-size:1.8rem">${lunar.name.split(' ')[0]}</span>
+      <div>
+        <div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--eidos-l)">今日の月相：${lunar.name}</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.1rem">月周期${lunar.day}日目</div>
+      </div>
+    </div>
+    <div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.65;margin-bottom:.4rem">${lunar.ancient}</div>
+    <div style="font-family:var(--fu);font-size:.62rem;color:var(--eidos-l);line-height:1.6">
+      🔬 古代同期の科学的根拠：Helfrich-Förster et al.（Science Advances 2021）— 周期27日以上の女性が月の光量・重力サイクルに断続的に同期することを確認。人工照明普及前（2010年以前）は有意な同期が存在した。
+    </div>
+  `;
+
+  // 五感戦略との連携
+  const isHighSense=isOvulation||isFertile;
+  document.getElementById('cycleSenseStrategy').innerHTML=`
+    <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">🧬 この時期の五感統合効果</div>
+    <div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.7">
+      ${isHighSense?
+        `<strong style="color:var(--rose)">⭐ 五感統合が最大効果を発揮する時期です</strong><br>
+        • 🧴 EIDOS：嗅覚感度最大 → 香水が最も強く届く（エストロゲン↑）<br>
+        • 👅 GEUSTO：コプリン分泌最大 → テストステロン転移効果最大（Cutler 1998）<br>
+        • 🎵 SONOS：声変化 → 男性テストステロン最大上昇（Pipitone 2008）<br>
+        • 🤲 HAPTOS：CT繊維感受性向上 → タッチへの反応が鋭敏<br>
+        • 👔 FORMA：視覚的魅力評価感度が上昇（ハロー効果増強）` :
+        isLuteal?
+        `<strong style="color:var(--violet)">黄体期：深い絆形成に最適な時期</strong><br>
+        オキシトシン・バソプレシンへの感受性が高い時期。五感統合の「絆固定化フェーズ」として活用する。<br>
+        HAPTOS（温もり）×SONOS（傾聴）×GEUSTO（共食）が特に有効。` :
+        isPeriod?
+        `<strong style="color:var(--txt3)">月経期：安心感を与える五感戦略を優先</strong><br>
+        身体的な不快感がある時期。刺激より安心感・温もり・傾聴を優先する。<br>
+        HAPTOS（優しい温熱タッチ）×SONOS（共感的な傾聴）が最重要。` :
+        `<strong style="color:var(--sonos-l)">卵胞期：新しい体験と記憶形成に最適</strong><br>
+        エストロゲン上昇と共に気分・社交性・開放性が上昇。新しいデート体験が特に記憶に残りやすい時期。<br>
+        SONOS（ユーモア・笑い）×GEUSTO（新しい食体験）×FORMA（印象的なスタイル）を意識。`
+      }
+    </div>
+  `;
+
+  document.getElementById('cycleSetup').style.display='none';
+  document.getElementById('cycleResult').style.display='block';
+}
+
+function resetCycle(){
+  document.getElementById('cycleSetup').style.display='block';
+  document.getElementById('cycleResult').style.display='none';
+}
+
+/* ════ CYCLE TRACKER ════ */
+const TS={scene:null,type:null,goal:null};
+document.querySelectorAll('.sel-chip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const g=btn.dataset.group,v=btn.dataset.val;
+    document.querySelectorAll(`.sel-chip[data-group="${g}"]`).forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    TS[g]=v;
+  });
+});
+
+const TONIGHT_DB={
+  first:{clean:{trust:{
+    eidos:{n:'Pour Homme EDT',b:'BVLGARI',e:'🫐',r:'ダージリンティーのセロトニン×信頼シグナル。初対面扁桃体ジャッジ最速クリア。'},
+    forma:{n:'白シャツ×テーパードデニム',b:'スタイル',e:'🤍',r:'清潔感最強の初対面スタイル。認知的負荷最低で「安心できる男性」を演出。'},
+    sonos:{n:'初対面プロトコル',b:'テクニック',e:'🌸',r:'低く温かい声×名前2回×ゆっくりとしたペース。扁桃体の安全判定を最速で完了。'},
+    haptos:{n:'握手プロトコル',b:'プロトコル',e:'🤝',r:'温かい手+適切な強さ+視線。唯一の初対面タッチで最初のオキシトシンを起動。'},
+    geusto:{n:'初デート食事選び',b:'プロトコル',e:'🍽',r:'共食+暗い照明+ホットドリンク。Dunbar共食効果でオキシトシン蓄積開始。'}
+  }}},
+  date2:{smart:{bond:{
+    eidos:{n:'Santal 33',b:'LE LABO',e:'🪵',r:'既視感型ドーパミン。センスシグナル。感度の高い女性への最強香水。'},
+    forma:{n:'グレースーツスタイル',b:'スタイル',e:'🩶',r:'グレーの知性・成熟シグナル。「感情に揺れない大人の男性」という最上の印象。'},
+    sonos:{n:'36の質問プロトコル',b:'テクニック',e:'💬',r:'自己開示の漸進的深化がオキシトシンとバソプレシンを連鎖分泌させる45分の絆形成。'},
+    haptos:{n:'偶発的タッチプロトコル',b:'プロトコル',e:'🤲',r:'笑いながら腕に触れる。CT繊維初刺激。Guéguen研究の成功率67%の戦術。'},
+    geusto:{n:'チョコレート×PEA戦略',b:'プロトコル',e:'🍫',r:'フェニルエチルアミン×ドーパミン×セロトニン。手渡しで偶発的タッチと組み合わせ。'}
+  }}},
+  confess:{warm:{trust:{
+    eidos:{n:'Insulo',b:'JEROBOAM',e:'🍦',r:'バニラ×ジャスミン。オキシトシン×テストステロン促進。告白前の最終兵器。'},
+    forma:{n:'キャメルコート',b:'スタイル',e:'🤎',r:'アースカラーのオキシトシン包容力。秋冬女性ウケ調査1位。長期的パートナー感最高値。'},
+    sonos:{n:'告白プロトコル',b:'テクニック',e:'🌙',r:'低く落ち着いた声×断言口調×直前0.5秒の沈黙。ドーパミン的予測で言葉のインパクトを最大化。'},
+    haptos:{n:'4段階スキンシップ設計',b:'プロトコル',e:'📈',r:'オキシトシン累積×バソプレシン起動。告白前の段階的な絆形成の完全設計。'},
+    geusto:{n:'ファーストキスプロトコル',b:'プロトコル',e:'💋',r:'目を見てゆっくり近づく。5種ホルモン同時分泌×MHC相性評価×記憶の永久保存。'}
+  }}},
+  special:{sense:{memory:{
+    eidos:{n:'Gozo',b:'JEROBOAM',e:'🟠',r:'アンブロキサン×サフラン。コンプリメント数ブランド随一。体温で揮発し夜に最大効果。'},
+    forma:{n:'オールブラックスタイル',b:'スタイル',e:'🖤',r:'光沢ブラック×夜の光反射。ドーパミン型権威×コルチゾール上昇。瞳孔拡大相互効果。'},
+    sonos:{n:'囁き声×ASMR',b:'テクニック',e:'🌬',r:'耳介CT繊維直接刺激×ASMR快感×迷走神経。三感統合聴覚の最強形態。'},
+    haptos:{n:'別れ際ハグプロトコル',b:'プロトコル',e:'🌙',r:'20秒ハグ×名前+感謝。四感が同時統合されオキシトシン+バソプレシン+エンドルフィンが最大分泌。'},
+    geusto:{n:'キスの深化プロトコル',b:'プロトコル',e:'🔬',r:'テストステロン転移×呼吸同期×舌のCT繊維。ゆっくり・同期・温かさの三原則で最強の記憶を作る。'}
+  }}},
+  deep:{warm:{bond:{
+    eidos:{n:'Ambra',b:'JEROBOAM',e:'🌑',r:'インセンス×バニラ×パチュリ。三段階で引き込む中毒性。シグネチャーとして海馬に深く刻まれる。'},
+    forma:{n:'ニットタートル×スラックス',b:'スタイル',e:'🧶',r:'触覚予測×オキシトシン刺激。抱きしめたい衝動を視覚的に作る。素材の質がCT繊維予測を決める。'},
+    sonos:{n:'アクティブリスニング完全版',b:'テクニック',e:'💎',r:'傾聴が直接オキシトシン分泌を促進。聴く80%・話す20%でバソプレシン絆形成が加速。'},
+    haptos:{n:'秒速5cmタッチプロトコル',b:'プロトコル',e:'💆',r:'CT繊維最適速度×20秒継続でオキシトシン最大分泌。外周から中心のCT繊維設計で深化。'},
+    geusto:{n:'MHC相性評価プロトコル',b:'プロトコル',e:'🔬',r:'体液交換によるMHC免疫遺伝情報の深化。本能的に合う感覚の科学的正体を理解する。'}
+  }}},
+};
+
+function getTonightData(){
+  const s=TS.scene,t=TS.type,g=TS.goal;
+  const db=TONIGHT_DB;
+  if(db[s]&&db[s][t]&&db[s][t][g])return db[s][t][g];
+  // フォールバック
+  if(db[s]){const tk=Object.keys(db[s])[0];if(db[s][tk]){const gk=Object.keys(db[s][tk])[0];return db[s][tk][gk];}}
+  return db.first.clean.trust;
+}
+
+const SENSE_COLORS={eidos:'var(--eidos)',forma:'var(--forma)',sonos:'var(--sonos)',haptos:'var(--haptos)',geusto:'var(--geusto)'};
+const SENSE_NAMES={eidos:'🧴 EIDOS 嗅覚',forma:'👔 FORMA 視覚',sonos:'🎵 SONOS 聴覚',haptos:'🤲 HAPTOS 触覚',geusto:'👅 GEUSTO 味覚'};
+const HORMONE_TIPS={
+  first:'初対面の扁桃体ジャッジをクリアするため五感全てが「セロトニン（安全）×オキシトシン（親しみ）」系に統一されています。',
+  date2:'2〜3回目は「ドーパミン（ときめき）×オキシトシン（絆）」の二段階戦略。プルースト効果の条件付けが始まります。',
+  confess:'告白は「オキシトシン（信頼）×バソプレシン（絆）×ノルアドレナリン（緊張）」が同時分泌されるホルモンの最重要瞬間。',
+  special:'特別な夜は「全ホルモン最大値」モード。五感統合が完成形に到達し海馬への永久記憶保存が起きます。',
+  deep:'深い関係では「バソプレシン×エンドルフィン×オキシトシン」の三重奏がペアボンドを強化し続けます。',
+};
+
+function runTonightSelector(){
+  if(!TS.scene||!TS.type||!TS.goal){alert('3つ全て選んでください');return;}
+  const data=getTonightData();
+  const senses=['eidos','forma','sonos','haptos','geusto'];
+  const html=senses.map(s=>{
+    const d=data[s];
+    return `<div class="res-card">
+      <div class="res-head" style="background:${SENSE_COLORS[s]}18;border-bottom:1px solid ${SENSE_COLORS[s]}30">
+        <div class="res-sense-ico" style="background:${SENSE_COLORS[s]}25">${d.e}</div>
+        <div style="flex:1"><div class="res-sense-name" style="color:${SENSE_COLORS[s]}">${SENSE_NAMES[s]}</div><div class="res-item-name">${d.n}</div></div>
+      </div>
+      <div class="res-body">
+        <div class="res-reason">${d.r}</div>
+        <div class="res-science">${d.b}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const integration=`<div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--gold);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.06em">💊 ホルモン統合解説</div><div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.65">${HORMONE_TIPS[TS.scene]||HORMONE_TIPS.first}</div>`;
+
+  document.getElementById('tonightSelector').style.display='none';
+  document.getElementById('tonightResult').style.display='block';
+  document.getElementById('tonightResultCards').innerHTML=html;
+  document.getElementById('tonightIntegration').innerHTML=integration;
+}
+
+function resetTonightSelector(){
+  TS.scene=null;TS.type=null;TS.goal=null;
+  document.querySelectorAll('.sel-chip').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tonightSelector').style.display='block';
+  document.getElementById('tonightResult').style.display='none';
+}
+
+/* ════ SCENARIO DATA ════ */
+const PHASES=[
+  {num:1,color:'var(--forma)',title:'Phase 1 — 初対面（0〜1時間）',sub:'扁桃体の安全判定を全感覚でクリアする',rows:[
+    {sense:'🧴',sc:'EIDOS',col:'var(--eidos)',text:'ネイビー×アクア系1プッシュ（Pour Homme EDT / Acqua di Gio）。セロトニン系の清潔感シグナルで警戒心を最速解除。シグネチャーセントはまだ使わない。',hormones:['セロトニン','ドーパミン']},
+    {sense:'👔',sc:'FORMA',col:'var(--forma)',text:'白シャツ×テーパードデニム or ネイビースーツ。認知的負荷最低×清潔感最高。「飾らないのに清潔感がある」最強の初対面スタイル。',hormones:['セロトニン']},
+    {sense:'🎵',sc:'SONOS',col:'var(--sonos)',text:'低く温かい声×ゆっくりとしたペース×名前を2回呼ぶ。メラビアンの法則：内容7%・声38%・非言語55%。コンテンツより声が5倍重要。',hormones:['セロトニン','オキシトシン']},
+    {sense:'🤲',sc:'HAPTOS',col:'var(--haptos)',text:'社会距離→個人距離の段階的移行。温かい握手（最初のCT繊維刺激）+90度座席配置。急激な距離縮小は扁桃体の警戒反応を引き起こす。',hormones:['セロトニン','オキシトシン']},
+    {sense:'👅',sc:'GEUSTO',col:'var(--geusto)',text:'共食デート（照明暗め・暖かい空間・共有メニュー）。Dunbar 2017：共食頻度が絆の強さと最も高く相関。食事に誘うことが最強の第一手。',hormones:['オキシトシン','ドーパミン']},
+  ]},
+  {num:2,color:'var(--sonos)',title:'Phase 2 — 親密化（2〜5回目）',sub:'プルースト効果の条件付けとオキシトシン累積',rows:[
+    {sense:'🧴',sc:'EIDOS',col:'var(--eidos)',text:'ムスク×アンバー系のシグネチャーセント確立開始（Insulo / Santal 33 / Ambra）。毎回同じ香りで海馬に「この香り＝あなた＝楽しい記憶」の条件付けを形成。',hormones:['オキシトシン','バソプレシン']},
+    {sense:'👔',sc:'FORMA',col:'var(--forma)',text:'シグネチャースタイルの核心を固定（キャメルコート / グレースーツ / 同じ時計）。視覚版プルースト効果で「この姿を見ると安心する」という絆の錨を作る。',hormones:['オキシトシン']},
+    {sense:'🎵',sc:'SONOS',col:'var(--sonos)',text:'36の質問プロトコル（Level1→2→3の段階的自己開示）。Aron 1997：45分で強い親密感が形成される。傾聴80%・話す20%でオキシトシン最大化。',hormones:['オキシトシン','バソプレシン']},
+    {sense:'🤲',sc:'HAPTOS',col:'var(--haptos)',text:'偶発的タッチ導入（前腕・肩）→意図的CT繊維刺激（秒速3〜5cm）。Guéguen 2003：タッチありで成功率67%。オキシトシン受容体増感で雪だるま効果開始。',hormones:['オキシトシン','ドーパミン']},
+    {sense:'👅',sc:'GEUSTO',col:'var(--geusto)',text:'チョコ×PEA（フェニルエチルアミン）/ 牡蠣（亜鉛→テストステロン維持）。辛い料理で食の吊り橋効果。体験を共有することで絆が深化する。',hormones:['ドーパミン','テストステロン']},
+  ]},
+  {num:3,color:'var(--eidos)',title:'Phase 3 — 告白・転換期',sub:'ノルアドレナリン×オキシトシン×バソプレシンの同時発動',rows:[
+    {sense:'🧴',sc:'EIDOS',col:'var(--eidos)',text:'確立したシグネチャーセントを纏う。「この香り＝特別な夜」という記憶の最高点を作る。Insulo / Gozo / Ambraのアンブロキサン系が夜に最大効果。',hormones:['オキシトシン','ドーパミン']},
+    {sense:'👔',sc:'FORMA',col:'var(--forma)',text:'キャメルコート or ネイビースーツの「最高版」。暗い場所での瞳孔拡大（Hess 1975）×光沢素材×キャンドル光（1/fゆらぎ）の視覚環境を設計。',hormones:['ドーパミン','ノルアドレナリン']},
+    {sense:'🎵',sc:'SONOS',col:'var(--sonos)',text:'低く落ち着いた声×断言口調×直前0.5秒の沈黙。ピーク・エンドの法則でこの「ピーク」が永遠に記憶される。「好きです↘」の語尾下げが信頼シグナル。',hormones:['ノルアドレナリン','オキシトシン']},
+    {sense:'🤲',sc:'HAPTOS',col:'var(--haptos)',text:'4段階スキンシップの完成形。手をつなぐ→別れ際20秒ハグ+名前+感謝。Grewen 2005：20秒以上でオキシトシン有意増加+血圧低下。バソプレシン絆形成が起動。',hormones:['オキシトシン','バソプレシン','エンドルフィン']},
+    {sense:'👅',sc:'GEUSTO',col:'var(--geusto)',text:'ファーストキス：目を見てゆっくり近づく（直前0.5秒の沈黙）。5種ホルモン同時分泌×MHC相性評価×ドーパミン急増。「キスして急激に好きになった」体験の設計。',hormones:['オキシトシン','ドーパミン','ノルアドレナリン']},
+  ]},
+  {num:4,color:'var(--haptos)',title:'Phase 4 — 深化・夜の統合',sub:'四感統合×ホルモンカスケード×永遠の記憶形成',rows:[
+    {sense:'🧴',sc:'EIDOS',col:'var(--eidos)',text:'体臭（アンドロステノール）×香水（アンブロキサン）の相乗効果最大化。体温上昇でAND（アンドロスタジエノン）が増加→女性のコルチゾール上昇×性的覚醒（UC Berkeley 2007）。',hormones:['テストステロン','コルチゾール']},
+    {sense:'👔',sc:'FORMA',col:'var(--forma)',text:'夜の視覚設計完全版：暗い場所×キャンドル光×光沢ブラック×肌露出（Vネック）×良質素材。瞳孔拡大相互効果×1/fゆらぎ×触覚予測が同時発動。',hormones:['ドーパミン','ノルアドレナリン']},
+    {sense:'🎵',sc:'SONOS',col:'var(--sonos)',text:'囁き声（耳介CT繊維×ASMR）×呼吸同期（迷走神経×オキシトシン最大化）×感情の言語化×名前を呼ぶ。静寂×音のコントラストで囁き声が最大の聴覚インパクト。',hormones:['オキシトシン','エンドルフィン']},
+    {sense:'🤲',sc:'HAPTOS',col:'var(--haptos)',text:'外周→中心のCT繊維刺激設計（背中→腰→太腿→外陰部）。秒速3〜5cm×体温×軽い圧力が外陰部CT繊維（全身最高密度）を最大刺激。オキシトシン正のフィードバックループ発動。',hormones:['オキシトシン','バソプレシン','エンドルフィン']},
+    {sense:'👅',sc:'GEUSTO',col:'var(--geusto)',text:'キスの深化（テストステロン転移×呼吸同期）→行為→20秒ハグ（Grewen研究）→眠り（海馬固定化）→翌朝の共食（全ホルモン強化）。五感統合フローの完成形。',hormones:['オキシトシン','バソプレシン','エンドルフィン','ドーパミン']},
+  ]},
+  {num:5,color:'var(--geusto)',title:'Phase 5 — 絆の永続化',sub:'バソプレシン×プルースト効果のシグネチャー完成',rows:[
+    {sense:'🧴',sc:'EIDOS',col:'var(--eidos)',text:'シグネチャーセントの永続化。会うたびに「この香り＝楽しかった全ての記憶」が自動再起動されるオキシトシン条件付けシステムが完成。',hormones:['オキシトシン','バソプレシン']},
+    {sense:'👔',sc:'FORMA',col:'var(--forma)',text:'シグネチャースタイルの確立。スタイルを見るたびにバソプレシンが「この人の視覚的錨」として反応。ハロー効果が全ての社会的評価を底上げし続ける。',hormones:['オキシトシン']},
+    {sense:'🎵',sc:'SONOS',col:'var(--sonos)',text:'シグネチャーボイスの確立。声を聞くたびにオキシトシン+バソプレシンが再起動。聴覚記憶が視覚記憶より感情と強く結びつくため「声が忘れられない」現象が続く。',hormones:['オキシトシン','バソプレシン']},
+    {sense:'🤲',sc:'HAPTOS',col:'var(--haptos)',text:'継続的なスキンシップでオキシトシン受容体増感を維持。「この人に触れると安心する」という条件付けがバソプレシン絆と融合しペアボンドが永続化される。',hormones:['オキシトシン','バソプレシン']},
+    {sense:'👅',sc:'GEUSTO',col:'var(--geusto)',text:'「好きな人の香り・味・感触が好き」という現象の完全な神経生物学的正体。MHC×オキシトシン×バソプレシン×プルースト効果が統合された「唯一無二の絆」の完成。',hormones:['オキシトシン','バソプレシン','エンドルフィン']},
+  ]},
+];
+
+function renderPhases(){
+  const el=document.getElementById('phaseCards');
+  el.innerHTML=PHASES.map((p,pi)=>`
+    <div class="phase-card">
+      <div class="phase-head" onclick="togglePhase(${pi})">
+        <div class="phase-num" style="background:${p.color}">${p.num}</div>
+        <div style="flex:1"><div class="phase-title">${p.title}</div><div class="phase-sub">${p.sub}</div></div>
+        <span style="color:var(--txt3);font-size:1.1rem;transition:transform .2s" id="phArr${pi}">›</span>
+      </div>
+      <div class="phase-body" id="phBody${pi}">
+        ${p.rows.map(r=>`
+          <div class="sense-row">
+            <div class="sense-tag" style="background:${r.col}20;color:${r.col};border:1px solid ${r.col}30">${r.sense} ${r.sc}</div>
+            <div>
+              <div class="sense-detail">${r.text}</div>
+              <div class="hormone-bar">${r.hormones.map(h=>`<span class="h-tag">${h}</span>`).join('')}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function togglePhase(i){
+  const body=document.getElementById(`phBody${i}`);
+  const arr=document.getElementById(`phArr${i}`);
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  arr.style.transform=isOpen?'':'rotate(90deg)';
+}
+
+/* ════ LIBRARY DATA ════ */
+const LIB_ITEMS=[
+  // EIDOS
+  {sense:'eidos',emoji:'🫐',brand:'BVLGARI',name:'Pour Homme EDT',type:'ウッディ・フローラル',desc:'ダージリンティーのセロトニン効果で初対面の扁桃体ジャッジを最速クリア。信頼感×清潔感の完璧な組み合わせ。',tags:['初対面','信頼感','清潔感','デイリー']},
+  {sense:'eidos',emoji:'💧',brand:'ARMANI',name:'Acqua di Gio',type:'アクア・フレッシュ',desc:'世界最売れアクア香水。地中海の清潔感で扁桃体の「健康・誠実・安全」判定を最速で完了させる。',tags:['初対面','夏','清潔感']},
+  {sense:'eidos',emoji:'🌿',brand:'DIOR',name:'Sauvage EDP',type:'アロマティック',desc:'ベルガモット×ラベンダー×アンブロキサンの三重構造。世界最売れ。清潔感+安心感+性的誘引を同時実現。',tags:['万能','アンブロキサン','全シーン']},
+  {sense:'eidos',emoji:'🍦',brand:'JEROBOAM',name:'Insulo',type:'オリエンタル・バニラ',desc:'バニラ×ジャスミン。テストステロン促進×オキシトシン誘引。告白前の最終兵器。',tags:['夜','告白','シグネチャー','秋冬']},
+  {sense:'eidos',emoji:'🟠',brand:'JEROBOAM',name:'Gozo',type:'オリエンタル・フローラル',desc:'アンブロキサン×サフラン。コンプリメント数最高峰。体温上昇で夜に最大効果。AND（アンドロスタジエノン）相乗。',tags:['夜','アンブロキサン','秋冬','夜の嗅覚']},
+  {sense:'eidos',emoji:'🪵',brand:'LE LABO',name:'Santal 33',type:'ウッディ・レザー',desc:'現代最大のカルト香水。既視感型ドーパミン。感度の高い女性への最強シグナル。サンダルウッド×セロトニン。',tags:['知的系','秋冬','シグネチャー']},
+  {sense:'eidos',emoji:'💎',brand:'MFK',name:'Baccarat Rouge 540',type:'フローラル・アンバー',desc:'世界最高コンプリメント数。サフラン×アンバーグリス。全シーン対応の唯一無二の存在感。',tags:['全シーン','特別な夜','万能']},
+  // FORMA
+  {sense:'forma',emoji:'💙',brand:'スタイル',name:'ネイビースーツスタイル',type:'フォーマル',desc:'初対面最強。ネイビーのセロトニン信頼×スーツの権威感×鏡像ニューロン活性化。全評価最高峰。',tags:['初対面','信頼感','フォーマル']},
+  {sense:'forma',emoji:'🖤',brand:'スタイル',name:'オールブラックスタイル',type:'カジュアル高感度',desc:'ドーパミン型権威×謎×コルチゾール上昇。夜の光沢反射で「別人のような色気」。瞳孔拡大相互効果。',tags:['夜','色気','夜の視覚']},
+  {sense:'forma',emoji:'🤎',brand:'スタイル',name:'キャメルコート',type:'アウター',desc:'オキシトシン包容力×保護者シグナル。秋冬女性ウケ1位。長期的パートナー感最高値。',tags:['秋冬','包容力','絆']},
+  {sense:'forma',emoji:'❤️',brand:'スタイル',name:'バーガンディニット',type:'カジュアル',desc:'Elliot 2010研究：赤系で魅力度有意上昇。大人の官能性×ノルアドレナリン刺激。',tags:['秋冬','色気','2回目以降']},
+  // SONOS
+  {sense:'sonos',emoji:'🔊',brand:'テクニック',name:'低音ボイス戦略',type:'声の使い方',desc:'テストステロンシグナル×蝸牛有毛細胞最大反応。Journal of Evolutionary Biology 2013実証。全シーン通用の基盤技術。',tags:['全シーン','基盤','信頼感']},
+  {sense:'sonos',emoji:'💬',brand:'テクニック',name:'36の質問プロトコル',type:'話し方',desc:'Aron 1997：段階的自己開示で45分で親密感形成。オキシトシン→バソプレシン連鎖分泌。傾聴が鍵。',tags:['2回目以降','絆','オキシトシン']},
+  {sense:'sonos',emoji:'🌬',brand:'テクニック',name:'囁き声×ASMR',type:'夜の聴覚',desc:'耳介CT繊維直接刺激×ASMR快感×迷走神経→オキシトシン最大化。三感統合聴覚の最強形態。',tags:['夜','CT繊維','オキシトシン']},
+  {sense:'sonos',emoji:'📛',brand:'テクニック',name:'名前を呼ぶ戦略',type:'傾聴',desc:'N200ニューラル反応。名前呼びが単一言語行動として最もオキシトシン分泌を促進。別れ際+名前=記憶3倍。',tags:['全シーン','オキシトシン','記憶']},
+  // HAPTOS
+  {sense:'haptos',emoji:'📏',brand:'プロトコル',name:'個人距離への移行',type:'プロクセミクス',desc:'Hallの4距離帯。段階的距離縮小が扁桃体に「安全」を学習させオキシトシン系を準備状態にする。',tags:['初対面','扁桃体','段階的']},
+  {sense:'haptos',emoji:'🤲',brand:'プロトコル',name:'秒速5cmタッチ',type:'タッチ',desc:'McGlone×Löken 2009 Nature Neuroscience。CT繊維最適速度でオキシトシン最大分泌。「ゆっくり優しく」が科学的最強。',tags:['スキンシップ','CT繊維','オキシトシン']},
+  {sense:'haptos',emoji:'🌙',brand:'プロトコル',name:'別れ際ハグ20秒',type:'状況別',desc:'Grewen 2005：20秒以上でオキシトシン有意増加+血圧低下。四感が同時統合される最高の統合体験。',tags:['別れ際','絆','四感統合']},
+  {sense:'haptos',emoji:'🤝',brand:'プロトコル',name:'握手プロトコル',type:'初対面',desc:'Chaplin 2000：握手の強さが信頼感・誠実さと相関。温かい手+適切強さ+視線が初対面最強の触覚的第一印象。',tags:['初対面','信頼感','CT繊維']},
+  // GEUSTO
+  {sense:'geusto',emoji:'🍽',brand:'プロトコル',name:'初デート食事選び',type:'食×デート',desc:'Dunbar 2017：共食頻度が絆の強さと最も相関。暗い照明×共有料理×ホットドリンク×辛味で最強の食の環境設計。',tags:['初対面','共食','オキシトシン']},
+  {sense:'geusto',emoji:'💋',brand:'プロトコル',name:'ファーストキス',type:'キス',desc:'5種ホルモン同時分泌（オキシトシン×ドーパミン×ノルアドレナリン×エンドルフィン×テストステロン転移）×MHC相性評価。',tags:['告白','ホルモン','記憶']},
+  {sense:'geusto',emoji:'🦪',brand:'プロトコル',name:'テストステロン食生活',type:'ホルモン管理',desc:'牡蠣×亜鉛（Prasad 1996）×睡眠7時間（Leproult 2011）。テストステロン維持が全ての恋愛的魅力の基盤。',tags:['日常','テストステロン','基盤']},
+];
+
+const SENSE_LABELS={eidos:{label:'EIDOS 嗅覚',color:'var(--eidos)'},forma:{label:'FORMA 視覚',color:'var(--forma)'},sonos:{label:'SONOS 聴覚',color:'var(--sonos)'},haptos:{label:'HAPTOS 触覚',color:'var(--haptos)'},geusto:{label:'GEUSTO 味覚',color:'var(--geusto)'}};
+let curSenseFilter='all';
+
+function initLibrary(){
+  const filter=document.getElementById('senseFilter');
+  const btns=['all','eidos','forma','sonos','haptos','geusto'].map((s,i)=>{
+    const label=s==='all'?'すべて':SENSE_LABELS[s].label;
+    return `<button class="sf-btn${s==='all'?' on':''}" onclick="filterLib('${s}',this)" style="${s!=='all'?`color:${SENSE_LABELS[s].color};border-color:${SENSE_LABELS[s].color}30`:''}">${label}</button>`;
+  }).join('');
+  filter.innerHTML=btns;
+  renderLib('all');
+}
+
+function filterLib(sense,btn){
+  curSenseFilter=sense;
+  document.querySelectorAll('.sf-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderLib(sense);
+}
+
+function renderLib(sense){
+  const items=sense==='all'?LIB_ITEMS:LIB_ITEMS.filter(i=>i.sense===sense);
+  const html=items.map((item,idx)=>{
+    const sl=SENSE_LABELS[item.sense];
+    return `<div class="lc" id="lc${idx}">
+      <div class="lc-top" onclick="toggleLC(${idx})">
+        <span class="lc-emoji">${item.emoji}</span>
+        <div style="flex:1">
+          <div class="lc-brand">${item.brand}</div>
+          <div class="lc-name">${item.name}</div>
+          <div class="lc-type">${item.type}</div>
+        </div>
+        <div class="lc-sense" style="background:${sl.color}22;color:${sl.color};border:1px solid ${sl.color}30">${sl.label.split(' ')[0]}</div>
+      </div>
+      <div class="lc-body">
+        <div class="lc-desc">${item.desc}</div>
+        <div class="lc-tags">${item.tags.map(t=>`<span class="lc-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('libGrid').innerHTML=html;
+}
+
+function toggleLC(idx){document.getElementById(`lc${idx}`).classList.toggle('open');}
+
+/* ════ DECKS ════ */
+const DECKS={
+  psych:[
+    {tag:'❤️ 恋愛心理 #1',q:'愛着理論（Bowlby / Ainsworth）が示す「全ての恋愛行動の根っこ」とは？',a:'Bowlby（1969）の愛着理論で乳幼児期の養育者との関係が形成する「内的作業モデル（IWM）」が成人の恋愛パターンを決定することが示された。「人は安全基地を求める」という本能が恋愛の全行動の根底にある。Hazan & Shaver（1987）が成人恋愛への応用を確立。安全型（55〜60%）・不安型（20%）・回避型（25%）・混乱型（5〜10%）の4スタイルで恋愛行動が根本的に異なる。',src:'BOWLBY AINSWORTH HAZAN SHAVER',frags:['4段階スキンシップ設計','アクティブリスニング完全版']},
+    {tag:'❤️ 恋愛心理 #2',q:'回避型愛着スタイルへの「五感統合戦略」での最適アプローチは？',a:'回避型は「自立している・感情的な近さが不快」という防衛的な内的モデルを持つ。急な距離縮小や感情的な強要が逃避反応を引き起こす。最適戦略：①プロクセミクスの段階的接近（急がない）②自然な共食（GEUSTO）で圧力のない親密感③傾聴（SONOS）で感情を押しつけない④シグネチャーセント（EIDOS）の反復で「この人は安全」という扁桃体の学習を時間をかけて積み上げる。',src:'AVOIDANT ATTACHMENT STRATEGY',frags:['個人距離への自然な移行','アクティブリスニング完全版']},
+    {tag:'❤️ 恋愛心理 #3',q:'単純接触効果（Zajonc 1968）が「会うほど好きになる」仕組みの神経科学的根拠は？',a:'反復接触が①扁桃体の「未知→安全」評価の累積（不安感の低下）②オキシトシン受容体の増感（接触のたびに分泌感受性が高まる）③海馬への「この人との楽しい記憶」の蓄積という三段階のオキシトシン蓄積ループを作る。シグネチャーセント（EIDOS）×シグネチャースタイル（FORMA）×シグネチャーボイス（SONOS）の反復が「五感版の単純接触効果」として最強の好意形成システムを作る。',src:'ZAJONC 1968 MERE EXPOSURE',frags:['低音ボイス戦略','Insulo']},
+    {tag:'❤️ 恋愛心理 #4',q:'類似性の法則（Byrne 1971）とミラーリングが深く関係する理由は？',a:'知覚される類似性（価値観・態度・話し方・リズムが似ている）が好意度・信頼感・関係満足度を高める（Berscheid & Walster 1969）。ミラーリング（SONOS）が有効な深層理由：相手の言葉・リズム・感情トーンを反映することで「この人は私の感覚に近い」という知覚的類似性を意図的に作り出す。ミラーニューロンが「同族認識」を発動させオキシトシン分泌が起きる。「似ている→安全→好き」という扁桃体の評価ルートの活用。',src:'BYRNE 1971 SIMILARITY',frags:['ミラーリング×ラポール形成','アクティブリスニング完全版']},
+    {tag:'❤️ 恋愛心理 #5',q:'Gottman研究で「関係崩壊を最も強く予測する単一の行動」は何か？',a:'軽蔑（Contempt）——皮肉・嘲笑・目を回す・侮辱という行動。批判（行動への不満）とは異なり相手の人間としての価値を根本的に否定するメッセージ。扁桃体が「根本的な拒絶」として処理し交感神経系が「戦うか逃げるか」反応を起こす。Gottmanはこの行動が現れた時点で関係崩壊を94%の精度で予測できることを示した。逆に「感謝・笑い・触れ合い・共感」のポジティブ比率を5:1以上に保つことが長期関係の最重要条件。',src:'GOTTMAN CONTEMPT',frags:['アクティブリスニング完全版','名前を呼ぶ戦略（ネーミング）']},
+    {tag:'❤️ 恋愛心理 #6',q:'投資モデル（Rusbult 1980）の3軸とは何か？五感統合との関係は？',a:'コミットメント（継続意思）＝①満足度（ニーズ充足度）×②投資量（費やした時間・感情・記憶の量と質）×③代替手段の質の低さ（他の選択肢の魅力度）。五感統合体験（五感全てが揃った「一生忘れられない夜の記憶」）は最高品質の「投資量」として機能し相手のコミットメントを自然に高める。「この人との体験は他の誰とも代替できない」という感覚がバソプレシン絆形成と組み合わさってペアボンドを強化する。',src:'RUSBULT 1980 INVESTMENT',frags:['別れ際ハグ20秒','ファーストキス']},
+    {tag:'❤️ 恋愛心理 #7',q:'Gottmanの「修復の試み（Repair Attempt）」とは何か？',a:'関係の緊張・対立が生じた時にネガティブなサイクルを止めるための言動。ユーモア（笑いに誘う）・謝罪（「私が間違っていた」）・スキンシップ（手に触れる・抱擁）・共感的な言葉（「あなたの気持ちわかる」）が代表例。成功した修復の試みが幸福なカップルと不幸なカップルの最大の違い。HAPTOSの「20秒ハグ」×SONOSの「感情ラベリング」が最強の修復ツールとして機能する解剖学的・神経科学的根拠がある。',src:'GOTTMAN REPAIR ATTEMPT',frags:['別れ際ハグ20秒','アクティブリスニング完全版']},
+    {tag:'❤️ 恋愛心理 #8',q:'不安型愛着スタイルへの五感統合戦略の最適アプローチは？',a:'不安型は「相手が離れるかもしれない」という過剰な不安と「もっと近くにいてほしい」という強い欲求を持つ。最適戦略：①シグネチャーの一貫性（毎回同じ香り×声×スタイル）が「この人は変わらず存在する」という安心感を作る②定期的な接触頻度の維持（単純接触効果×オキシトシン蓄積）③名前を呼ぶ×傾聴×感情ラベリングで「ちゃんと見ている」を伝える。不安型は一貫性と安定した反復接触によって最もオキシトシン基盤の信頼関係が構築されやすい。',src:'ANXIOUS ATTACHMENT STRATEGY',frags:['名前を呼ぶ戦略（ネーミング）','アクティブリスニング完全版']},
+    {tag:'❤️ 恋愛心理 #9',q:'Buss（1989）の37文化研究が示す「女性が男性に求める最重要基準」と五感統合の対応は？',a:'Bussの10,047名調査で女性が普遍的に求める基準：①資源調達能力（収入・地位・野心）②誠実さ・信頼性③知性・問題解決能力④身体的健康・清潔感⑤情緒的安定性⑥保護能力。五感統合との対応：FORMA（スーツ・シルエット）→資源+保護シグナル、SONOS（低い声・知的な話し方）→知性+誠実+情緒安定シグナル、EIDOS（清潔感・AND）→健康な遺伝子シグナル、HAPTOS（段階的・穏やか）→信頼性シグナル。',src:'BUSS 1989 MATE SELECTION',frags:['低音ボイス戦略','ネイビースーツスタイル']},
+    {tag:'❤️ 恋愛心理 #10',q:'社会浸透理論（Altman & Taylor 1973）のタマネギモデルと36の質問の関係は？',a:'自己開示がタマネギの皮を剥くように表層（誰にでも話せる趣味・仕事）→中層（価値観・感情・意見）→核心（恐れ・傷・最深の夢）と段階的に深化するのが社会浸透理論。Aron（1997）の36の質問がLevel1（浅い）→Level2（中程度）→Level3（深い）という段階設計になっているのはこの理論の直接応用。各段階で適切な五感刺激（表層→SONOS×ユーモア、中層→HAPTOS×タッチ、核心→GEUSTO×キス）を加えることでオキシトシン受容体増感が促進され次の層への移行が加速する。',src:'ALTMAN TAYLOR 1973',frags:['36の質問プロトコル','アクティブリスニング完全版']},
+    {tag:'❤️ 恋愛心理 #11',q:'自己決定理論（Deci & Ryan 1985）の3欲求と五感統合の対応は？',a:'基本的心理欲求3軸：①自律性（自分で選んでいる感覚）→HAPTOS（押しつけない段階的距離縮小）×SONOS（傾聴・相手が話す80%）②有能感（できている・認められている感覚）→SONOS（ユーモアを笑ってもらえる・話が面白いと感じられる）×GEUSTO（美食体験の共有）③関係性（つながっている感覚）→HAPTOS（CT繊維×タッチ）×SONOS（名前呼び×感情ラベリング）×全感覚統合。この3欲求を満たす相手への「好き」が最も深く・持続する内発的な恋愛感情になる。',src:'DECI RYAN 1985 SDT',frags:['アクティブリスニング完全版','4段階スキンシップ設計']},
+    {tag:'❤️ 恋愛心理 #12',q:'不確実性低減理論（Berger & Calabrese 1975）と「謎めいた魅力」の心理学的根拠は？',a:'初対面の他者への不確実性（この人はどんな人か）を低減しようとする動機が情報収集行動（会話・観察・自己開示）を促進する。しかし適度な不確実性が残る時にドーパミン的な「もっと知りたい・また会いたい」という引き付け力が最大化する（予測誤差報酬機構）。「全てを見せない」「少し謎めいている」ことが恋愛初期の最大の引き付け要因。EIDOS（Gozo・Ambra等の複雑な香水）×FORMA（オールブラックの謎めいた存在感）×SONOS（沈黙の力）が不確実性の最適レベルを作る。',src:'BERGER CALABRESE 1975',frags:['沈黙・間（ポーズ）の戦略','Gozo']},
+    {tag:'❤️ 恋愛心理 #13',q:'Buss（1992）の嫉妬研究が示す男女の引き金の根本的な違いと進化的根拠は？',a:'男性：性的不貞（「他の男性と肉体関係を持った」）への生理的反応が最も強い。進化的根拠：父性不確実性——自分の遺伝子ではない子に投資するリスク。女性：感情的不貞（「他の女性と深く愛し合っている」）への反応が最も強い。進化的根拠：資源喪失リスク——パートナーの感情的・経済的資源が他者に向かうことで自分と子どもへの投資が失われるリスク。Bussが37文化で同じパターンを確認し普遍性を実証。',src:'BUSS 1992 JEALOUSY',frags:['4段階スキンシップ設計','別れ際ハグ20秒']},
+    {tag:'❤️ 恋愛心理 #14',q:'バソプレシンが「所有欲・独占欲」の神経化学的基盤である根拠と五感統合との関係は？',a:'バソプレシン受容体遺伝子の多型（AVPR1a）が所有欲・一夫一妻的行動・パートナー保護行動の強さと相関することが動物・人間研究で示されている。オキシトシンが「今・ここでの親密感」を作るのに対してバソプレシンは「この特定の相手への独占的絆感情」を形成する。五感統合（特にGEUSTO：キス・行為・20秒ハグ）がバソプレシンを最大分泌させることで「この人しかいない・この人を守りたい」という健全な所有感情が形成される。',src:'VASOPRESSIN OWNERSHIP',frags:['ファーストキスプロトコル','別れ際ハグ20秒']},
+  ],
+  integration:[
+    {tag:'🧠 統合科学 #1',q:'多感覚統合の「超加算的効果（superadditivity）」とは何か？',a:'複数の感覚が同時に処理される時、各感覚の線形的な合計を超えた効果が生じる現象（Stein & Meredith 1993 / Calvert et al. fMRI研究）。上丘と大脳皮質の多感覚ニューロンが同時活性化し記憶強度・感情強度・ホルモン分泌量が指数関数的に増大する。1感覚（基準1.0）→2感覚同時（×2〜3）→3感覚同時（×5〜8）→五感統合（指数関数的）。',src:'STEIN MEREDITH 1993',frags:['低音ボイス戦略','秒速5cmタッチ']},
+    {tag:'🧠 統合科学 #2',q:'五感統合が「恋愛の完全自動化システム」を形成するメカニズムは？',a:'各感覚のシグネチャー（香り・スタイル・声・タッチ・キス×食）が繰り返し同時に体験されることで脳の多感覚ニューロンが「これらが同時に来る＝あなた」という条件付けを形成する。会うたびに全感覚チャネルでオキシトシン+バソプレシン+エンドルフィン+ドーパミンが同時発動する絆のシステムが相手の脳内に永続的に構築される。',src:'MULTISENSORY CONDITIONING',frags:['ファーストキス','別れ際ハグ20秒']},
+    {tag:'🧠 統合科学 #3',q:'排卵期に五感全ての感受性が同時に最大化するという現象の内分泌学的根拠は？',a:'排卵期（周期14日目前後）にエストロゲンピーク→①EIDOS：嗅覚上皮感受性最大②GEUSTO：コプリン効果最大（Cutler 1998）・腟粘膜感受性最大③SONOS：声変化→テストステロン上昇（Pipitone 2008）④HAPTOS：CT繊維感受性向上が全て重なる。五感統合戦略が最大効果を発揮する「最適タイミング」が生理周期によって自然に決定される。',src:'OVULATION ALL SENSES',frags:['Gozo','囁き声×ASMR']},
+    {tag:'🧠 統合科学 #4',q:'プルースト効果が「五感統合」で最強になる理由は？',a:'プルースト効果（香りが感情記憶を再生する現象）は嗅覚が視床を経由せず扁桃体に直接届く特性による。五感統合ではこの嗅覚経路に加えて視覚（海馬との直接接続）×聴覚（扁桃体への高速経路）×触覚（島皮質×オキシトシン）×味覚（OFC×報酬回路）の5経路が全て「その人との記憶」に収束する。単一感覚のプルースト効果の指数関数的な増強版が五感統合によって実現する。',src:'PROUST MULTISENSORY',frags:['Insulo','別れ際ハグ20秒']},
+    {tag:'🧠 統合科学 #5',q:'「オキシトシン雪だるま効果」とは何か？五感統合への応用は？',a:'オキシトシンの受容体増感効果（分泌されるたびに感受性が高まる）により各感覚からの刺激が累積的にオキシトシン分泌量を増大させる現象。食事→キス→タッチという流れで各段階のオキシトシンが次の段階の感受性を高め「雪だるま式」に増幅する。五感統合フロー（Phase 1→5）全体がこの雪だるま効果の最大形態として設計されている。',src:'OXYTOCIN SNOWBALL',frags:['秒速5cmタッチ','ファーストキス']},
+    {tag:'🧠 統合科学 #6（解剖）',q:'五感の解剖学的経路が「迷走神経・扁桃体・島皮質の三点」に収束する根拠は？',a:'EIDOS（嗅球→扁桃体直接）×SONOS（耳介CT繊維→迷走神経耳介枝→脳幹→視床下部）×HAPTOS（皮膚CT繊維→脊髄→脳幹→島皮質→迷走神経系）×GEUSTO（舌根→迷走神経上喉頭神経→脳幹→視床下部）の4つの感覚経路が全て迷走神経（副交感神経の75%担当×オキシトシン産生ニューロン直接入力）・扁桃体（感情的評価の中継点）・島皮質（感情・共感・身体感覚の統合中枢）に収束する。五感統合が「一体として体験される」完全な解剖学的根拠。',src:'ANATOMY CONVERGENCE',frags:['別れ際ハグ20秒','ファーストキス']},
+    {tag:'🧠 統合科学 #7（解剖）',q:'上丘（Superior Colliculus）の多感覚ニューロンが五感統合の「超加算的効果」を生む解剖学的メカニズムは？',a:'中脳背側の上丘に視覚・聴覚・体性感覚情報を同時に受ける多感覚ニューロンが密集する（Stein & Meredith 1993）。複数の感覚が「同時・同空間」に到達した時のみ単純な加算（1+1=2）を超えた超加算的な発火（1+1≫2）が起きる。これがCalvert et al. fMRI研究で確認された「五感同時体験が1感覚の何倍もの記憶強度を持つ」現象の神経解剖学的実体。大脳皮質の連合野（PTO領域）がさらにこの統合を強化する。',src:'SUPERIOR COLLICULUS ANATOMY',frags:['別れ際ハグ20秒']},
+    {tag:'🧠 統合科学 #8（解剖）',q:'「恋愛脳」を構成する6つの解剖学的構造とその役割は？',a:'①扁桃体：五感の感情的評価・0.05秒の判定装置②海馬：恋愛記憶の永久固定化（オキシトシン状態で最大強化）③視床下部（室傍核・視索上核）：オキシトシン・バソプレシンの産生制御塔④側坐核：ドーパミン報酬の中枢（「また会いたい」欲求の実体）⑤島皮質：五感統合の最終センター（SONOS×HAPTOS×GEUSTOの収束点）⑥腹側被蓋野（VTA）：恋愛の「エンジン」ドーパミン産生→側坐核へ投射（Helen Fisher 2005 fMRI研究）。この6構造が連動することで「恋愛」という複合体験が生成される。',src:'LOVE BRAIN ANATOMY',frags:['ファーストキス','別れ際ハグ20秒']},
+  ],
+  scenario:[
+    {tag:'📅 シナリオ #1',q:'Phase 1（初対面）で五感全てを「セロトニン系」に統一すべき理由は？',a:'扁桃体の「安全判定」をクリアするためには全感覚チャネルで「安全・清潔・信頼できる」というシグナルを一貫して送る必要がある。認知的不協和（感覚間の矛盾）が発生すると違和感→警戒反応が起きる。EIDOS（シトラス/アクア）×FORMA（清潔感スタイル）×SONOS（低く温かい声）×HAPTOS（握手のみ）×GEUSTO（共食）の全てがセロトニン系で統一されている。',src:'PHASE1 SEROTONIN',frags:['Acqua di Gio','ネイビースーツスタイル']},
+    {tag:'📅 シナリオ #2',q:'Phase 2（2〜5回目）でシグネチャーセントとシグネチャースタイルを確立すべき神経科学的根拠は？',a:'プルースト効果の条件付けには「同じ刺激の反復」が必要。2〜3回目から毎回同じ香りと同じスタイルの核心を繰り返すことで海馬が「この感覚群＝この人＝楽しかった記憶」という多感覚的な条件付けを形成する。この段階からバソプレシン系が「この人への絆」を蓄積し始める内分泌学的なタイミング。',src:'PHASE2 SIGNATURE',frags:['Insulo','Santal 33']},
+    {tag:'📅 シナリオ #3',q:'Phase 3（告白）で「直前0.5秒の沈黙」を全感覚で実践すべき理由は？',a:'SONOS（告白の直前に沈黙）×FORMA（目を合わせてゆっくり近づく視覚的「間」）×HAPTOS（距離を縮めながら一瞬止まる）×GEUSTO（キスの直前のポーズ）が全て同じ「ドーパミン的予測の最大化」という原理に基づいている。各感覚チャネルで同時に予測報酬機構が起動し「次に何が来るか」という期待感が全感覚統合として最大化される。',src:'PHASE3 PAUSE',frags:['告白プロトコル','ファーストキス']},
+    {tag:'📅 シナリオ #4',q:'Phase 4（夜の統合）で「食事→キス→タッチ→抱擁→眠り→翌朝共食」という順序が最適な神経内分泌学的理由は？',a:'①食事のドーパミン+共食オキシトシン蓄積→②キスの5種ホルモン同時分泌+MHC評価→③CT繊維刺激の段階的オキシトシン累積（受容体増感効果）→④20秒ハグのバソプレシン絆形成→⑤睡眠中の海馬固定化（記憶の永続化）→⑥翌朝テストステロンピーク+共食オキシトシンで全ホルモン強化。各段階で前段階のオキシトシン受容体増感が後段階の効果を倍増させる完璧な設計。',src:'PHASE4 CASCADE',frags:['別れ際ハグ20秒','テストステロン食生活']},
+    {tag:'📅 シナリオ #5',q:'Phase 5（絆の永続化）で「五感シグネチャーの維持」がバソプレシン絆を永続させる根拠は？',a:'バソプレシン（絆維持ホルモン）は「見慣れたシグナル×繰り返し体験」によって持続的に分泌される。五感シグネチャー（同じ香り・同じスタイル・同じ声のトーン・同じタッチのリズム）が繰り返されるたびにバソプレシン系が「この人への独占的絆感情」を再強化する。外的刺激への適応化（慣れ）を防ぐのはシグネチャーを「少しずつ進化させながら核心を保つ」という戦略。',src:'PHASE5 VASOPRESSIN',frags:['Insulo','別れ際ハグ20秒']},
+    {tag:'📅 長期関係 #1',q:'「マンネリの神経科学」とその解決策は？',a:'ドーパミン系は新規性に反応し慣れに適応化する（予測誤差報酬機構）。同じ刺激の反復でドーパミン放出量が低下——これがマンネリの神経科学的正体。一方オキシトシン・バソプレシン系は反復接触で増感する（逆方向）。解決策：「二層設計」——ドーパミン系に新規性を与える（月1回の新体験・香水バリエーション・スタイル更新）を、オキシトシン系の維持（シグネチャーの核心・20秒ハグ・傾聴）と同時に実践する。',src:'MANNERI NEUROSCIENCE',frags:['Insulo','低音ボイス戦略']},
+    {tag:'📅 長期関係 #2',q:'「部分強化スケジュール」がシグネチャー進化戦略の神経科学的根拠になる理由は？',a:'脳の報酬系は完全予測可能（慣れ・ドーパミン低下）でも完全予測不可能（不安・コルチゾール上昇）でもなく「ある程度予測できるが少し予想外」という刺激で最大のドーパミンを放出する（部分強化スケジュール・ギャンブルの神経科学と同じ原理）。シグネチャーの核心（バソプレシン的な安定感）+バリエーション（ドーパミン的な新鮮さ）という設計がこの最適状態を実現する。「あの人っぽいけどまた新しい」という感覚の神経科学的設計。',src:'PARTIAL REINFORCEMENT',frags:['Gozo','オールブラックスタイル']},
+    {tag:'📅 長期関係 #3',q:'Gottmanの「黄金比5:1」を日常で維持する実践的プロトコルは？',a:'日次：「ありがとう」を具体的に伝える×笑顔で迎える×「今日どうだった？」を聞く。週次：スマホなしの2人の時間×相手の夢・目標を更新して聞く×20秒ハグの実施。月次：新しい共同体験×「最近あなたについて気づいたこと」を伝える×五感統合「特別な夜」の設計。避けるべき四騎士：批判→行動指摘に留める、軽蔑→絶対にしない（最大の崩壊因子）、防御→部分承認から始める、逃避→生理的洪水時は20分休憩ルールを採用。',src:'GOTTMAN DAILY PROTOCOL',frags:['アクティブリスニング完全版','別れ際ハグ20秒']},
+  ],
+  hormones:[
+    {tag:'💊 ホルモン統合 #1',q:'五感×ホルモン対応表の最も重要なポイントは？',a:'①EIDOS（嗅覚）：オキシトシン+ドーパミン—視床バイパスで0.03秒の最速経路。②FORMA（視覚）：ドーパミン+ノルアドレナリン—0.1秒の扁桃体判定。③SONOS（聴覚）：オキシトシン+エンドルフィン—囁き声が耳介CT繊維経由で迷走神経→視床下部を活性化。④HAPTOS（触覚）：オキシトシン+バソプレシン—CT繊維の直接オキシトシン産生経路。⑤GEUSTO（味覚）：全ホルモン最大値—キス5種同時分泌が統合の最終完成形。',src:'FIVE SENSES HORMONES',frags:['Gozo','秒速5cmタッチ']},
+    {tag:'💊 ホルモン統合 #2',q:'バソプレシンが「五感統合の最終目標ホルモン」である理由は？',a:'オキシトシンが「今・ここでの親密感」を作るのに対してバソプレシンは「この人への永続的な独占的絆感情（ペアボンド）」を形成する。射精後の男性で30分以内に最大値を迎え「この相手を独占したい・守りたい・傍にいたい」という感情が強くなる。五感シグネチャーの繰り返し体験がバソプレシン系を継続的に活性化させ絆を永続させる。',src:'VASOPRESSIN FINAL',frags:['別れ際ハグ20秒','ファーストキス']},
+    {tag:'💊 ホルモン統合 #3',q:'「プロラクチン管理」が五感統合戦略において重要な理由は？',a:'射精後の男性でプロラクチンが急増し眠気・不応期・感情的離脱が起きる。しかしキス・抱擁・囁き声・香りという五感スキンシップを継続するとプロラクチンは上昇せずオキシトシンのみが持続分泌される。「行為後の五感統合継続」がプロラクチンによる離脱を防ぎバソプレシン絆形成の最重要時間帯（30分以内）を活用する戦略。',src:'PROLACTIN MANAGEMENT',frags:['別れ際ハグ20秒']},
+    {tag:'💊 ホルモン統合 #4',q:'テストステロンが「五感全ての魅力的表現の基盤」である内分泌学的根拠は？',a:'テストステロンが①声の低さ（SONOS：声帯肥厚）②体の香り（EIDOS：アンドロステノール産生）③筋肉量・シルエット（FORMA：鏡像ニューロン評価）④スキンシップへの積極性（HAPTOS：性欲×親密行動）⑤性的接触（GEUSTO：テストステロン転移の源泉）の全てに影響する。テストステロン維持（睡眠×亜鉛×運動）が「五感統合の生物学的基盤」。',src:'TESTOSTERONE BASE',frags:['テストステロン食生活']},
+  ],
+  night:[
+    {tag:'🌙 夜の統合 #1',q:'「夜の五感統合」が昼間より強力な神経科学的・内分泌学的根拠は？',a:'①FORMA：暗い環境での瞳孔拡大（Hess 1975）相互効果②EIDOS：体温上昇によるアポクリン腺分泌増加（AND増加→女性コルチゾール上昇）③SONOS：静寂×囁き声のコントラスト→聴覚野への刺激強度最大化④HAPTOS：体温上昇→CT繊維感受性向上・アポクリン腺分泌増加⑤GEUSTO：口腔内温度上昇→TRPV1活性化・唾液テストステロン増加。全感覚が夜の環境で増強される。',src:'NIGHT ALL SENSES',frags:['Gozo','オールブラックスタイル']},
+    {tag:'🌙 夜の統合 #2',q:'キャンドル光が「五感統合の最適環境」を作る多次元的な根拠は？',a:'①FORMA：1800K色温度のブルーライトゼロ→副交感神経優位×α波増加×美化効果（1/fゆらぎ）②EIDOS：副交感神経優位→香りの受容感度向上（扁桃体防衛機制の緩和）③SONOS：静かな環境→囁き声のコントラスト最大化④HAPTOS：GABA系活性化（ロウの香り成分）→骨盤底筋弛緩→CT繊維感受性向上⑤GEUSTO：扁桃体抑制→食の判断緩和×味覚感度向上。キャンドル1本が五感全てを最適化する環境設計。',src:'CANDLELIGHT MULTI',frags:['キャメルコート','Insulo']},
+    {tag:'🌙 夜の統合 #3',q:'「食事→キス→タッチ→呼吸同期→20秒ハグ」という夜の五感フローが最強の記憶を作る理由は？',a:'各段階でオキシトシン受容体増感が起き次の段階の効果が倍増（雪だるま効果）。食事のGEUSTO×共食オキシトシン→キスの5種ホルモン最大値→タッチのCT繊維累積×HAPTOS→呼吸同期×SONOS迷走神経活性→20秒ハグでバソプレシン起動という完璧なホルモンカスケード。海馬に「全感覚統合の感情記憶」として永久保存されるCalvert研究の超加算的効果の最高形態。',src:'NIGHT FLOW COMPLETE',frags:['別れ際ハグ20秒','ファーストキス']},
+    {tag:'🌙 夜の統合 #4',q:'「翌朝の共食」が五感統合フローの「最終完成」である神経内分泌学的根拠は？',a:'①睡眠中の海馬固定化（前夜の全感覚記憶がNREM×REM睡眠で永続化）②朝のテストステロン一日最高値（GEUSTO×SONOS声変化の相乗効果）③Dunbar 2017共食のオキシトシン効果④「一緒に眠った→翌朝も一緒にいる」というバソプレシン絆の最強の確認体験⑤記憶の初回再生（想起がさらに記憶を強化）が全て重なる。五感統合フロー全体の「締め」として機能する。',src:'MORNING COMPLETION',frags:['テストステロン食生活','初デート食事選び']},
+  ],
+  checklist:[
+    {tag:'✅ チェックリスト #1',q:'初対面デート前の「五感完全チェックリスト」とは？',a:'【EIDOS】シャワー後に清潔感系香水1〜2プッシュ（ネイビー×アクア系）。【FORMA】清潔感最優先スタイル（シワなし・ジャストサイズ）。【SONOS】腹式呼吸で声を低く温かく準備。相手の名前を2回呼ぶ計画。【HAPTOS】手を温めてから握手の準備。90度座席を確保。【GEUSTO】共食デート場所を選択（暗め×暖かい×共有メニュー）。前日7時間以上睡眠（テストステロン維持）。',src:'CHECKLIST FIRST',frags:['Pour Homme EDT','ネイビースーツスタイル']},
+    {tag:'✅ チェックリスト #2',q:'「特別な夜」前の五感準備チェックリストとは？',a:'【EIDOS】清潔状態+アンブロキサン含有香水（Gozo/Insulo等）。【FORMA】光沢系ブラックまたは深色×良質素材×夜の環境設計（キャンドル確保）。【SONOS】囁き声練習×呼吸を合わせる意識×名前+感情の言語化準備。【HAPTOS】外周→中心のCT繊維刺激設計×20秒ハグの意識。【GEUSTO】翌朝の共食計画（テストステロン×Dunbar共食効果）。前日十分な睡眠（テストステロン最大化）。',src:'CHECKLIST SPECIAL',frags:['Gozo','オールブラックスタイル']},
+    {tag:'✅ チェックリスト #3',q:'日常でテストステロンを最高値に維持する「五感基盤チェックリスト」とは？',a:'①睡眠7〜9時間（テストステロン70〜75%が睡眠中産生）②亜鉛摂取（牡蠣・赤身肉・ナッツ）③ビタミンD（日光・魚類）④有酸素+筋力トレーニング⑤ストレス管理（コルチゾール抑制）⑥腹式呼吸の習慣化（声の低さ維持）⑦清潔維持（アンドロステノール状態の確保）。これら全てがEIDOS×SONOS×HAPTOSの全感覚的な魅力の生物学的基盤。',src:'TESTOSTERONE DAILY',frags:['テストステロン食生活']},
+  ],
+  research:[
+    {tag:'📚 研究総覧 #1',q:'五感統合戦略を支える最重要研究10本とその核心は？',a:'①Aron 1997（36の質問×オキシトシン）②Wedekind 1995（Tシャツ×MHC）③UC Berkeley 2007（AND×女性コルチゾール）④Cutler 1998（コプリン×男性テストステロン）⑤McGlone×Löken 2009（CT繊維×秒速5cm）⑥Grewen 2005（20秒ハグ×オキシトシン）⑦Elliot 2010（赤×性的魅力）⑧Dunbar 2017（共食×絆）⑨Komisaruk fMRI（オルガズム×30脳領域）⑩Leproult 2011（睡眠×テストステロン）',src:'TOP 10 RESEARCH',frags:['秒速5cmタッチ','ファーストキス']},
+    {tag:'📚 研究総覧 #2',q:'「記憶の多感覚強化効果」を示すCalvert et al.の研究内容は？',a:'Calvert et al.のfMRI研究で視覚×聴覚×嗅覚等の複数感覚が同時に処理される時、単独処理時の線形的合計を超えた「超加算的な記憶強度」が生じることが確認された。特に感情的に重要な体験（恋愛・快楽・危機）では多感覚統合が最も強く起きる。「一生忘れられない体験」が必ず複数の感覚を含んでいる理由の神経科学的根拠。',src:'CALVERT MULTISENSORY',frags:['別れ際ハグ20秒']},
+    {tag:'📚 研究総覧 #3',q:'ピーク・エンドの法則（Kahneman）の五感統合への応用は？',a:'人は体験のピーク（最も感情的な瞬間）とエンド（最後の印象）を記憶する。五感統合戦略においてピーク＝「五感全てが揃った最高の瞬間（告白・キス・親密な行為）」エンド＝「別れ際の20秒ハグ+名前+感謝（四感同時統合）」「翌朝の共食（全ホルモン強化）」として設計される。ピーク×エンドの両方で五感を最大に活用することで記憶強度が最大化される。',src:'KAHNEMAN PEAK END',frags:['別れ際ハグ20秒','初デート食事選び']},
+  ],
+};
+
+/* ════ FLASHCARD ENGINE ════ */
+let curDeck=[],cIdx=0;
+function loadDeck(name,btn){
+  curDeck=[...(DECKS[name]||[])];
+  cIdx=0;
+  document.querySelectorAll('.dt').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  document.getElementById('deckCnt').textContent=curDeck.length+'枚';
+  showCard();
+  updateDots();
+}
+function showCard(){
+  if(!curDeck.length)return;
+  const c=curDeck[cIdx];
+  document.getElementById('cfTag').textContent=c.tag;
+  document.getElementById('cfQ').textContent=c.q;
+  document.getElementById('cfA').textContent=c.a;
+  document.getElementById('cfSrc').textContent=c.src;
+  const fragEl=document.getElementById('cfFrags');
+  if(c.frags&&c.frags.length){
+    const chips=c.frags.map(f=>`<span class="cf-frag-chip">${f}</span>`).join('');
+    fragEl.innerHTML=`<div class="cf-frags-lbl">関連プロトコル・アイテム</div><div class="cf-frag-chips">${chips}</div>`;
+    fragEl.style.display='block';
+  }else{fragEl.style.display='none';}
+  document.getElementById('cardFront').classList.remove('hidden');
+  document.getElementById('cardBack').classList.add('hidden');
+  document.getElementById('flipBtn').textContent='答えを見る ✨';
+  document.getElementById('ctrlPg').textContent=(cIdx+1)+' / '+curDeck.length;
+  updateDots();
+}
+function flipCard(){
+  const front=document.getElementById('cardFront');
+  const back=document.getElementById('cardBack');
+  const btn=document.getElementById('flipBtn');
+  if(!front.classList.contains('hidden')){front.classList.add('hidden');back.classList.remove('hidden');btn.textContent='次のカードへ →';}
+  else nextCard();
+}
+function nextCard(){cIdx=Math.min(cIdx+1,curDeck.length-1);showCard();}
+function prevCard(){cIdx=Math.max(cIdx-1,0);showCard();}
+function updateDots(){
+  const dots=document.getElementById('dots');
+  const total=Math.min(curDeck.length,8);
+  dots.innerHTML=Array.from({length:total},(_,i)=>`<div class="dot${i===cIdx%total?' on':''}"></div>`).join('');
+}
+function initDecks(){
+  const tabs=document.getElementById('deckTabs');
+  const deckList=[
+    {key:'integration',label:'🧠 統合科学'},
+    {key:'scenario',label:'📅 シナリオ'},
+    {key:'hormones',label:'💊 ホルモン統合'},
+    {key:'night',label:'🌙 夜の統合'},
+    {key:'psych',label:'❤️ 恋愛心理学'},
+    {key:'checklist',label:'✅ チェックリスト'},
+    {key:'research',label:'📚 研究総覧'},
+  ];
+  tabs.innerHTML=deckList.map((d,i)=>`<button class="dt${i===0?' on':''}" onclick="loadDeck('${d.key}',this)">${d.label}</button>`).join('');
+  loadDeck('integration',tabs.querySelector('.dt'));
+}
+
+/* ════ QUIZ ════ */
+const QS=[
+  {q:'多感覚統合の「超加算的効果」が示す五感統合の記憶強度は？',opts:['単純に5倍になる','各感覚の合計を超えた指数関数的な増大（Calvert et al. fMRI研究）。五感同時体験は「一生忘れられない記憶」の神経科学的保証。','線形的に加算される'],ans:1,exp:'上丘と大脳皮質の多感覚ニューロンが同時活性化し1感覚（基準1.0）→2感覚（×2〜3）→3感覚（×5〜8）→五感（指数関数的）と記憶強度が増大する。これが五感統合戦略の最も重要な科学的根拠。',frags:['別れ際ハグ20秒']},
+  {q:'排卵期（周期14日目前後）に五感全ての感受性が同時に最大化する理由は？',opts:['気分が良いから','エストロゲンピークにより嗅覚感度最大（EIDOS）×コプリン効果最大（GEUSTO）×声変化×テストステロン上昇（SONOS）×CT繊維感受性向上（HAPTOS）が重なるから','ホルモンが増えるから'],ans:1,exp:'Cutler 1998（コプリン）×Pipitone 2008（声変化）×嗅覚上皮感受性の生理学的根拠が全てこのタイミングに集中する。五感統合戦略が最大効果を発揮するタイミングが生理周期によって決まる。',frags:['Gozo','囁き声×ASMR']},
+  {q:'「オキシトシン雪だるま効果」を最大化する五感統合フローの正しい順序は？',opts:['タッチ→香り→食事→キス→ハグ','食事（共食）→キス（5種ホルモン）→タッチ（CT繊維累積）→抱擁（バソプレシン起動）→睡眠（海馬固定化）→翌朝共食（全ホルモン強化）','キス→食事→ハグ'],ans:1,exp:'各段階でオキシトシン受容体増感が起き次の段階の効果が倍増する。食事のドーパミン×共食オキシトシン蓄積が最初のステップ。翌朝共食による記憶固定化の強化が最終完成形。',frags:['別れ際ハグ20秒','初デート食事選び']},
+  {q:'プロラクチン管理が「五感統合の夜の戦略」で重要な理由は？',opts:['眠くなるから','射精後のプロラクチン急増による感情的離脱を、キス×囁き声×抱擁×香りという五感スキンシップ継続で回避しバソプレシン絆形成の最重要時間帯（30分以内）を活用できるから','ホルモンのバランスのため'],ans:1,exp:'スキンシップ継続時はプロラクチンが上昇せずオキシトシンのみが持続分泌される。バソプレシンが射精後30分以内に最大値を迎える時間帯に五感統合継続が最も重要。',frags:['別れ際ハグ20秒']},
+  {q:'シグネチャーセント+シグネチャースタイル+シグネチャーボイスを確立すべき共通の神経科学的根拠は？',opts:['個性を出すため','各感覚のシグネチャーが繰り返されることでプルースト効果（香り版）・視覚版プルースト効果・聴覚記憶が全て「あなた＝楽しかった記憶」という条件付けを形成しバソプレシン絆を永続させるから','印象に残るため'],ans:1,exp:'多感覚プルースト効果。単独感覚の条件付けより五感全てのシグネチャーが同時に機能する時、バソプレシン×オキシトシンの絆形成が指数関数的に強化される。「恋愛の完全自動化システム」の核心。',frags:['Insulo','別れ際ハグ20秒']},
+  {q:'Kahneman「ピーク・エンドの法則」を五感統合で活用する方法は？',opts:['良い体験を増やす','ピーク（五感全てが揃った最高の瞬間：キス×告白×親密な行為）とエンド（別れ際の20秒ハグ+名前+感謝の四感統合）の両方で五感を最大活用することで記憶強度を最大化する','長く一緒にいる'],ans:1,exp:'記憶に残るのはピークとエンドのみ。五感統合戦略でピークとエンドを意図的に設計することで「一生忘れられない体験」を神経科学的に保証できる。',frags:['別れ際ハグ20秒','ファーストキス']},
+  {q:'テストステロンが「五感統合の生物学的基盤」である理由は？',opts:['男性ホルモンだから','テストステロンが声の低さ（SONOS）×体臭（EIDOS）×体型シルエット（FORMA）×スキンシップ積極性（HAPTOS）×テストステロン転移（GEUSTO）の全五感的魅力に影響するから','強さの指標だから'],ans:1,exp:'睡眠×亜鉛×運動によるテストステロン維持が五感統合戦略全体の生物学的基盤。Leproult 2011（睡眠7時間未満で10〜15%低下）×Prasad 1996（亜鉛欠乏で74%低下）が最重要研究。',frags:['テストステロン食生活']},
+  {q:'キャンドル光が「五感統合の最適環境」を作る多次元的な根拠の核心は？',opts:['ロマンティックだから','1800K色温度のブルーライトゼロ→副交感神経優位×α波増加（FORMA×SONOS×HAPTOS同時最適化）×1/fゆらぎが扁桃体防衛機制を解除し全感覚の受容感度を同時に向上させるから','暗いから'],ans:1,exp:'副交感神経優位がFORMA（美化）×EIDOS（嗅覚感度向上）×SONOS（囁き声コントラスト）×HAPTOS（骨盤底筋弛緩×CT繊維感受性）×GEUSTO（扁桃体抑制×味覚感度）の全感覚に同時に作用する。',frags:['キャメルコート','Insulo']},
+  {q:'「翌朝の共食」が五感統合フローの最終完成である内分泌学的根拠は？',opts:['一緒にいる時間が長いから','朝のテストステロン最高値×Dunbar共食オキシトシン×睡眠中の海馬固定化完了×記憶初回再生の強化が重なり、前夜の全感覚記憶を「また会いたい」という欲求として再活性化させるから','朝食が大事だから'],ans:1,exp:'睡眠中に固定化された五感統合の感情記憶が翌朝の共食という「新たな感情体験」によって再強化される。バソプレシン絆の確認+テストステロンピーク+オキシトシン共食効果の三重奏。',frags:['初デート食事選び','テストステロン食生活']},
+  {q:'五感統合が「恋愛の完全自動化システム」を形成した状態とはどういう意味か？',opts:['全てがうまくいく状態','各感覚のシグネチャーが条件付けとして脳に定着し会うたびに全感覚チャネルでオキシトシン+バソプレシン+エンドルフィン+ドーパミンが同時発動する絆のシステムが相手の脳内に永続的に構築された状態','自動的に恋愛できる状態'],ans:1,exp:'EIDOS（香り）×FORMA（スタイル）×SONOS（声）×HAPTOS（タッチ）×GEUSTO（キス×食）の五感全てが「あなた」という一点に収束した多感覚条件付けが完成した状態。これが人類最強の恋愛設計の完成形。',frags:['Insulo','別れ際ハグ20秒']},
+  // ── 追加10問 ──
+  {q:'愛着理論（Bowlby / Hazan & Shaver 1987）の4スタイルで「人口比が最も多い」スタイルは？',opts:['不安型（約20%）','安全型（55〜60%）— 幼少期に一貫した養育を受け「自分は愛される価値がある・他者は信頼できる」という安定した内的モデルを持つ','回避型（約25%）'],ans:1,exp:'安全型が全体の55〜60%を占める。五感統合戦略の全ての技術が最もスムーズに機能する相手でもある。回避型（25%）は急な距離縮小を避けゆっくりとした段階的アプローチが最適。不安型（20%）にはシグネチャーの一貫性が特に重要。',frags:['4段階スキンシップ設計','個人距離への自然な移行']},
+  {q:'「マンネリの神経科学」におけるドーパミン系とオキシトシン系の根本的な違いは？',opts:['どちらも慣れで低下する','ドーパミン系は新規性に反応し慣れで低下するが、オキシトシン系は反復接触で逆に増感（感受性が高まる）するため、長期関係では「二層設計（ドーパミン的新規性＋オキシトシン維持）」が神経科学的な最適解である','どちらも維持される'],ans:1,exp:'この逆方向の特性が長期関係の設計を複雑にする。シグネチャーの「核心（オキシトシン維持）＋バリエーション（ドーパミン新規性）」という二層設計が部分強化スケジュールとして機能し「予測可能な驚き」の最適状態を作る。',frags:['低音ボイス戦略','Gozo']},
+  {q:'Buss（1992）の嫉妬研究で「男性と女性で嫉妬の引き金が根本的に異なる」理由を進化心理学的に説明すると？',opts:['感情が違うから','男性：性的不貞（父性不確実性リスク）に最も強い生理的反応 / 女性：感情的不貞（資源喪失リスク）に最も強い反応。Trivers（1972）の親投資理論で女性の莫大な投資コストが感情的絆を持つ相手への資源集中を選好させることが進化的根拠','文化の違いから'],ans:1,exp:'Bussが37文化で同じパターンを確認し普遍性を実証。バソプレシン受容体遺伝子（AVPR1a）の多型が所有欲の強さと相関することも判明。五感統合によるバソプレシン絆形成が「嫉妬の激しさを愛着の深さに変換する」長期戦略の根拠。',frags:['別れ際ハグ20秒','ファーストキスプロトコル']},
+  {q:'Gottmanの研究で「関係崩壊を最も強く予測する単一の行動（94%の精度）」は何か？',opts:['批判（Criticism）— 行動への不満を人格攻撃にする','軽蔑（Contempt）— 皮肉・嘲笑・目を回す・侮辱という行動で相手の人間としての価値を根本的に否定する','逃避（Stonewalling）— 感情的シャットダウン'],ans:1,exp:'軽蔑は四騎士（批判・軽蔑・防衛・逃避）の中で唯一「人格の価値を否定する」メッセージであるため扁桃体が「根本的な拒絶」として処理する。黄金比5:1（ポジティブ:ネガティブ）の維持と修復の試み（ハグ・謝罪・ユーモア）が長期関係の最重要実践。',frags:['アクティブリスニング完全版','別れ際ハグ20秒']},
+  {q:'社会浸透理論（Altman & Taylor 1973）の「タマネギモデル」でAron（1997）の36の質問が設計されている理由は？',opts:['質問が36個だから','自己開示が表層→中層→核心という段階的な深化プロセスをたどるというタマネギモデルの原理に従い、36の質問がLevel1（浅い）→Level2（中程度）→Level3（深い）という3段階設計になっているから','友好的だから'],ans:1,exp:'核心層（恐れ・傷・最深の夢）に急に触れると防衛反応が起き関係が後退する。各段階で適切な五感刺激（表層→SONOS×ユーモア、中層→HAPTOS×タッチ、核心→GEUSTO×ファーストキス）を加えることでオキシトシン受容体増感が促進され次の層への移行が加速する。',frags:['36の質問プロトコル','アクティブリスニング完全版']},
+  {q:'V4野が「赤色を処理する際に扁桃体への出力が特に強い」ことがFORMAの色彩戦略の神経解剖学的根拠になる理由は？',opts:['赤が目立つから','色覚専用のV4野が赤色（波長620〜750nm）を処理する際に扁桃体・視床下部への出力が他の色より強い神経発火パターンを示す。Elliot（2010）の37文化研究でも赤が普遍的に性的魅力と相関し「赤＝性的魅力」が文化を超えた神経解剖学的反応であることが確認された','赤が好まれるから'],ans:1,exp:'Lマーカー（長波長・赤錐体）が活性化するとV4からの感情系への出力が強まる。進化的にも赤（血色・性的発情シグナル）への反応が霊長類に保存されている。ネイビー（セロトニン系信頼）×赤系（ノルアドレナリン系ときめき）を状況で使い分けることが最適。',frags:['バーガンディニット×スラックス','オールブラックスタイル']},
+  {q:'「声帯の反回神経が迷走神経の枝である」ことが恋愛戦略に与える最重要な意味は？',opts:['声帯の仕組みだから','副交感神経優位（安心・信頼・リラックス）→反回神経が声帯筋の過緊張を解除→低く安定した声が出るという直接的な連鎖がある。逆に緊張・不安・不信感→交感神経優位→声が上ずる・震える。「安心できる環境で声が自然と低くなる」の完全な神経解剖学的根拠','神経が繋がっているから'],ans:1,exp:'腹式呼吸→横隔膜→迷走神経反射的刺激→副交感神経優位→反回神経が声帯筋過緊張を解除→低く安定した声という完全なフローが存在する。SONOS×HAPTOS×EIDOSの全ての技術が最終的に「迷走神経と扁桃体の二点」に収束する五感統合の解剖学的証明。',frags:['低音ボイス戦略']},
+  {q:'Wedekind（1995）のTシャツ実験とMHC相性が「キスの相性」に関係する解剖学的根拠は？',opts:['匂いが好きだから','アポクリン腺分泌物にMHC関連ペプチドが含まれ嗅覚経路で無意識に評価されるが、キス中の口腔粘膜（舌下0.1〜0.3mmの超薄層）でも唾液中のMHC化学情報が吸収・評価される。「キスが合わない感覚」の5軸（MHC×テストステロン転移×TRPV1温度×機械受容器×後鼻腔嗅覚）同時評価の神経解剖学的正体','個人差だから'],ans:1,exp:'Hughes et al.（2007）で66%の女性が「キスが合わなかったために関係が終わった」と報告。本能的なキスへの反応がMHC相性という免疫遺伝学的情報を含む複合的な評価であることの証明。「本能的な感覚を信頼する」ことの最先端の科学的根拠。',frags:['ファーストキスプロトコル','MHC相性評価プロトコル']},
+  {q:'投資モデル（Rusbult 1980）の3軸「満足度×投資量×代替手段の質の低さ」と五感統合の最も直接的な関係は？',opts:['良い関係を作るため','五感統合による「一生忘れられない共有体験（特別な夜×旅行×誕生日等）」が最高品質の投資量として機能しコミットメントを高める。「この人との体験は他の誰とも代替できない」という感覚がバソプレシン絆形成と組み合わさってペアボンドを強化する','満足度が高いから'],ans:1,exp:'投資モデルの「投資量」に「感情的記憶の質と量」が含まれる点が鍵。海馬に保存された多感覚統合記憶（五感全てが揃った体験）が最高品質の投資量として機能し「この関係は特別だ」という認知を形成する。',frags:['別れ際ハグ20秒','旅行×非日常プロトコル']},
+  {q:'「排卵期に五感全ての感受性が同時に最大化する」という現象の内分泌学的根拠と五感統合戦略への最重要な含意は？',opts:['体調が良いから','排卵期（周期14日目前後）にエストロゲンピーク→①EIDOS：嗅覚感度最大②GEUSTO：コプリン効果最大（Cutler 1998）×腟粘膜感受性最大③SONOS：声変化→テストステロン上昇（Pipitone 2008）④HAPTOS：CT繊維感受性向上が全て重なる。五感統合戦略が最大効果を発揮する「黄金のタイミング」が生理周期で決まる','女性だから'],ans:1,exp:'SENSESの排卵期トラッカーがこの生理的サイクルを計算し「今日は五感統合の最大効果日」を表示する機能を持つ。各感覚の受容感度が同時に最大化するこの数日間に五感統合戦略を全力で実践することが科学的に最も効率的。',frags:['Gozo','囁き声×ASMR']},
+];
+let qIdx=0,score=0;
+function startQuiz(){qIdx=0;score=0;renderQ();}
+function renderQ(){
+  const area=document.getElementById('quizArea');
+  if(qIdx>=QS.length){area.innerHTML=`<div class="qfin"><div class="qfin-score">${score} / ${QS.length}</div><div class="qfin-msg">${score===QS.length?'完璧！五感統合マスター 🎉':score>=16?'優秀！五感の科学を深く理解しています ✨':score>=10?'良好！さらに学習で完全マスターへ 📚':'もう一度挑戦して完全マスターを目指そう 💪'}</div><button class="qrestart" onclick="startQuiz()">もう一度</button></div>`;return;}
+  const q=QS[qIdx];
+  area.innerHTML=`<div class="qhd"><div style="font-family:var(--fd);font-size:.95rem;font-weight:700">問 ${qIdx+1} / ${QS.length}</div><div class="qsc" id="qSc">${score} / ${qIdx}</div></div>
+  <div class="qcard"><p class="qq">${q.q}</p>${q.opts.map((o,i)=>`<button class="qopt" onclick="ansQ(this,${i},${q.ans})">${o}</button>`).join('')}
+  <div class="qexp" id="qexp">${q.exp}</div>
+  <div class="qfrags-area" id="qfrags"></div>
+  <button class="qnxt" id="qnxt" onclick="nextQ()">次の問題へ →</button></div>`;
+}
+function ansQ(btn,chosen,correct){
+  document.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  if(chosen===correct){btn.classList.add('correct');score++;}
+  else{btn.classList.add('wrong');document.querySelectorAll('.qopt')[correct].classList.add('correct');}
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnxt').classList.add('show');
+  document.getElementById('qSc').textContent=score+' / '+(qIdx+1);
+  const q=QS[qIdx];
+  if(q.frags&&q.frags.length){
+    const el=document.getElementById('qfrags');
+    el.innerHTML=`<div class="cf-frags-lbl" style="margin-top:.5rem">関連プロトコル</div><div class="cf-frag-chips">${q.frags.map(f=>`<span class="cf-frag-chip">${f}</span>`).join('')}</div>`;
+    el.style.display='block';
+  }
+}
+function nextQ(){qIdx++;renderQ();}
+
+/* ════ NAV ════ */
+const PGS=['home','tonight','science','scenario','learn','seventh','library','attach','quiz','ai'];;
+function nav(id,bIdx){
+  PGS.forEach(p=>{const el=document.getElementById('pg-'+p);if(el)el.classList.remove('on');});
+  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('on'));
+  const pg=document.getElementById('pg-'+id);
+  if(pg){pg.classList.add('on');const sb=pg.querySelector('.sb');if(sb)sb.scrollTop=0;}
+  const btns=document.querySelectorAll('.bni');
+  if(btns[bIdx])btns[bIdx].classList.add('on');
+}
+
+/* ════ BOOT ════ */
+function boot(){
+  const sp=document.getElementById('splash');
+  sp.style.cssText='opacity:0;transition:opacity .45s;pointer-events:none';
+  setTimeout(()=>{
+    sp.style.display='none';
+    document.getElementById('app').classList.add('on');
+    const t=TIPS[0];
+    document.getElementById('tipIco').textContent=t.ico;
+    document.getElementById('tipTxt').textContent=t.txt;
+    renderPhases();
+    initLibrary();
+    initDecks();
+    startQuiz();
+  },450);
+}
+
+/* ── AI CHAT: SENSES ── */
+const AI_ENDPOINT_senses = 'https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI';
+const AI_KEY_senses = 'HeartsHouse2026Key';
+const AI_SYS_senses = `あなたはSENSES五感統合専門AIコーチです。
+専門知識：七感統合（五感+内受容感覚+身体共鳴）・島皮質の全感覚収束・今夜の完全戦略設計・排卵期トラッカー・愛着スタイル診断（安定/不安/回避）・Calvert超加算的統合効果・EIDOS×FORMA×SONOS×HAPTOS×GEUSTO×SEXTUS横断統合・ピーク・エンドルール・記憶刻印設計。
+回答：五感を横断した完全戦略を統合提案。日本語200〜500文字。`;
+const AI_QUICK_senses = [`✨ 今夜の五感統合戦略`,`🌙 特別な夜の完全設計`,`💫 一生忘れない体験の作り方`,`🔮 相手の愛着スタイルは`,`🌊 生理的同期を起こすには`];
+let aiHistory_senses = [];
+let aiLoading_senses = false;
+
+function initAI_senses(){
+  // クイックボタン生成
+  const qc = document.getElementById('aiQuickBtns');
+  if(qc) qc.innerHTML = AI_QUICK_senses.map(q=>
+    `<button onclick="aiQuick_senses(this.textContent.replace(/^[^\s]+\s/,''))" style="padding:.38rem .72rem;border-radius:9999px;background:var(--surface2);border:1px solid var(--border2);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap">${q}</button>`
+  ).join('');
+}
+
+function aiQuick_senses(text){
+  document.getElementById('aiInp').value = text;
+  aiSend_senses();
+}
+
+function aiAddMsg_senses(text, role){
+  const msgs = document.getElementById('aiMsgs');
+  if(!msgs) return null;
+  const div = document.createElement('div');
+  const colors = {user:'linear-gradient(135deg,var(--eidos,#B8860B),var(--eidos-l,#D4A017))',ai:'var(--surface)',thinking:'var(--surface2)'};
+  div.style.cssText = `background:${colors[role]||colors.ai};border:1px solid var(--border);border-radius:var(--r-lg);padding:.78rem .9rem;font-family:var(--fu);font-size:.77rem;color:${role==='user'?'#fff':'var(--txt)'};line-height:1.68;align-self:${role==='user'?'flex-end':'flex-start'};max-width:90%;border-bottom-${role==='user'?'right':'left'}-radius:4px;font-style:${role==='thinking'?'italic':'normal'}`;
+  div.innerHTML = text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);
+  msgs.parentElement.scrollTop = msgs.parentElement.scrollHeight;
+  return div;
+}
+
+async function aiSend_senses(){
+  if(aiLoading_senses) return;
+  const inp = document.getElementById('aiInp');
+  const text = inp?.value?.trim();
+  if(!text) return;
+  aiAddMsg_senses(text,'user');
+  inp.value=''; inp.style.height='auto';
+  const thinking = aiAddMsg_senses('🧠 分析中...','thinking');
+  aiLoading_senses=true;
+  const btn=document.getElementById('aiSendBtn');
+  if(btn)btn.disabled=true;
+  aiHistory_senses.push({role:'user',parts:[{text}]});
+  try{
+    const prompt = AI_SYS_senses+'\n\n【会話履歴】\n'+
+      aiHistory_senses.slice(-6).map(h=>(h.role==='user'?'ユーザー: ':'AI: ')+h.parts[0].text).join('\n')+
+      '\n\n最後のユーザーの質問に答えてください。';
+    const res = await fetch(AI_ENDPOINT_senses,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Access-Key':AI_KEY_senses},
+      body:JSON.stringify({prompt,model:'gemini-2.0-flash',maxTokens:600})
+    });
+    const data = await res.json();
+    thinking?.remove();
+    const t = data?.data?.candidates?.[0]?.content?.parts?.[0]?.text||data?.data?.text||'';
+    if(t){aiAddMsg_senses(t);aiHistory_senses.push({role:'model',parts:[{text:t}]});}
+    else aiAddMsg_senses('⚠️ 回答を取得できませんでした。');
+  }catch(e){thinking?.remove();aiAddMsg_senses('⚠️ 通信エラーです。');}
+  aiLoading_senses=false;
+  if(btn)btn.disabled=false;
+}
+
+// グローバル公開（onclickから呼べるように）
+window.aiSend = aiSend_senses;
+window.aiQuick_senses = aiQuick_senses;
+
+window.aiSend = aiSend_senses;
+
+
+/* ═ AI_SENSES ═ */
+(function(){
+var EP='{"url":"https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI"}';
+var AIEP='https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI';
+var AIKEY='HeartsHouse2026Key';
+var AISYS='あなたはSENSES五感統合専門AIコーチです。七感統合・島皮質・今夜の完全戦略・排卵期・愛着スタイル・五感横断統合の専門家。五感を横断した完全戦略を統合提案。日本語200〜500文字。';
+var AIQS_senses=["今夜の五感統合戦略","特別な夜の完全設計","一生忘れない体験の作り方","相手の愛着スタイルは","生理的同期を起こすには"];
+var aiHist=[];var aiLoad=false;
+
+function initAI(){
+  var qc=document.getElementById('aiQB_senses');
+  if(!qc)return;
+  qc.innerHTML=AIQS_senses.map(function(q){
+    return '<button style="padding:.38rem .72rem;border-radius:9999px;background:var(--surface2,#f0edf9);border:1px solid var(--border2);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap" onclick="document.getElementById(\'aiInp_senses\').value=\''+q+'\';aiSend_senses()">'+q+'</button>';
+  }).join('');
+}
+
+function addMsg(text,role){
+  var msgs=document.getElementById('aiMsgs_senses');
+  if(!msgs)return null;
+  var div=document.createElement('div');
+  div.style.cssText='background:'+(role==='user'?'#9333ea':role==='thinking'?'var(--surface2,#eee)':'var(--surface,#fff)')+';border:1px solid var(--border);border-radius:var(--r-lg,14px);padding:.78rem .9rem;font-family:var(--fu);font-size:.77rem;color:'+(role==='user'?'#fff':'var(--txt)')+';line-height:1.68;max-width:90%;font-style:'+(role==='thinking'?'italic':'normal');
+  div.innerHTML=text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);
+  var sb=msgs.parentElement;if(sb)sb.scrollTop=sb.scrollHeight;
+  return div;
+}
+
+window.aiSend_senses=function(){
+  if(aiLoad)return;
+  var inp=document.getElementById('aiInp_senses');
+  var text=inp?inp.value.trim():'';
+  if(!text)return;
+  addMsg(text,'user');
+  if(inp){inp.value='';inp.style.height='auto';}
+  var thinking=addMsg('分析中...','thinking');
+  aiLoad=true;
+  aiHist.push({role:'user',parts:[{text:text}]});
+  var hist=aiHist.slice(-6).map(function(h){return (h.role==='user'?'ユーザー: ':'AI: ')+h.parts[0].text;}).join('\n');
+  var body=JSON.stringify({prompt:AISYS+'\n\n'+hist+'\n\nユーザーの最後の質問に答えてください。',model:'gemini-2.0-flash',maxTokens:600});
+  fetch(AIEP,{method:'POST',headers:{'Content-Type':'application/json','X-Access-Key':AIKEY},body:body})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(thinking)thinking.remove();
+      var t=(data&&data.data&&data.data.candidates&&data.data.candidates[0]&&data.data.candidates[0].content&&data.data.candidates[0].content.parts[0]&&data.data.candidates[0].content.parts[0].text)||'';
+      if(t){addMsg(t,'ai');aiHist.push({role:'model',parts:[{text:t}]});}
+      else addMsg('回答を取得できませんでした。','ai');
+      aiLoad=false;
+    })
+    .catch(function(){
+      if(thinking)thinking.remove();
+      addMsg('通信エラーです。','ai');
+      aiLoad=false;
+    });
+};
+
+window.aiSend=window.aiSend_senses;
+window.initAI_senses=initAI;
+initAI();
+})();
+
+</script>
+</body>
+</html>
