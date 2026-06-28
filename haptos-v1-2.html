@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#1c0a00">
+<title>HAPTOS — Touch Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Sans+JP:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFAF7; --bg2:#FFF3E8; --bg3:#FFE8D0;
+  --surface:#FFFFFF; --surface2:#F5F7FA;
+  --gold:#B8860B; --gold-l:#D4A017; --gold-xl:#FDF8EC;
+  --navy:#431407; --navy-l:#9a3412; --navy-xl:#FFF7ED;
+  --indigo:#9a3412; --indigo-l:#ea580c; --indigo-xl:#FFF7ED;
+  --violet:#7c3aed; --violet-xl:#F5F3FF;
+  --rose:#BE123C; --rose-l:#F43F5E; --rose-xl:#FFF1F2;
+  --teal:#0F766E; --teal-xl:#F0FDFA;
+  --amber:#B45309; --amber-xl:#FFFBEB;
+  --sage:#4D7C0F; --sage-xl:#F7FEE7;
+  --slate:#334155; --slate-xl:#F8FAFC;
+  --txt:#1C1917; --txt2:#6B6560; --txt3:#A8A29E;
+  --border:rgba(120,100,80,.11); --border2:rgba(120,100,80,.2);
+  --sh-sm:0 1px 4px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --sh-lg:0 12px 36px rgba(0,0,0,.1);
+  --r-sm:10px; --r-md:16px; --r-lg:22px; --r-xl:28px; --r-full:9999px;
+  --sat:env(safe-area-inset-top,44px); --sab:env(safe-area-inset-bottom,0px);
+  --fd:'Playfair Display',serif; --fu:'DM Sans',sans-serif; --fb:'Noto Sans JP',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--txt);font-family:var(--fb);font-weight:300;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button{border:none;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;outline:none}
+
+/* ── SPLASH ─── */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,#FDF8EC 0%,#FAF7F2 50%,#F0FDFA 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+}
+.sp-bottle{font-size:5rem;animation:bottleFloat 3s ease-in-out infinite;margin-bottom:1.5rem}
+@keyframes bottleFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+.sp-title{font-family:var(--fd);font-size:2.8rem;font-weight:700;letter-spacing:.1em;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-l) 50%,var(--amber) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:fadeUp .7s .3s both}
+.sp-sub{font-family:var(--fu);font-size:.82rem;color:var(--txt2);margin-top:.35rem;letter-spacing:.06em;animation:fadeUp .7s .5s both}
+.sp-tagline{font-family:var(--fd);font-size:1rem;font-style:italic;color:var(--txt2);margin-top:.6rem;animation:fadeUp .7s .65s both}
+.sp-btn{
+  margin-top:2.5rem;padding:.95rem 3rem;
+  background:linear-gradient(135deg,var(--gold),var(--gold-l));
+  color:#fff;font-family:var(--fu);font-size:.95rem;font-weight:600;
+  border-radius:var(--r-full);box-shadow:0 8px 24px rgba(184,134,11,.35);
+  animation:fadeUp .7s .85s both;transition:transform .15s,box-shadow .15s;letter-spacing:.02em}
+.sp-btn:active{transform:scale(.96)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ── SHELL ─── */
+#app{display:none}
+#app.on{display:block}
+
+/* ── BOTTOM NAV ─── */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(255,255,255,.92);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+  border-top:1px solid var(--border);display:flex;padding-bottom:var(--sab);
+}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;padding:.7rem .5rem .55rem;gap:.18rem;background:none;color:var(--txt3);transition:color .18s}
+.bni.on{color:var(--gold)}
+.bni-ico{font-size:1.4rem;line-height:1}
+.bni-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0;transition:opacity .18s;margin:1px auto 0}
+.bni.on .bni-dot{opacity:1}
+.bni-lbl{font-family:var(--fu);font-size:.54rem;font-weight:500;letter-spacing:.02em}
+
+/* ── PAGES ─── */
+.page{display:none}
+.page.on{display:block;animation:pIn .28s ease both}
+@keyframes pIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.sb{overflow-y:auto;-webkit-overflow-scrolling:touch;height:100vh;padding-bottom:calc(76px + var(--sab))}
+
+/* ── TYPOGRAPHY ─── */
+.pg-title{font-family:var(--fd);font-size:1.55rem;font-weight:700}
+.sec-title{padding:1.4rem 1.25rem .65rem;font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--txt)}
+.sec-title span{font-family:var(--fu);font-size:.9rem;font-weight:400;color:var(--txt2)}
+.tag-label{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em}
+.spacer{height:1.2rem}
+
+/* ── CARD BASE ─── */
+.card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);box-shadow:var(--sh-sm);overflow:hidden;margin:0 1.25rem .85rem}
+.card-hd{padding:1rem 1.25rem .9rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem}
+.card-ico{width:38px;height:38px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.card-hd-title{font-family:var(--fd);font-size:1.02rem;font-weight:600}
+.card-hd-sub{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.1rem}
+.card-bd{padding:1.1rem 1.25rem}
+
+/* ── HOME ─── */
+.home-top{padding:calc(var(--sat) + 1rem) 1.25rem 0;display:flex;align-items:center;justify-content:space-between}
+.home-greet{font-family:var(--fu);font-size:.76rem;color:var(--txt2)}
+.home-name{font-family:var(--fd);font-size:1.4rem;font-weight:700;margin-top:.1rem}
+.home-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--amber));display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 12px rgba(184,134,11,.3)}
+.hero{
+  margin:1.1rem 1.25rem;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-l) 60%,var(--amber) 100%);
+  border-radius:var(--r-xl);padding:1.6rem 1.5rem 1.8rem;
+  position:relative;overflow:hidden;box-shadow:0 12px 36px rgba(184,134,11,.28);
+}
+.hero-bl{position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.1);top:-70px;right:-60px}
+.hero-bl2{position:absolute;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.07);bottom:-35px;left:10px}
+.hero-tag{font-family:var(--fu);font-size:.63rem;font-weight:500;color:rgba(255,255,255,.75);letter-spacing:.09em;text-transform:uppercase;margin-bottom:.55rem;position:relative}
+.hero-title{font-family:var(--fd);font-size:1.65rem;font-weight:700;color:#fff;line-height:1.25;position:relative;margin-bottom:1.3rem}
+.hero-title em{font-style:italic}
+.hero-stats{display:flex;gap:1.2rem;position:relative}
+.hs-n{font-family:var(--fd);font-size:1.5rem;font-weight:600;color:#fff;display:block}
+.hs-l{font-family:var(--fu);font-size:.54rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.05em}
+.hero-div{width:1px;background:rgba(255,255,255,.25);margin:.2rem 0}
+.tip-card{margin:0 1.25rem 1rem;background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-lg);padding:1.2rem;display:flex;gap:1rem;align-items:flex-start}
+.tip-ico{font-size:1.6rem;flex-shrink:0}
+.tip-lbl{font-family:var(--fu);font-size:.58rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem}
+.tip-txt{font-family:var(--fd);font-size:.96rem;font-style:italic;color:var(--txt);line-height:1.55}
+.mod-grid{padding:0 1.25rem;display:grid;gap:.75rem}
+.mod{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.15rem 1.1rem;display:flex;align-items:center;gap:.9rem;box-shadow:var(--sh-sm);cursor:pointer;transition:transform .12s;position:relative;overflow:hidden}
+.mod:active{transform:scale(.98)}
+.mod-ac{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+.mod-ico{width:48px;height:48px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.mod-name{font-family:var(--fd);font-size:1rem;font-weight:600}
+.mod-sub{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.1rem}
+.mod-badge{font-family:var(--fu);font-size:.58rem;font-weight:600;padding:.18rem .6rem;border-radius:var(--r-full)}
+.mod-arr{color:var(--txt3);font-size:1.1rem;margin-left:auto;flex-shrink:0}
+
+/* ── SCENT BASE PAGE ─── */
+.pg-hd{padding:calc(var(--sat) + .6rem) 1.25rem .5rem}
+.banner{margin:.5rem 1.25rem 1.1rem;border-radius:var(--r-xl);padding:1.4rem;border:1px solid}
+.banner-ico{font-size:2.4rem;margin-bottom:.7rem}
+.banner-title{font-family:var(--fd);font-size:1.35rem;font-weight:700;margin-bottom:.4rem}
+.banner-desc{font-family:var(--fu);font-size:.79rem;color:var(--txt2);line-height:1.65}
+.brain-path{display:flex;align-items:center;padding:.4rem 0 .9rem;gap:0}
+.bp-nd{display:flex;flex-direction:column;align-items:center;gap:.32rem;flex-shrink:0;width:62px}
+.bp-ci{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.35rem;box-shadow:var(--sh-sm)}
+.bp-lbl{font-family:var(--fu);font-size:.55rem;font-weight:500;color:var(--txt2);text-align:center;line-height:1.3}
+.bp-arr{flex:1;display:flex;flex-direction:column;align-items:center;gap:.18rem}
+.bp-line{width:100%;height:2px;background:#E5DDD0;border-radius:1px;position:relative;overflow:hidden}
+.bp-flow{position:absolute;top:0;left:-30%;height:100%;width:30%;border-radius:1px;animation:flow 1.6s linear infinite}
+@keyframes flow{to{left:130%}}
+.bp-skip{font-family:var(--fu);font-size:.5rem;color:var(--rose-l);font-weight:600;white-space:nowrap}
+.brain-note{font-family:var(--fu);font-size:.77rem;color:var(--txt2);line-height:1.7;text-align:center}
+.brain-note strong{color:var(--txt)}
+.neuro-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.ng{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.9rem}
+.ng-ico{font-size:1.2rem;margin-bottom:.42rem}
+.ng-name{font-family:var(--fd);font-size:.9rem;font-weight:600;margin-bottom:.15rem}
+.ng-chem{font-family:var(--fu);font-size:.56rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.42rem}
+.ng-desc{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6}
+.ng-scents{font-family:var(--fu);font-size:.63rem;font-weight:500;margin-top:.52rem;padding-top:.52rem;border-top:1px solid var(--border);color:var(--txt);line-height:1.5}
+.sr{display:flex;align-items:flex-start;gap:.8rem;padding:.9rem 1.25rem;border-bottom:1px solid var(--border)}
+.sr:last-child{border-bottom:none}
+.sr-em{font-size:1.3rem;flex-shrink:0;margin-top:.08rem}
+.sr-name{font-family:var(--fd);font-size:.96rem;font-weight:600;margin-bottom:.15rem}
+.sr-eff{font-family:var(--fu);font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.sr-desc{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.note-item{border-radius:var(--r-md);padding:.95rem;border:1px solid transparent;display:flex;gap:.8rem;margin-bottom:.6rem}
+.ni-time{flex-shrink:0;width:50px}
+.ni-phase{font-family:var(--fu);font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.ni-dur{font-family:var(--fu);font-size:.53rem;color:var(--txt2);margin-top:.08rem}
+.ni-title{font-family:var(--fd);font-size:.95rem;font-weight:600;margin-bottom:.25rem}
+.ni-body{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.push-item{background:var(--surface);border-radius:var(--r-md);border:1px solid var(--border);padding:.95rem;display:flex;gap:.8rem;margin-bottom:.6rem;box-shadow:var(--sh-sm)}
+.pi-badge{width:44px;height:44px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.pi-dist{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.18rem}
+.pi-loc{font-family:var(--fd);font-size:.96rem;font-weight:600;margin-bottom:.25rem}
+.pi-why{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.w-chips{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .5rem;scrollbar-width:none}
+.w-chips::-webkit-scrollbar{display:none}
+.wc{flex-shrink:0;padding:.48rem 1rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.wc.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(184,134,11,.28)}
+.w-result{margin:.7rem 1.25rem 0;background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-md);padding:.95rem;font-family:var(--fu);font-size:.79rem;color:var(--txt2);line-height:1.75}
+.w-result strong{color:var(--gold)}
+
+/* ── LEARN ─── */
+.learn-hd{padding:calc(var(--sat) + .75rem) 1.25rem .65rem;display:flex;align-items:center;justify-content:space-between}
+.deck-tabs{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .65rem;scrollbar-width:none}
+.deck-tabs::-webkit-scrollbar{display:none}
+.dt{flex-shrink:0;padding:.46rem .95rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.dt.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(184,134,11,.25)}
+.card-box{
+  margin:0 1.25rem;border-radius:var(--r-xl);
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:var(--sh-md);min-height:290px;
+  display:flex;flex-direction:column;overflow:hidden;
+  position:relative;
+}
+.card-box::before{content:'';position:absolute;inset:7px -4px -7px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);z-index:-1;opacity:.5}
+.card-box::after{content:'';position:absolute;inset:13px -7px -13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);z-index:-2;opacity:.28}
+.card-face{padding:1.6rem 1.45rem;display:flex;flex-direction:column;flex:1;transition:opacity .15s}
+.card-face.hidden{display:none}
+.card-face-back{background:linear-gradient(135deg,var(--gold-xl),#FEF9E7)}
+.cf-tag{font-family:var(--fu);font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.9rem}
+.cf-q{font-family:var(--fd);font-size:1.08rem;font-weight:600;color:var(--txt);line-height:1.45;flex:1}
+.cf-hint{font-family:var(--fu);font-size:.64rem;color:var(--txt3);text-align:center;margin-top:1rem;animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.8}}
+.cf-a{font-family:var(--fu);font-size:.8rem;color:var(--txt2);line-height:1.82;flex:1;border-left:3px solid var(--gold);padding-left:.85rem}
+.cf-src{font-family:var(--fu);font-size:.56rem;font-weight:600;color:var(--txt3);letter-spacing:.06em;text-transform:uppercase;margin-top:.85rem;align-self:flex-end}
+.flip-btn{width:100%;padding:.95rem;background:var(--bg2);border:none;border-top:1px solid var(--border);font-family:var(--fu);font-size:.82rem;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:.02em;transition:background .15s}
+/* ── CARD FRAG LINKS ── */
+.cf-frags{margin-top:.9rem;padding-top:.8rem;border-top:1px solid rgba(184,134,11,.2)}
+.cf-frags-lbl{font-family:var(--fu);font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem}
+.cf-frags-lbl::before{content:'🤲';font-size:.7rem}
+.cf-frag-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.cf-frag-chip{font-family:var(--fu);font-size:.65rem;font-weight:600;padding:.28rem .72rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);color:var(--txt2);cursor:pointer;transition:all .16s;display:flex;align-items:center;gap:.3rem;white-space:nowrap}
+.cf-frag-chip:active{transform:scale(.95)}
+.cf-frag-chip:hover,.cf-frag-chip:active{background:var(--gold);border-color:var(--gold);color:#fff}
+.cf-frag-chip .chip-emoji{font-size:.75rem}
+.flip-btn:active{background:var(--gold-xl)}
+.pdots{display:flex;gap:.35rem;justify-content:center;padding:.6rem 0}
+.pd{width:7px;height:7px;border-radius:50%;background:var(--bg3);transition:all .28s;border:1px solid var(--border2)}
+.pd.done{background:var(--gold-l);border-color:transparent}
+.pd.cur{background:var(--gold);border-color:transparent;transform:scale(1.3)}
+.ctrl-row{padding:.8rem 1.25rem;display:flex;align-items:center;gap:.65rem}
+.ctrl-skip{flex:1;padding:.78rem;border-radius:var(--r-md);background:var(--bg2);color:var(--txt2);font-family:var(--fu);font-size:.8rem;font-weight:600;border:none;cursor:pointer;transition:background .15s}
+.ctrl-skip:active{background:var(--bg3)}
+.ctrl-next{flex:1.5;padding:.78rem;border-radius:var(--r-md);background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.8rem;font-weight:600;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(184,134,11,.3);transition:transform .12s}
+.ctrl-next:active{transform:scale(.97)}
+.ctrl-pg{font-family:var(--fu);font-size:.74rem;color:var(--txt3);min-width:48px;text-align:center}
+
+/* ── BRANDS ─── */
+.brand-chips{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .65rem;scrollbar-width:none}
+.brand-chips::-webkit-scrollbar{display:none}
+.bc{flex-shrink:0;padding:.46rem .95rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.72rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.bc.on{border-color:var(--gold);color:var(--gold);background:var(--gold-xl);box-shadow:0 3px 10px rgba(184,134,11,.2)}
+.frag-grid{padding:0 1.25rem;display:grid;gap:.72rem}
+.fc{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.15rem;box-shadow:var(--sh-sm);cursor:pointer;transition:transform .12s}
+.fc.open{border-color:rgba(184,134,11,.3);box-shadow:var(--sh-md)}
+.fc:active{transform:scale(.99)}
+.fc-top{display:flex;align-items:center;gap:.8rem}
+.fc-emoji{font-size:1.75rem;flex-shrink:0}
+.fc-info{flex:1;min-width:0}
+.fc-brand{font-family:var(--fu);font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--txt2);margin-bottom:.15rem}
+.fc-name{font-family:var(--fd);font-size:1.02rem;font-weight:600}
+.fc-type{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.08rem}
+.fc-arr{font-size:1.1rem;color:var(--txt3);transition:transform .25s;flex-shrink:0}
+.fc.open .fc-arr{transform:rotate(90deg)}
+.fc-detail{display:none;margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem}
+.fc.open .fc-detail{display:block}
+.fd-row{display:grid;grid-template-columns:1fr 1fr;gap:.58rem;margin-bottom:.8rem}
+.fd-chip{background:var(--bg2);border-radius:var(--r-sm);padding:.62rem .68rem}
+.fd-chip-lbl{font-family:var(--fu);font-size:.53rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);margin-bottom:.22rem}
+.fd-chip-val{font-family:var(--fu);font-size:.72rem;color:var(--txt);line-height:1.5}
+.fd-sec{margin-bottom:.75rem}
+.fd-sec-title{font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);margin-bottom:.38rem;display:flex;align-items:center;gap:.35rem}
+.fd-sec-body{font-family:var(--fu);font-size:.76rem;color:var(--txt2);line-height:1.75}
+.fd-sec-body strong{color:var(--txt)}
+.scene-chips{display:flex;flex-wrap:wrap;gap:.38rem;margin-top:.45rem}
+.sch{font-family:var(--fu);font-size:.64rem;font-weight:500;padding:.22rem .62rem;border-radius:var(--r-full)}
+.sch-good{background:var(--sage-xl);color:var(--sage);border:1px solid rgba(77,124,15,.2)}
+.sch-bad{background:var(--rose-xl);color:var(--rose);border:1px solid rgba(190,18,60,.2)}
+.rating-row{display:flex;align-items:center;gap:.48rem;margin-bottom:.38rem}
+.rating-lbl{font-family:var(--fu);font-size:.65rem;color:var(--txt2);width:58px;flex-shrink:0}
+.rating-bar{flex:1;height:5px;background:var(--bg3);border-radius:var(--r-full);overflow:hidden}
+.rating-fill{height:100%;border-radius:var(--r-full);background:linear-gradient(90deg,var(--gold),var(--gold-l))}
+.coloring-tip{background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-sm);padding:.65rem .8rem;margin-top:.55rem;font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.65}
+.coloring-tip strong{color:var(--gold)}
+
+/* ── TODAY PAGE ── */
+.sel-chips{display:flex;flex-wrap:wrap;gap:.38rem}
+.sel-chip{padding:.42rem .9rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .16s}
+.sel-chip.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700}
+.sel-go{width:100%;padding:.9rem;border-radius:var(--r-full);background:var(--teal);border:none;font-family:var(--fu);font-size:.9rem;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.03em;transition:opacity .15s}
+.sel-go:disabled{opacity:.4;cursor:not-allowed}
+.sel-result-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:1rem 1.1rem;display:flex;gap:.9rem;align-items:flex-start;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.sel-result-card:active{transform:scale(.98)}
+.sel-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0;margin-top:.1rem}
+.sel-r-brand{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3);margin-bottom:.12rem}
+.sel-r-name{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:.25rem}
+.sel-r-reason{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6}
+/* 月別カレンダー */
+.month-cell{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.7rem .75rem}
+.month-num{font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.month-frag{font-family:var(--fu);font-size:.68rem;font-weight:600;color:var(--txt);margin-bottom:.15rem}
+.month-tip{font-family:var(--fu);font-size:.62rem;color:var(--txt3);line-height:1.45}
+/* ── RADAR CHART ── */
+.radar-wrap{display:flex;flex-direction:column;align-items:center;gap:.4rem;margin:.5rem 0}
+.radar-labels{display:grid;grid-template-columns:1fr 1fr;gap:.2rem .5rem;width:100%}
+.radar-lbl{display:flex;align-items:center;gap:.35rem;font-family:var(--fu);font-size:.62rem;color:var(--txt2)}
+.radar-lbl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* ── COMPARE ── */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.cmp-col{display:flex;flex-direction:column;gap:.5rem}
+.cmp-head{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem;text-align:center}
+.cmp-emoji{font-size:1.6rem;display:block;margin-bottom:.25rem}
+.cmp-brand-lbl{font-family:var(--fu);font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3)}
+.cmp-name-lbl{font-family:var(--fd);font-size:.88rem;font-weight:700;color:var(--txt);line-height:1.2}
+.cmp-row{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.6rem .7rem}
+.cmp-row-lbl{font-family:var(--fu);font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3);margin-bottom:.28rem;text-align:center}
+.cmp-bar-wrap{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:.18rem}
+.cmp-bar{height:100%;border-radius:4px;transition:width .6s ease}
+.cmp-val{font-family:var(--fu);font-size:.6rem;font-weight:600;text-align:center}
+.cmp-winner{background:var(--gold-xl);border-color:rgba(184,134,11,.3)}
+/* compare chip select */
+.fc.compare-on{border:2px solid var(--teal);box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+.fc.compare-on .fc-top::after{content:'✓';position:absolute;top:.6rem;right:.6rem;width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:22px;text-align:center}
+.fci-tabs{display:flex;gap:.32rem;margin-bottom:.75rem;overflow-x:auto;scrollbar-width:none}
+.fci-tabs::-webkit-scrollbar{display:none}
+.fci-tab{flex-shrink:0;padding:.38rem .75rem;border-radius:var(--r-full);background:var(--bg2);border:1.5px solid var(--border);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fci-tab.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 3px 10px rgba(184,134,11,.25)}
+.fci-panel{animation:pIn .2s ease both}
+.fci-panel.hidden{display:none}
+.rating-row span:last-child{font-size:.58rem;color:var(--txt3);width:26px;text-align:right;flex-shrink:0}
+
+/* ── QUIZ ─── */
+.quiz-hd{padding:calc(var(--sat) + .75rem) 1.25rem .65rem;display:flex;align-items:center;justify-content:space-between}
+.quiz-sc{font-family:var(--fu);font-size:.74rem;font-weight:700;color:var(--gold);background:var(--gold-xl);padding:.28rem .88rem;border-radius:var(--r-full);border:1px solid rgba(184,134,11,.2)}
+.qprog{margin:0 1.25rem .65rem;height:5px;background:var(--bg3);border-radius:var(--r-full);overflow:hidden}
+.qprog-fi{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-l));border-radius:var(--r-full);width:0;transition:width .35s ease}
+.qcard{margin:0 1.25rem .8rem;background:var(--surface);border-radius:var(--r-xl);border:1px solid var(--border);box-shadow:var(--sh-md);padding:1.35rem}
+.qc-n{font-family:var(--fu);font-size:.62rem;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.65rem}
+.qc-q{font-family:var(--fd);font-size:1.05rem;font-weight:600;line-height:1.45;margin-bottom:1.15rem}
+.qopt{display:block;width:100%;text-align:left;background:var(--bg2);border:1.5px solid transparent;color:var(--txt);font-family:var(--fu);font-size:.81rem;font-weight:400;padding:.88rem 1rem;border-radius:var(--r-md);margin-bottom:.52rem;cursor:pointer;transition:all .18s;line-height:1.55}
+.qopt:active{background:var(--gold-xl)}
+.qopt.correct{background:var(--sage-xl);border-color:var(--sage);color:var(--sage);font-weight:500}
+.qopt.wrong{background:var(--rose-xl);border-color:var(--rose-l);color:var(--rose)}
+.qexp{display:none;margin-top:.65rem;background:var(--sage-xl);border:1px solid rgba(15,118,110,.2);border-radius:var(--r-md);padding:.9rem;font-family:var(--fu);font-size:.77rem;color:var(--txt2);line-height:1.78}
+.qexp.show{display:block}
+.qnxt{display:none;width:100%;margin-top:.65rem;background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.86rem;font-weight:600;padding:.85rem;border-radius:var(--r-md);box-shadow:0 4px 14px rgba(184,134,11,.25);transition:transform .12s}
+.qnxt.show{display:block}
+.qnxt:active{transform:scale(.98)}
+.result{display:none;margin:0 1.25rem 2rem;background:var(--surface);border-radius:var(--r-xl);border:1px solid var(--border);box-shadow:var(--sh-md);padding:2.2rem 1.5rem;text-align:center}
+.result.show{display:block}
+.res-em{font-size:3.5rem;margin-bottom:.85rem}
+.res-sc{font-family:var(--fd);font-size:3.5rem;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.res-of{font-family:var(--fu);font-size:.78rem;color:var(--txt3);margin:.28rem 0 1rem}
+.res-msg{font-family:var(--fu);font-size:.82rem;color:var(--txt2);line-height:1.8;margin-bottom:1.35rem}
+.res-retry{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.88rem;font-weight:600;padding:.88rem 2.5rem;border-radius:var(--r-full);box-shadow:0 6px 20px rgba(184,134,11,.3)}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-bottle"><svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 手のひら -->
+  <path d="M28 56 C24 56 20 52 20 46 L20 28 C20 25 22 23 25 23 C26 23 27 23.5 28 24 L28 20 C28 17 30 15 33 15 C34.5 15 35.8 15.7 36.7 16.8 C37.5 15.7 38.8 15 40.3 15 C42 15 43.5 15.9 44.3 17.3 C45.1 16.4 46.3 15.8 47.7 15.8 C50.2 15.8 52.2 17.8 52.2 20.3 L52.2 24.5 C52.9 23.8 53.9 23.4 55 23.4 C57.5 23.4 59.5 25.4 59.5 27.9 L59.5 42 C59.5 50 53 56 45 56 Z" fill="#9a3412" opacity=".85"/>
+  <path d="M30 56 C26 56 23 52 23 48 L23 30 C23 28.3 24.3 27 26 27 C27.7 27 29 28.3 29 30 L29 42" stroke="#ea580c" stroke-width="1.5" fill="none" opacity=".4"/>
+  <!-- 指のライン -->
+  <path d="M36 42 L36 19" stroke="#ea580c" stroke-width="1.5" fill="none" opacity=".35" stroke-linecap="round"/>
+  <path d="M43 42 L43 17.5" stroke="#ea580c" stroke-width="1.5" fill="none" opacity=".35" stroke-linecap="round"/>
+  <path d="M50 42 L50 20" stroke="#ea580c" stroke-width="1.5" fill="none" opacity=".35" stroke-linecap="round"/>
+  <!-- 温もりの波紋 -->
+  <circle cx="40" cy="38" r="22" stroke="#ea580c" stroke-width="1.2" fill="none" opacity=".18"/>
+  <circle cx="40" cy="38" r="30" stroke="#ea580c" stroke-width="1" fill="none" opacity=".1"/>
+  <!-- ハート -->
+  <path d="M37 50 C37 50 33 46.5 33 44 C33 42.3 34.3 41 36 41 C36.8 41 37.5 41.4 38 42 C38.5 41.4 39.2 41 40 41 C41.7 41 43 42.3 43 44 C43 46.5 39 50 39 50 Z" fill="#B8860B" opacity=".7"/>
+</svg></div>
+  <div class="sp-title">HAPTOS</div>
+  <div class="sp-sub">TOUCH INTELLIGENCE</div>
+  <div class="sp-tagline">「触れることは、最も古い愛の言語だ」</div>
+  <button class="sp-btn" onclick="boot()">はじめる</button>
+</div>
+
+<div id="app">
+
+<!-- ══ HOME ══ -->
+<div class="page on" id="pg-home">
+  <div class="sb">
+    <div class="home-top">
+      <div><div class="home-greet">Parfum Intelligence 🌿</div><div class="home-name">今日の香りを設計しよう</div></div>
+      <div class="home-av"><svg width="32" height="32" viewBox="0 0 80 80" fill="none"><path d="M28 56 C24 56 20 52 20 46 L20 28 C20 25 22 23 25 23 C28 23 29 25 29 27 L29 42 M36 42 L36 19 C36 17 37.5 15 40 15 C42.5 15 44 17 44 19 L44 42 M51 42 L51 20 C51 18 52.5 16 55 16 C57.5 16 59 18 59 20 L59 42 C59 50 53 56 45 56 Z" stroke="#9a3412" stroke-width="2.5" fill="#9a3412" fill-opacity=".15"/><circle cx="40" cy="38" r="18" stroke="#ea580c" stroke-width="1" fill="none" opacity=".2"/></svg></div>
+    </div>
+    <div class="hero">
+      <div class="hero-bl"></div><div class="hero-bl2"></div>
+      <div class="hero-tag">Scent Psychology Platform</div>
+      <div class="hero-title">触れることは、<em>最も古い</em><br>愛の言語だ。</div>
+      <div class="hero-stats">
+        <div><span class="hs-n">35+</span><span class="hs-l">プロトコル収録</span></div>
+        <div class="hero-div"></div>
+        <div><span class="hs-n">8</span><span class="hs-l">学習デッキ</span></div>
+        <div class="hero-div"></div>
+        <div><span class="hs-n">90+</span><span class="hs-l">学習カード</span></div>
+      </div>
+    </div>
+    <div class="tip-card" id="tipCard" onclick="rotateTip()" style="cursor:pointer">
+      <div class="tip-ico" id="tipIco">✨</div>
+      <div style="flex:1"><div class="tip-lbl">Today's Science Protocol <span style="font-size:.5rem;opacity:.5">— タップで更新</span></div><div class="tip-txt" id="tipTxt"></div></div>
+    </div>
+    <div class="sec-title">モジュール <span>— 学習を選ぼう</span></div>
+    <div class="mod-grid">
+      <div class="mod" onclick="nav('scent',2)"><div class="mod-ac" style="background:var(--violet)"></div><div class="mod-ico" style="background:var(--violet-xl)">🧠</div><div><div class="mod-name">触覚の科学</div><div class="mod-sub">CT繊維→島皮質→扁桃体 × 恋愛心理学</div></div><span class="mod-badge" style="background:var(--violet-xl);color:var(--violet)">必読</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('learn',3)"><div class="mod-ac" style="background:var(--gold)"></div><div class="mod-ico" style="background:var(--gold-xl)">📚</div><div><div class="mod-name">Flash Learn</div><div class="mod-sub">8デッキ 90+カード — 触覚×距離×恋愛</div></div><span class="mod-badge" style="background:var(--gold-xl);color:var(--gold)">HOT</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('brands',4)"><div class="mod-ac" style="background:var(--amber)"></div><div class="mod-ico" style="background:var(--amber-xl)">👔</div><div><div class="mod-name">Touch Library</div><div class="mod-sub">35+ プロトコル × 脳科学解説</div></div><span class="mod-badge" style="background:var(--amber-xl);color:var(--amber)">NEW</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('quiz',5)"><div class="mod-ac" style="background:var(--rose)"></div><div class="mod-ico" style="background:var(--rose-xl)">⚡</div><div><div class="mod-name">Touch Quiz</div><div class="mod-sub">触覚心理専門クイズ — 10問</div></div><span class="mod-arr">›</span></div>
+    </div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ TODAY ══ -->
+<div class="page" id="pg-today">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--teal)">🎯 今日のアプローチ</div><div style="font-family:var(--fu);font-size:.78rem;color:var(--txt2);margin-top:.3rem">シーン・段階・状況から最適な距離感とタッチを提案</div></div>
+
+    <!-- セレクター -->
+    <div class="card" id="selectorCard">
+      <div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">🎛</div><div><div class="card-hd-title">今日の状況を選ぶ</div><div class="card-hd-sub">3ステップで最適アプローチを提案</div></div></div>
+      <div class="card-bd" style="display:flex;flex-direction:column;gap:1rem">
+
+        <!-- Step1 シーン -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 1 — 今日のシーン</div>
+          <div class="sel-chips" id="sceneChips">
+            <button class="sel-chip" data-group="scene" data-val="first">🌸 初対面</button>
+            <button class="sel-chip" data-group="scene" data-val="date2">💬 2回目以降</button>
+            <button class="sel-chip" data-group="scene" data-val="night">🌙 夜のデート</button>
+            <button class="sel-chip" data-group="scene" data-val="casual">☕ カジュアル</button>
+            <button class="sel-chip" data-group="scene" data-val="work">💼 ビジネス</button>
+            <button class="sel-chip" data-group="scene" data-val="special">🔥 勝負の夜</button>
+          </div>
+        </div>
+
+        <!-- Step2 気分 -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 2 — 生み出したい感情</div>
+          <div class="sel-chips" id="moodChips">
+            <button class="sel-chip" data-group="mood" data-val="clean">✨ 安心感・信頼</button>
+            <button class="sel-chip" data-group="mood" data-val="sexy">🔥 ときめき・色気</button>
+            <button class="sel-chip" data-group="mood" data-val="trust">🤝 包容力・親密感</button>
+            <button class="sel-chip" data-group="mood" data-val="deep">💫 自然な距離縮小</button>
+            <button class="sel-chip" data-group="mood" data-val="smart">🌟 特別感・記憶</button>
+          </div>
+        </div>
+
+        <!-- Step3 天気 -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 3 — 今日の天気・気温</div>
+          <div class="sel-chips" id="weatherChips">
+            <button class="sel-chip" data-group="weather" data-val="hot">☀️ 暑い（25℃+）</button>
+            <button class="sel-chip" data-group="weather" data-val="mild">🌤 快適（15〜25℃）</button>
+            <button class="sel-chip" data-group="weather" data-val="cold">❄️ 寒い（15℃−）</button>
+          </div>
+        </div>
+
+        <button class="sel-go" id="selGoBtn" onclick="runSelector()">→ 最適なアプローチを選ぶ</button>
+      </div>
+    </div>
+
+    <!-- 結果 -->
+    <div id="selResult" style="display:none">
+      <div style="font-family:var(--fu);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin:.85rem 0 .55rem;padding:0 .1rem">🎯 推奨結果</div>
+      <div id="selResultCards" style="display:flex;flex-direction:column;gap:.65rem"></div>
+      <button onclick="resetSelector()" style="width:100%;margin-top:.9rem;padding:.75rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-full);font-family:var(--fu);font-size:.8rem;font-weight:600;color:var(--txt2);cursor:pointer">← 選び直す</button>
+    </div>
+
+    <!-- 月別カレンダー -->
+    <div class="card" style="margin-top:.5rem">
+      <div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">📅</div><div><div class="card-hd-title">月別・スキンシップカレンダー</div><div class="card-hd-sub">季節×段階×距離感の年間戦略</div></div></div>
+      <div class="card-bd">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem" id="monthCalendar"></div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ SCENT SCIENCE ══ -->
+<div class="page" id="pg-scent">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--indigo)">🧠 触覚の科学 完全版</div></div>
+
+    <!-- 触覚処理の解剖学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--indigo-xl)">✋</div><div><div class="card-hd-title">触覚情報処理の解剖学</div><div class="card-hd-sub">触れた瞬間の0.05秒に何が起きるか</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--indigo-xl);border:1px solid rgba(154,52,18,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">🖐</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo)">①皮膚の受容器（4種）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">マイスナー小体（軽い接触・テクスチャ）・パチニ小体（振動）・メルケル盤（持続的圧覚）・<strong>CT繊維（感情的な触覚）</strong>の4種が並列処理。CT繊維は毛が生えた皮膚にのみ存在し「愛情的なタッチ」専用の受容器。</div></div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">⚡</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet)">②CT繊維（C触覚求心性線維）— 最重要</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">無髄のC繊維で伝導速度が遅い（1〜2m/s）。最適刺激は<strong>秒速1〜10cm（特に3〜5cm）・温かい温度・優しい圧力</strong>。脊髄→脳幹→島皮質（感情処理）→扁桃体→視床下部（オキシトシン産生）という感情的経路を辿る。</div></div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">🌊</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--gold)">③脊髄→脳幹→島皮質</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">CT繊維からの信号が島皮質（Insula）に到達。島皮質は「自己感覚・感情・共感・身体意識」の中枢。「気持ちいい・安心する・もっと触れていたい」という感情の処理センター。</div></div></div>
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">💓</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose)">④扁桃体×視床下部：感情判定とホルモン分泌</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">扁桃体が「このタッチは安全か・心地よいか」を判定。視床下部のオキシトシン産生ニューロンが直接活性化される。<strong>C触覚求心性線維の刺激が最も効率的にオキシトシンを分泌させる経路</strong>として確認されている。</div></div></div>
+        <div style="background:var(--amber-xl);border:1px solid rgba(180,83,9,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">🏆</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--amber)">⑤体性感覚野（S1・S2）と快楽野</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">S1が触覚の「どこを・どんな強さで」を処理。快楽野（腹側被蓋野・側坐核）がドーパミンを放出させ「また触れたい・そばにいたい」という報酬回路を起動させる。</div></div></div>
+      </div>
+    </div></div>
+
+    <!-- CT繊維と「秒速5cmの科学」 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">💆</div><div><div class="card-hd-title">CT繊維 × 「秒速5cmの科学」</div><div class="card-hd-sub">オキシトシンを最大分泌させるタッチの黄金律</div></div></div><div class="card-bd">
+      <div style="background:var(--indigo-xl);border:1px solid rgba(154,52,18,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.75rem">
+        <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--indigo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">🔬 研究根拠（McGlone et al. / Löken et al. 2009, Nature Neuroscience）</div>
+        <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt2);line-height:1.7">CT繊維は<strong style="color:var(--txt)">秒速1〜10cm（最適3〜5cm）・体温に近い温度（32〜34℃）・軽い圧力</strong>の刺激に最大反応する。これが「愛撫・なでる」という動作が本能的に心地よい神経科学的根拠。</div>
+      </div>
+      <div class="neuro-grid">
+        <div class="ng"><div class="ng-ico">🐢</div><div class="ng-name">秒速3〜5cm（最適）</div><div class="ng-chem" style="color:var(--indigo)">OXYTOCIN MAX</div><div class="ng-desc">CT繊維の最大反応速度。「ゆっくり優しくなでる」が脳科学的に最もオキシトシンを分泌させるタッチ。</div><div class="ng-scents">腕・肩・背中への優しいタッチ</div></div>
+        <div class="ng"><div class="ng-ico">🌡</div><div class="ng-name">体温に近い温かさ</div><div class="ng-chem" style="color:var(--rose)">SAFETY SIGNAL</div><div class="ng-desc">32〜34℃の温かいタッチが扁桃体に「安全・哺乳類仲間・保護」という本能的安心シグナルを送る。冷たい手は逆効果。</div><div class="ng-scents">手を温めてから触れる</div></div>
+        <div class="ng"><div class="ng-ico">🪶</div><div class="ng-name">軽い圧力</div><div class="ng-chem" style="color:var(--violet)">PLEASURE SIGNAL</div><div class="ng-desc">強く押すとマイスナー小体（圧覚）が反応し痛みに近い処理になる。CT繊維は軽い接触のみに反応する繊細な受容器。</div><div class="ng-scents">「触れているかどうかギリギリ」の圧力</div></div>
+        <div class="ng"><div class="ng-ico">📍</div><div class="ng-name">毛が生えた皮膚</div><div class="ng-chem" style="color:var(--teal)">CT ONLY</div><div class="ng-desc">CT繊維は毛包に付着した皮膚（腕・肩・背中・頭部）にのみ存在。手のひら・足裏にはない。タッチする場所が重要。</div><div class="ng-scents">腕・肩・背中・髪の毛が最適部位</div></div>
+        <div class="ng"><div class="ng-ico">⏱</div><div class="ng-name">継続時間</div><div class="ng-chem" style="color:var(--amber)">ACCUMULATION</div><div class="ng-desc">オキシトシンは継続的な刺激で累積的に分泌量が増加する。短い接触より「ゆっくり持続する」タッチが絆形成に最も効果的。</div><div class="ng-scents">20秒以上の持続タッチが目安</div></div>
+        <div class="ng"><div class="ng-ico">🔄</div><div class="ng-name">相互タッチの効果</div><div class="ng-chem" style="color:var(--teal)">RECIPROCITY</div><div class="ng-desc">タッチする側・される側の双方でオキシトシンが分泌される（相互性）。触れることは「触れる者と触れられる者」を同時に癒す唯一の感覚。</div><div class="ng-scents">「触れながら触れられる」意識</div></div>
+      </div>
+    </div></div>
+
+    <!-- 恋愛の3段階×触覚 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">💘</div><div><div class="card-hd-title">触覚×恋愛感情 3段階モデル</div><div class="card-hd-sub">距離感とスキンシップがどう恋愛感情に変換されるか</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.55rem">
+        <div style="background:linear-gradient(135deg,var(--rose-xl),#FFF5F7);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 1 — 欲求（Lust）距離の縮小で欲求を起動</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.45rem">
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--rose);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">ノルアドレナリン</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--rose);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">テストステロン</span>
+          </div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">「この人に触れたい・近づきたい」という本能的欲求。<strong style="color:var(--txt)">個人距離への自然な移行・偶発的接触・視線から物理的距離への橋渡し</strong>が扁桃体の欲求回路を起動させる。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#FFF7ED,#FFFBEB);border:1px solid rgba(154,52,18,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 2 — 誘引（Attraction）意図的タッチで絆を加速</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.45rem">
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--amber);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">オキシトシン</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--amber);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">ドーパミン</span>
+          </div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">「この人に触れると安心する・また触れたい」。<strong style="color:var(--txt)">CT繊維を刺激する意図的なタッチ（腕・肩）</strong>がオキシトシンを分泌させ「この人は特別」という記憶を海馬に刻む。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--indigo-xl),#FFF3E8);border:1px solid rgba(154,52,18,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--indigo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 3 — 絆（Attachment）継続タッチで深い絆へ</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.45rem">
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--indigo);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">オキシトシン↑↑</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--indigo);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">バソプレシン</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--indigo);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">エンドルフィン</span>
+          </div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">「この人に触れると落ち着く・ずっとそばにいたい」。<strong style="color:var(--txt)">20秒以上の抱擁・継続的な優しいタッチ</strong>がバソプレシン絆形成を最速で進める。人類が抱擁を発明した神経科学的理由。</div>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- プロクセミクス（距離の科学） -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--amber-xl)">📏</div><div><div class="card-hd-title">プロクセミクス（距離の科学）</div><div class="card-hd-sub">Hall の4つの距離帯と恋愛への応用</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+        <div style="background:var(--rose-xl);border-left:4px solid var(--rose);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--rose);margin-bottom:.25rem">❤️ 親密距離（0〜45cm）— タッチが可能な領域</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">相手の体温・呼吸・香りが感じられる距離。CT繊維が反応できる唯一の領域。<strong>パートナー・家族など信頼関係が確立した相手のみに許可される</strong>特別な空間。この距離への移行が恋愛関係の最重要転換点。</div></div>
+        <div style="background:var(--amber-xl);border-left:4px solid var(--amber);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--amber);margin-bottom:.25rem">🤝 個人距離（45〜120cm）— 親密関係の準備領域</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">友人・知人との会話距離。意図的なタッチ（握手・肩・腕）が自然に起きる距離帯。<strong>デートで目指すべき第一段階</strong>。この距離での自然な振る舞いが親密距離への移行を準備する。</div></div>
+        <div style="background:var(--indigo-xl);border-left:4px solid var(--indigo);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--indigo);margin-bottom:.25rem">👥 社会距離（120〜360cm）— 初対面の標準距離</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">初対面・ビジネス会話の標準距離。扁桃体が「安全・適切」と判定する距離帯。急に個人距離に入ることは扁桃体の警戒反応を引き起こす。段階的な距離縮小が絶対原則。</div></div>
+        <div style="background:var(--teal-xl);border-left:4px solid var(--teal);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--teal);margin-bottom:.25rem">🌍 公共距離（360cm以上）— 関係のない他者の距離</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">見知らぬ人・大勢の前での演説など。この距離からいきなり親密距離に入ることは全ての動物にとって「脅威」として処理される。初対面デートは必ず社会距離から始めること。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 偶発的接触の科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">✨</div><div><div class="card-hd-title">偶発的接触（アクシデンタルタッチ）の科学</div><div class="card-hd-sub">「たまたま触れる」が持つ神経科学的な威力</div></div></div><div class="card-bd">
+      <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.12);border-radius:var(--r-md);padding:.9rem;margin-bottom:.7rem">
+        <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--violet);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">📚 研究根拠（Crusco & Wetzel 1984 / Guéguen 2003）</div>
+        <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt2);line-height:1.7">レストランの研究でウェイターが客の手・肩に軽く触れるだけでチップが<strong style="color:var(--txt)">12〜22%増加</strong>した。Guéguen（2003）でナンパの成功率が<strong style="color:var(--txt)">「触れた場合67% vs 触れない場合42%」</strong>と有意に異なることが確認された。</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.45rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🎯 なぜ「偶発的」が強いのか</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">意図的なタッチは相手に「なぜ触れるのか」という前頭前野の分析を起動させる。「たまたま触れた」場合は分析を経由せず直接CT繊維→島皮質→オキシトシン分泌という感情経路が優先される。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">📍 最も効果的な部位と状況</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">手の甲（会話中に同意を示す時）・前腕（何かを示す時）・肩（褒める時・励ます時）が最も自然な偶発的タッチ。「食事を取り分ける時」「物を渡す時」「笑いながら話す時」が最も違和感のない自然な機会。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">⚠️ 絶対に守るべきルール</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">①相手が心地よいと判定するまでは個人距離を保つ②反応を観察しながら段階的に③ネガティブな反応があれば即座に戻る。タッチの同意は「言語以前の非言語シグナル」で読み取ることが最重要。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 握手・ハグ・温度の科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">🤝</div><div><div class="card-hd-title">握手・ハグ・温度 × 恋愛科学</div><div class="card-hd-sub">具体的なタッチが脳に与える効果の詳細</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🤝 握手の強さ × 第一印象（Chaplin et al. 2000）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">Journal of Personality and Social Psychologyの研究で握手の強さが「外向性・感情的安定性・開放性・誠実さ」の印象と有意に相関。適切な強さ（強すぎず弱すぎず）×温かみ×視線が「信頼できる人物」という第一印象を確定させる。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🫂 20秒ハグ × オキシトシン最大分泌（Grewen et al. 2005）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">Biological Psychologyの研究で20秒以上のハグがオキシトシンを有意に増加させ収縮期血圧を低下させることが確認された。「8秒未満のハグ」ではオキシトシン分泌量が有意に少ない。長いハグが科学的に正当化される根拠。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">☕ 温かい飲み物 × 人への評価（Williams & Bargh 2008）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">Scienceに掲載。温かいカップを持つだけで見知らぬ人への評価が「より温かい人柄」に変化した（身体的温度×心理的温度の混同）。デートでホットドリンクを渡すだけで「温かい人」という印象が脳で処理される。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">💇 頭部・髪へのタッチ × 最大のオキシトシン放出</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">頭部（特に後頭部・髪）はCT繊維の密度が特に高い部位。霊長類のグルーミング（毛づくろい）行動の神経科学的基盤と同じ経路でオキシトシンが最大量分泌される。「髪に触れる」という行動が持つ特別な意味の根拠。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 環境設計の科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">🏠</div><div><div class="card-hd-title">環境設計 × 触覚心理学</div><div class="card-hd-sub">空間・座席・温度・素材が恋愛感情に与える効果</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🪑 座席の配置 × 親密感形成（90度法則）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">正面対面より90度の角度（L字型配置）が「親密で協力的な関係」を感じさせることが確認されている。正面は「競争・対立」の構図を脳が自動処理する。カフェでは斜め横の座席を選ぶことが最初の物理的戦略。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🌡 室温 × 感情評価（Ijzerman & Semin 2010）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">Psychological Scienceの研究で室温が高いと他者への信頼感・親近感が増加することが確認された（身体的温かさ×社会的温かさの混同）。冬のデートで暖かい室内・暖炉のある場所が恋愛感情形成に有利な神経科学的根拠。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🛋 座席の硬さ × 交渉・柔軟性（Ackerman et al. 2010）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">Scienceに掲載。硬い椅子に座った人は交渉で硬い立場を取る傾向がある（身体的硬さ×心理的硬さの混同）。デートでは柔らかいソファ・クッションのある座席が「柔軟な心・開放的な気持ち」を促進する環境設計。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 段階的スキンシップの戦略 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">📈</div><div><div class="card-hd-title">段階的スキンシップ戦略</div><div class="card-hd-sub">扁桃体の警戒心を解除しながら距離を縮める完全設計</div></div></div><div class="card-bd">
+      <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.7rem">
+        <div style="font-family:var(--fd);font-size:.92rem;font-style:italic;color:var(--txt);line-height:1.65;margin-bottom:.5rem">「スキンシップは急ぐと全てを壊す。段階的に積み重ねることでオキシトシンが雪だるま式に増える。」</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3)">— 触覚研究×恋愛心理学の統合知見</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.45rem">
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">1</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">個人距離の確立（45〜80cm）</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">自然な会話の流れで社会距離から個人距離へ。「何かを見せる・物を渡す・隣を歩く」などの理由で近づく。扁桃体に「この距離は安全」と学習させる最初のステップ。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--violet);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">2</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">偶発的タッチ（前腕・手・肩）</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">会話の文脈で自然に発生するタッチ。「そこ！（と腕に触れながら同意する）」「見て（と肩に触れながら何かを指す）」。CT繊維へのファーストコンタクト。反応を必ず観察する。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">3</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">意図的タッチの導入（腕・背中）</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">偶発的タッチへの反応がポジティブであれば意図的に移行。「人混みで背中に手を添える」「席を案内する時に軽く手を添える」。秒速3〜5cmの撫でがCT繊維を最大刺激する。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--rose);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">4</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">手をつなぐ×20秒ハグ（オキシトシン最大化）</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">手をつなぐことで相互CT繊維刺激が始まり双方でオキシトシンが分泌される。別れ際の20秒以上のハグがバソプレシン絆形成を一気に加速させる。「また会いたい」という欲求が生物学的に形成される。</div></div></div>
+      </div>
+    </div></div>
+
+    <!-- 女性性器の触覚解剖学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">🔬</div><div><div class="card-hd-title">女性性器の触覚解剖学</div><div class="card-hd-sub">解剖学×神経科学×オキシトシン — 科学的理解の完全版</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose);margin-bottom:.3rem">① クリトリス — 人体最密度の性感神経叢</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">クリトリスの神経線維数は約8,000本（陰茎の2倍以上）。可視部分（陰核）はごく一部で実際は内部に伸びる<strong>「氷山」構造</strong>（クルラ・前庭球）を持つ（O'Connell 1998, Journal of Urology）。陰部神経・陰核背神経が高密度に分布し島皮質→扁桃体→視床下部（オキシトシン産生）への直接経路を持つ。</div></div>
+        <div style="background:var(--amber-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--amber);margin-bottom:.3rem">② 腟壁（前壁）— Gスポットと神経分布</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">腟前壁（尿道から2〜3cm）に<strong>Gräfenberg（Gスポット）</strong>として知られる感受性の高い領域が存在する。骨盤神経・迷走神経（脊髄を迂回する経路）が分布。Komisaruk et al.（2011）のfMRI研究で腟頚部・子宮頸部への刺激が脊髄損傷患者でも快楽を引き起こすことを確認（迷走神経経路の証明）。</div></div>
+        <div style="background:var(--indigo-xl);border:1px solid rgba(67,56,202,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo);margin-bottom:.3rem">③ 子宮頸部・子宮 — 迷走神経経路</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">子宮頸部・子宮への深部刺激が骨盤神経だけでなく<strong>迷走神経（第10脳神経）を直接活性化</strong>させることが確認されている。迷走神経の活性化はオキシトシン分泌の最強の経路の一つ。子宮収縮→オキシトシン放出というフィードバックループが「深い満足感・眠気・幸福感」を作る。</div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet);margin-bottom:.3rem">④ 外陰部（大陰唇・小陰唇） — CT繊維の密集</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">外陰部の皮膚はCT繊維（C触覚求心性線維）が全身で最も高密度に集中する部位の一つ。<strong>秒速3〜5cmの優しいタッチ</strong>が最大のCT繊維反応→島皮質→オキシトシン産生ニューロンの活性化を引き起こす。「前戯の質がオルガズムの質を決定する」という研究的根拠がここにある。</div></div>
+        <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--teal);margin-bottom:.3rem">⑤ 骨盤底筋群 × 自律神経系</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">骨盤底筋群の弛緩（副交感神経優位）が女性の性的興奮・潤滑・オルガズムの前提条件。<strong>緊張・不安・扁桃体の防衛反応</strong>が骨盤底筋を収縮させ性的反応を阻害する。「安心できる環境・信頼関係・リラックス」が女性の性的快楽の神経学的前提条件である根拠。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 女性オルガズムの神経科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🧠</div><div><div class="card-hd-title">女性オルガズムの神経科学</div><div class="card-hd-sub">4種の経路×ホルモンカスケード×脳活動の完全解説</div></div></div><div class="card-bd">
+      <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.75rem">
+        <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--violet);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">🔬 Komisaruk et al. — Rutgers大学fMRI研究</div>
+        <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt2);line-height:1.7">オルガズム時に脳の<strong style="color:var(--txt)">30以上の領域が活性化</strong>することをfMRIで確認。側坐核（報酬）・海馬（記憶）・小脳（筋協調）・前頭前野（一時的抑制）・視床下部（オキシトシン産生）が同時に活性化。「オルガズムが一生忘れられない記憶になる」神経解剖学的根拠。</div>
+      </div>
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">① クリトリス性オルガズム（陰部神経経路）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">クリトリス→陰部神経→脊髄（S2-4）→体性感覚野という経路。最も一般的で再現性が高い。高密度のCT繊維刺激→島皮質→扁桃体→側坐核のドーパミン急増という報酬回路の最大活性化が起きる。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">② 腟・Gスポット性オルガズム（骨盤神経経路）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">腟前壁・Gスポット→骨盤神経→脊髄（S2-4）→体性感覚野という経路。リズミカルな圧覚刺激がパチニ小体（振動受容器）を活性化させる。クリトリスの内部構造（前庭球）への間接刺激も同時に起きる。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">③ 子宮頸部オルガズム（迷走神経経路）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">子宮頸部→迷走神経（脊髄を完全にバイパス）→脳幹→視床→島皮質という最も深い経路。迷走神経の活性化が直接オキシトシン産生ニューロンを刺激。「全身に広がる深い波のような感覚・強烈な愛情・眠気」が特徴的。最も強いバソプレシン絆形成を引き起こす。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">④ 複合オルガズム（複数経路の同時活性化）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">①+②+③の複数経路が同時に活性化された状態。脳の活性化領域が最大化しオキシトシン+バソプレシン+エンドルフィン+ドーパミンが同時に最大量分泌される。「全てが同時に起きる」感覚の神経解剖学的根拠。前戯の質・信頼関係・精神的安全性の全てが揃った時にのみ可能。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 前戯の神経科学と戦略 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">✨</div><div><div class="card-hd-title">前戯の神経科学 — 「準備」が全てを決める</div><div class="card-hd-sub">オキシトシン累積×副交感神経優位×段階的CT繊維刺激</div></div></div><div class="card-bd">
+      <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-md);padding:.9rem;margin-bottom:.75rem">
+        <div style="font-family:var(--fd);font-size:.92rem;font-style:italic;color:var(--txt);line-height:1.65;margin-bottom:.5rem">「女性のオルガズムは行為が始まる数時間前から始まっている。安心感・信頼・期待感が神経学的な準備を作る。」</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3)">— 女性性機能研究（Masters & Johnson / Komisaruk et al.の統合知見）</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">1</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">精神的安全性の確立（副交感神経優位化）</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">骨盤底筋の弛緩（性的反応の前提条件）は副交感神経優位でのみ起きる。緊張・不安・扁桃体の防衛反応が全ての性的反応を物理的に阻害する。「安心できる環境・信頼関係・傾聴・名前を呼ぶ」というSONOSとHAPTOSの技術が前戯の神経学的土台になる。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--violet);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">2</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">外周から中心へのCT繊維刺激（オキシトシン累積）</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">背中→肩→腕→腰→太腿→外陰部という「外周から中心への段階的なCT繊維刺激」がオキシトシンを累積的に積み上げる。各段階でオキシトシン受容体増感が起き次の刺激への感受性が高まる「雪だるま効果」が前戯の神経内分泌学的設計の核心。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">3</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">外陰部CT繊維への最適刺激（秒速3〜5cm）</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">外陰部（大小陰唇・クリトリス周辺）のCT繊維は全身最高密度。<strong>秒速3〜5cm・体温に近い温かさ・軽い圧力</strong>が最大のオキシトシン分泌を引き起こす。「強くすれば良い」という誤解が最も多い部位。軽さと遅さが科学的に最適解。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--rose);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">4</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">フィードバックを読む — 非言語シグナルの解読</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">呼吸のリズム変化・骨盤底筋の収縮・身体の緊張と弛緩・声の変化が「神経系の状態」を示す最も正確な情報源。言語的なフィードバックより非言語的な生理的反応を読み取ることが「相手の神経系を理解する」唯一の方法。</div></div></div>
+      </div>
+    </div></div>
+
+    <!-- 女性の性的覚醒と心理 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">💡</div><div><div class="card-hd-title">女性の性的覚醒 × 心理学×ホルモン</div><div class="card-hd-sub">二重制御モデル×テストステロン×エストロゲン</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.15);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--teal);margin-bottom:.25rem">🎚 二重制御モデル（Dual Control Model）— Bancroft & Janssen</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">女性の性的覚醒は「アクセル（性的興奮システム・SES）」と「ブレーキ（性的抑制システム・SIS）」の両方が同時に動くシステム。アクセルを踏むだけでなく<strong>ブレーキを外す</strong>ことが女性の性的反応には不可欠。不安・ストレス・心配事・信頼の欠如が全て「ブレーキ」として機能する。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">💊 テストステロン × 女性の性欲</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">女性のテストステロンは副腎・卵巣から分泌され性欲・活力・恋愛意欲に関与する。排卵期（周期14日目付近）にエストロゲン+テストステロンが同時にピークを迎え性的感受性が最大化する。同時期に嗅覚感度も最高値になりEIDOSの香水効果が最大になる（生理周期と五感の統合）。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🌊 エストロゲン × 腟粘膜×潤滑</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">エストロゲンが腟粘膜の維持・腟壁の厚みとグリコーゲン含量・バルトリン腺からの潤滑液分泌を調節する。副交感神経優位（安心・リラックス）で腟壁への血流増加→浸出液による潤滑が起きる。「濡れる」という反応は副交感神経優位の生理的証明であり「安心感＝性的準備完了」の神経科学的正体。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🔄 オキシトシン × 子宮収縮 × 性的快楽の増幅ループ</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">性的刺激→オキシトシン分泌→子宮収縮→子宮から更にオキシトシン放出という<strong>正のフィードバックループ</strong>が形成される。このループが継続することで「波が重なるような深まり続ける快楽」が神経内分泌学的に説明できる。深い性的体験が「一生忘れられない記憶」になる神経解剖学的正体。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 男性器の解剖学と神経科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--indigo-xl)">🔬</div><div><div class="card-hd-title">男性器の解剖学 × 神経科学</div><div class="card-hd-sub">陰茎神経解剖×前立腺×勃起の自律神経経路</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--indigo-xl);border:1px solid rgba(30,58,110,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo);margin-bottom:.3rem">🧬 陰茎の神経解剖（Kell et al. 2005, Journal of Neuroscience）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">背側陰茎神経（陰部神経の終枝）が亀頭・包皮・陰茎幹を支配。亀頭の神経線維密度は約4,000本（クリトリスの約半分）。亀頭・陰茎幹のマイスナー小体・パチニ小体・自由神経終末が圧覚・振動・温度・快楽を並列処理する。体性感覚野（S1）において陰茎は足と腹部の間に表現される（ペンフィールドマップ改訂版）。</div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet);margin-bottom:.3rem">💡 勃起の自律神経解剖 — 副交感神経が主役</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6"><strong>骨盤内臓神経（S2-4）</strong>からの副交感神経線維がNO（一酸化窒素）を産生→陰茎海綿体の平滑筋が弛緩→血液流入→勃起。「副交感神経優位（安心・リラックス）でのみ機能する」というHAPTOSの原則は男性側にも完全に適用される。緊張・不安・交感神経優位は勃起を解剖学的に抑制する。</div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--gold);margin-bottom:.3rem">🔄 射精と勃起の「拮抗解剖学」— 交感神経 vs 副交感神経</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">勃起＝副交感神経（骨盤内臓神経S2-4）。射精＝交感神経（腰部交感神経幹L1-2）。この拮抗関係が「射精が近づくと勃起が変化する」現象の解剖学的正体。性的覚醒の最終段階で交感神経が優位になるまでの間、副交感神経優位を維持する環境（安心感・信頼・リラックス）が最良の機能的状態を保つ。</div></div>
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose);margin-bottom:.3rem">🎯 前立腺（P-スポット）の三重神経支配</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">前立腺は<strong>陰部神経（体性感覚）・骨盤神経（副交感）・下腹神経（交感）の三重支配</strong>を受ける臓器。「男性のGスポット」として知られ直腸前壁から2-4cm（膀胱底部）に位置する。刺激により強烈なオルガズム感覚が生じることが報告されており女性のGスポット体験と類似した神経経路が関与する。</div></div>
+        <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--teal);margin-bottom:.3rem">💊 男性オルガズムのホルモンカスケード × 解剖経路</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">射精直前に交感神経が優位になり精管・精嚢・前立腺が収縮（閉精：内括約筋閉鎖）→射精（外括約筋弛緩）という二段階。射精後①プロラクチン急増（不応期）②バソプレシン最大値（「守りたい・傍にいたい」感情の解剖学的起源）③オキシトシン持続（視床下部室傍核から分泌継続）が連鎖する。スキンシップ継続でプロラクチン上昇を抑制できる（GEUSTO参照）。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 性感帯の解剖学的地図 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--amber-xl)">🗺</div><div><div class="card-hd-title">性感帯の解剖学的地図</div><div class="card-hd-sub">Nummenmaa 2016（704人）× Turnbull 2013（800人）× Winkelmann解剖分類</div></div></div><div class="card-bd">
+      <div style="background:var(--amber-xl);border:1px solid rgba(180,83,9,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.75rem">
+        <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">🔬 研究根拠：Nummenmaa et al. 2016 / Turnbull et al. 2013（Cortex）/ Winkelmann解剖分類</div>
+        <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt2);line-height:1.7">性感帯は<strong style="color:var(--txt)">「特異的（Specific）」と「非特異的（Non-specific）」</strong>の2種に解剖学的に分類される。最重要な知見：<strong style="color:var(--txt)">個人差が極めて大きく平均値は参考に過ぎない</strong>。唯一信頼できる地図は相手からのフィードバック。</div>
+      </div>
+      <div class="neuro-grid">
+        <div class="ng"><div class="ng-ico">💋</div><div class="ng-name">唇（特異的）</div><div class="ng-chem" style="color:var(--rose)">最高密度</div><div class="ng-desc">粘膜皮膚境界部位。マイスナー小体が密集。ペンフィールドマップで手のひら全体に匹敵する脳内面積。キスが最強の性感帯刺激である解剖的根拠。</div></div>
+        <div class="ng"><div class="ng-ico">👂</div><div class="ng-name">耳介・耳後（非特異的）</div><div class="ng-chem" style="color:var(--sonos)">CT繊維密集</div><div class="ng-desc">CT繊維（C触覚求心性線維）が高密度に集中。囁き声の空気振動が直接CT繊維を刺激。SONOS×HAPTOSの統合ゾーン。</div></div>
+        <div class="ng"><div class="ng-ico">🧣</div><div class="ng-name">首・うなじ（非特異的）</div><div class="ng-chem" style="color:var(--indigo)">迷走神経経由</div><div class="ng-desc">後頸部の皮膚感覚が迷走神経に近接。軽い接触が副交感神経を直接刺激しオキシトシン系を活性化させる。「うなじへのキス」の神経解剖学的根拠。</div></div>
+        <div class="ng"><div class="ng-ico">💪</div><div class="ng-name">内腕・前腕（CT繊維）</div><div class="ng-chem" style="color:var(--haptos)">CT繊維最適部位</div><div class="ng-desc">有毛皮膚のCT繊維が豊富。秒速3〜5cmの撫でに最大反応。偶発的タッチ×意図的タッチの主要ターゲット。「腕に触れる」の科学的根拠の核心。</div></div>
+        <div class="ng"><div class="ng-ico">🏔</div><div class="ng-name">乳頭・乳輪（特異的）</div><div class="ng-chem" style="color:var(--rose)">オキシトシン直結</div><div class="ng-desc">アポクリン腺・皮脂腺・特殊な感覚神経が集中する特異的性感帯。哺乳との神経回路共有により視床下部→オキシトシン産生ニューロンに直接入力する。</div></div>
+        <div class="ng"><div class="ng-ico">🦵</div><div class="ng-name">内腿（非特異的）</div><div class="ng-chem" style="color:var(--violet)">閉鎖神経</div><div class="ng-desc">閉鎖神経が支配する内腿は外陰部・鼠径部に近接した神経叢を持つ。段階的接近プロトコルの最終段階として外周→中心の移行点。</div></div>
+        <div class="ng"><div class="ng-ico">🎯</div><div class="ng-name">頭皮・後頭部（特異的）</div><div class="ng-chem" style="color:var(--teal)">CT繊維最高密度</div><div class="ng-desc">頭部のCT繊維密度は全身最高クラス。霊長類のグルーミング（毛づくろい）行動の神経科学的基盤と同じ経路でオキシトシンが最大量分泌される。</div></div>
+        <div class="ng"><div class="ng-ico">⚡</div><div class="ng-name">個人差の原則</div><div class="ng-chem" style="color:var(--amber)">最重要知見</div><div class="ng-desc">Nummenmaa 2016：平均値はあるが個人差が極めて大きい。唯一信頼できる性感帯マップは「相手のフィードバック（非言語・言語両方）を読み取ること」のみ。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 自律神経系の解剖学 × 恋愛の完全設計 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🧠</div><div><div class="card-hd-title">自律神経系の解剖学 × 恋愛設計</div><div class="card-hd-sub">交感神経 vs 副交感神経 — 恋愛の全段階を支配する拮抗システム</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.55rem">
+        <div style="background:linear-gradient(135deg,var(--teal-xl),#F0FDF8);border:1px solid rgba(15,118,110,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">🟢 副交感神経（迷走神経S75%）— 愛着・快楽・絆の解剖</div>
+          <div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">迷走神経（第10脳神経）が副交感神経の75%を占め脳幹→心臓・肺・消化器・生殖器に広がる。<strong>心拍低下・消化促進・性器血流増加・オキシトシン産生ニューロン直接活性化</strong>を担う。「安心できる環境・信頼・リラックス・囁き声・CT繊維刺激」が全てこの経路を活性化させる。五感統合戦略の全てが副交感神経優位状態を作ることを目標としている。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--rose-xl),#FFF0F0);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">🔴 交感神経（胸腰髄T1-L2）— 興奮・覚醒・射精の解剖</div>
+          <div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">心拍増加・血圧上昇・瞳孔拡大・汗腺活性化・アポクリン腺分泌（アンドロステノール産生）・射精（L1-2）を担う。ときめき（ノルアドレナリン）・興奮・「ドキドキ」という感覚の解剖学的実体。<strong>適度な交感神経活性＝恋愛のときめき</strong>だが過剰（ストレス・恐怖・不信感）は全ての性的反応を解剖学的に阻害する。</div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">⚖️ 恋愛の最適バランス — 「安心の上にときめき」の解剖学</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">最適な恋愛・性的体験は「<strong>副交感神経ベースライン（安心・信頼・オキシトシン）の上に交感神経の適度な興奮（ドーパミン・ノルアドレナリン）が乗る状態</strong>」。この状態がCT繊維→オキシトシン経路の最大活性化と性器への最大血流を同時に実現する。「安心できる相手にときめく」という感情の神経解剖学的完全解説。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🌿 ポリヴェーガル理論（Porges 1994）— 「安全の神経学」</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">Stephen Porgesの理論で迷走神経には「古い迷走神経（背側）＝凍りつき反応」と「新しい迷走神経（腹側）＝社会的関与・愛着・親密感」の2系統があることが示された。HAPTOSの全ての技術（段階的距離縮小・CT繊維刺激・20秒ハグ）は「腹側迷走神経複合体」を活性化させ「安全の神経学的シグナル」を送る設計。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🫁 骨盤底筋 × 自律神経 × 骨盤内臓神経（S2-4）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">骨盤内臓神経（S2-4）が副交感神経として性器・膀胱・直腸を支配。<strong>骨盤底筋の弛緩は副交感神経優位でのみ可能</strong>で女性の潤滑・腟壁血流増加・男性の勃起が全てこの神経に依存する。「緊張すると機能しない」の解剖学的理由がここにある。五感統合で作る「安心感」がこの神経系を通じて直接身体の性的準備状態を作る。</div></div>
+      </div>
+    </div></div>
+
+    <!-- ペンフィールドマップ × 恋愛の解剖学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">🗂</div><div><div class="card-hd-title">ペンフィールドマップ × 恋愛の解剖学</div><div class="card-hd-sub">体性感覚野の身体地図から見る「なぜそこが気持ちいいか」</div></div></div><div class="card-bd">
+      <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.7rem">
+        <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">🔬 Penfield & Rasmussen（1950）→ 改訂版（Kell 2005 / Komisaruk 2011）</div>
+        <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt2);line-height:1.7">体性感覚野（後中心回）に身体の触覚地図が存在し<strong>脳が割り当てるリソース量＝その部位の感覚的重要性</strong>を示す。唇と手が占める面積が全体の大部分を占め「キス（唇）」と「タッチ（手）」が人体最大の感覚資源を持つ解剖学的根拠。</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.45rem">
+        <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border-radius:var(--r-sm);padding:.65rem .75rem"><span style="font-size:1.1rem;flex-shrink:0">💋</span><div><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--rose)">唇 — 手のひら全体に匹敵する脳内面積</div><div style="font-family:var(--fu);font-size:.67rem;color:var(--txt2);line-height:1.6">体の表面積に占める割合は数%だが体性感覚野では手のひら全体と同等のリソースが配分される。「キスが最強の絆形成行為」の解剖学的証明。GEUSTOの唇解説と統合される。</div></div></div>
+        <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border-radius:var(--r-sm);padding:.65rem .75rem"><span style="font-size:1.1rem;flex-shrink:0">✋</span><div><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--haptos)">手・指 — 体性感覚野最大面積の主役</div><div style="font-family:var(--fu);font-size:.67rem;color:var(--txt2);line-height:1.6">手のひらは体性感覚野で最大の面積を占める。「触れる手」が最も情報量の多いタッチ器官。握手が第一印象を決定的に形成する解剖学的根拠。指先のマイスナー小体密度は全身最高。</div></div></div>
+        <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--surface2);border-radius:var(--r-sm);padding:.65rem .75rem"><span style="font-size:1.1rem;flex-shrink:0">😊</span><div><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--sonos)">顔・舌 — 表情と言語の解剖学的基盤</div><div style="font-family:var(--fu);font-size:.67fr;color:var(--txt2);line-height:1.6">顔面と舌が体性感覚野の広大な領域を占める。「表情を読む」という行為の神経解剖学的基盤。ミラーニューロンが他者の顔の感覚を「自分のこと」として処理する共感の解剖的根拠。</div></div></div>
+        <div style="display:flex;gap:.6rem;align-items:flex-start;background:var(--gold-xl);border-radius:var(--r-sm);padding:.65rem .75rem"><span style="font-size:1.1rem;flex-shrink:0">🔬</span><div><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--gold)">生殖器 — 後中心回の足と腹部の間（改訂版）</div><div style="font-family:var(--fu);font-size:.67rem;color:var(--txt2);line-height:1.6">1950年の原典では「足の下（内側面）」とされていたが2005年のfMRI研究（Kell et al.）で「足と腹部の間」に改訂。女性では2011年Komisaruk研究でクリトリス→腟→子宮頸部が体性感覚野に個別に表現されることが確認された。</div></div></div>
+      </div>
+    </div></div>
+
+    <div class="spacer"></div>
+  </div>
+</div>
+<div class="page" id="pg-learn">
+  <div class="sb">
+    <div class="learn-hd"><div class="pg-title">Touch Learn</div><div style="font-family:var(--fu);font-size:.76rem;color:var(--txt3)" id="deckCnt"></div></div>
+    <div class="deck-tabs">
+      <button class="dt on" onclick="loadDeck('neuro',this)">🧠 触覚神経科学</button>
+      <button class="dt" onclick="loadDeck('proxemics',this)">📏 プロクセミクス</button>
+      <button class="dt" onclick="loadDeck('touch',this)">🤲 タッチ科学</button>
+      <button class="dt" onclick="loadDeck('stage',this)">📈 段階的接近</button>
+      <button class="dt" onclick="loadDeck('environment',this)">🏠 環境設計</button>
+      <button class="dt" onclick="loadDeck('scene',this)">📍 シーン戦略</button>
+      <button class="dt" onclick="loadDeck('glossary',this)">📖 用語辞典</button>
+      <button class="dt" onclick="loadDeck('romance',this)">❤️ 恋愛心理</button>
+      <button class="dt" onclick="loadDeck('anatomy',this)">🔬 解剖学</button>
+      <button class="dt" onclick="loadDeck('night',this)">🌙 夜の科学</button>
+    </div>
+    <div class="pdots" id="pdots"></div>
+    <div class="card-box" id="cardBox">
+      <div class="card-face" id="cardFront">
+        <p class="cf-tag" id="cfTag"></p>
+        <p class="cf-q" id="cfQ"></p>
+        <p class="cf-hint">タップして答えを見る ✨</p>
+      </div>
+      <div class="card-face card-face-back hidden" id="cardBack">
+        <p class="cf-tag" style="color:var(--gold)">ANSWER</p>
+        <p class="cf-a" id="cfA"></p>
+        <p class="cf-src" id="cfSrc"></p>
+        <div class="cf-frags" id="cfFrags"></div>
+      </div>
+      <button class="flip-btn" id="flipBtn" onclick="flipCard()">答えを見る ✨</button>
+    </div>
+    <div class="ctrl-row">
+      <button class="ctrl-skip" onclick="nextCard()">スキップ</button>
+      <span class="ctrl-pg" id="ctrlPg">1 / 1</span>
+      <button class="ctrl-next" onclick="nextCard()">次へ →</button>
+    </div>
+    <p style="text-align:center;font-family:var(--fu);font-size:.66rem;color:var(--txt3);padding:.25rem">ボタンで答え確認 → 次のカードへ</p>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ BRANDS ══ -->
+<div class="page" id="pg-brands">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--amber)">🤲 タッチ・距離感ライブラリ</div><div style="font-family:var(--fu);font-size:.78rem;color:var(--txt2);margin-top:.3rem">触覚×距離感×スキンシップ 女性心理×脳科学をタップで確認</div></div>
+    <div class="brand-chips" id="brandChips"></div>
+    <!-- 比較モードボタン -->
+    <div style="display:flex;align-items:center;gap:.6rem;padding:.1rem .05rem .5rem">
+      <button id="compareToggleBtn" onclick="toggleCompareMode()" style="flex:1;padding:.6rem 1rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .18s">⚖️ 比較モード OFF</button>
+      <button id="compareGoBtn" onclick="openCompare()" style="display:none;padding:.6rem 1.2rem;border-radius:var(--r-full);background:var(--gold);border:none;font-family:var(--fu);font-size:.74rem;font-weight:700;color:#fff;cursor:pointer">比較する →</button>
+    </div>
+    <!-- 比較選択状況 -->
+    <div id="compareStatus" style="display:none;font-family:var(--fu);font-size:.68rem;color:var(--gold);font-weight:600;padding:.1rem .1rem .45rem;text-align:center"></div>
+    <div class="frag-grid" id="fragGrid"></div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ COMPARE MODAL ══ -->
+<div id="compareModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)">
+  <div style="position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:var(--r-xl) var(--r-xl) 0 0;max-height:88vh;overflow-y:auto;padding:1.25rem 1.1rem 2.5rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-family:var(--fd);font-size:1.2rem;font-weight:700">⚖️ 香水比較</div>
+      <button onclick="closeCompare()" style="width:32px;height:32px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt2)">✕</button>
+    </div>
+    <div id="compareContent"></div>
+  </div>
+</div>
+  <div class="sb">
+    <div class="quiz-hd"><div class="pg-title">香水クイズ</div><div class="quiz-sc" id="qSc">0 / 0</div></div>
+    <div class="qprog"><div class="qprog-fi" id="qpFi"></div></div>
+    <div id="qArea"></div>
+    <div class="result" id="result">
+      <div class="res-em" id="rEm">🏆</div>
+      <div class="res-sc" id="rSc">0</div>
+      <div class="res-of">/ 10 問正解</div>
+      <div class="res-msg" id="rMsg"></div>
+      
+    </div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+    <!-- ══ AI PAGE ══ -->
+    <div class="page" id="pg-ai">
+      <div class="sb">
+        <div class="pg-hd">
+          <div class="pg-title" style="color:#ea580c">🤖 AI コーチ</div>
+          <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt3);margin-top:.2rem">脳科学×神経科学 — 専門AIに相談</div>
+        </div>
+        <div id="aiMsgs" style="display:flex;flex-direction:column;gap:.65rem;margin-bottom:.6rem">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.82rem .92rem;font-family:var(--fu);font-size:.78rem;color:var(--txt);line-height:1.68;border-bottom-left-radius:4px">
+            こんにちは。専門AIコーチです。<br>状況を入力してください。具体的なアドバイスを返します。
+          </div>
+        </div>
+        <div id="aiQuickBtns" style="display:flex;gap:.38rem;flex-wrap:wrap;margin-bottom:.6rem"></div>
+        <div class="spacer"></div>
+      </div>
+      <!-- AI入力エリア（固定） -->
+      <div style="padding:.55rem .9rem calc(env(safe-area-inset-bottom)+4.2rem);background:var(--surface);border-top:1px solid var(--border);display:flex;gap:.45rem;align-items:flex-end">
+        <textarea id="aiInp" style="flex:1;background:var(--bg2);border:1.5px solid var(--border2);border-radius:var(--r-lg);padding:.6rem .75rem;font-family:var(--fu);font-size:.8rem;color:var(--txt);resize:none;min-height:42px;max-height:110px;outline:none;line-height:1.5"
+          placeholder="状況を入力..." rows="1"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px'"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"></textarea>
+        <button id="aiSendBtn" onclick="aiSend()" style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#ea580c,#ea580c99);border:none;color:#fff;font-size:1.05rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">➤</button>
+      </div>
+    </div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="bni on" onclick="nav('home',0)"><span class="bni-ico">⬡</span><div class="bni-dot"></div><span class="bni-lbl">ホーム</span></button>
+  <button class="bni" onclick="nav('today',1)"><span class="bni-ico">🎯</span><div class="bni-dot"></div><span class="bni-lbl">今日</span></button>
+  <button class="bni" onclick="nav('scent',2)"><span class="bni-ico">🧠</span><div class="bni-dot"></div><span class="bni-lbl">科学</span></button>
+  <button class="bni" onclick="nav('learn',3)"><span class="bni-ico">📚</span><div class="bni-dot"></div><span class="bni-lbl">学習</span></button>
+  <button class="bni" onclick="nav('brands',4)"><span class="bni-ico">🤲</span><div class="bni-dot"></div><span class="bni-lbl">ライブラリ</span></button>
+  <button class="bni" onclick="nav('quiz',5)"><span class="bni-ico">⚡</span><div class="bni-dot"></div><span class="bni-lbl">クイズ</span></button>
+
+  <button class="bni" onclick="nav('ai',6)"><span class="bni-ico">🤖</span><div class="bni-dot"></div><span class="bni-lbl">AI</span></button>
+</nav>
+</div>
+
+<script>
+/* ════════════════════════════════
+   TODAY SELECTOR ENGINE
+════════════════════════════════ */
+const SEL_STATE={scene:null,mood:null,weather:null};
+
+// セレクターチップのクリック処理
+document.querySelectorAll('.sel-chip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const g=btn.dataset.group,v=btn.dataset.val;
+    document.querySelectorAll(`.sel-chip[data-group="${g}"]`).forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    SEL_STATE[g]=v;
+  });
+});
+
+// セレクションロジック: scene×mood×weather → 推奨香水リスト（スコアリング）
+const SEL_RULES=[
+  {n:'初対面タッチプロトコル',b:'状況別プロトコル',e:'🌸',r:'握手×名前×笑顔のセット。四感統合の入口。温かい手での握手が「信頼できる人物」という第一印象を確定させる。',scene:['first','work'],mood:['clean','trust'],weather:['hot','mild','cold'],base:10},
+  {n:'個人距離への自然な移行',b:'距離感・プロクセミクス',e:'📏',r:'段階的な距離縮小が扁桃体に「この距離は安全」と学習させる。急激な接近は全てをリセットする。',scene:['first','date2','casual'],mood:['clean','trust'],weather:['hot','mild','cold'],base:9},
+  {n:'偶発的タッチプロトコル',b:'タッチ・スキンシップ',e:'🤲',r:'「たまたま触れる」がCT繊維→島皮質→オキシトシン経路を直接活性化。前頭前野の分析を回避する最強テクニック。',scene:['date2','casual','first'],mood:['trust','sexy'],weather:['hot','mild','cold'],base:9},
+  {n:'秒速5cmタッチプロトコル',b:'タッチ・スキンシップ',e:'💆',r:'CT繊維最適速度（秒速3〜5cm）×20秒継続でオキシトシン最大分泌。「ゆっくり優しく」が科学的に最強。',scene:['date2','night','special'],mood:['trust','sexy'],weather:['mild','cold'],base:9},
+  {n:'座席設計戦略（90度法則）',b:'距離感・プロクセミクス',e:'🪑',r:'90度配置が「協力・親密」を感じさせる。柔らかい座席がGABA系を活性化し心理的な開放性を高める。',scene:['first','date2','casual'],mood:['clean','trust'],weather:['hot','mild','cold'],base:8},
+  {n:'温度設計プロトコル',b:'環境設計',e:'🏠',r:'ホットドリンクを渡すだけで「温かい人」という印象が生成される（Williams & Bargh 2008）。室温が高い環境が親近感を増加させる。',scene:['first','casual','date2'],mood:['clean','trust'],weather:['cold','mild'],base:8},
+  {n:'4段階スキンシップ設計',b:'段階的接近プロトコル',e:'📈',r:'オキシトシン累積×バソプレシン絆形成の完全設計。段階を飛ばさないことが最重要の原則。',scene:['date2','night','special'],mood:['trust','sexy'],weather:['hot','mild','cold'],base:10},
+  {n:'別れ際ハグプロトコル（20秒の科学）',b:'状況別プロトコル',e:'🌙',r:'20秒ハグでオキシトシン+エンドルフィン+バソプレシンが同時分泌。四感統合の最強エンディング。',scene:['special','night','date2'],mood:['trust','sexy'],weather:['hot','mild','cold'],base:10},
+  {n:'吊り橋効果の科学的応用',b:'環境設計',e:'🌉',r:'生理的覚醒の感情誤帰属。遊園地・ホラー・スポーツ後の近接でドーパミン的なときめきを生む補助戦略。',scene:['casual','date2'],mood:['sexy'],weather:['hot','mild'],base:7},
+  {n:'握手プロトコル（第一印象最大化）',b:'タッチ・スキンシップ',e:'🤝',r:'適切な強さ×温かさ×視線が「信頼できる人物」の第一印象を確定。初対面の最初のCT繊維刺激。',scene:['first','work'],mood:['clean','trust'],weather:['hot','mild','cold'],base:9},
+];
+
+function runSelector(){
+  const s=SEL_STATE;
+  if(!s.scene||!s.mood||!s.weather){
+    alert('3つ全て選んでください'); return;
+  }
+  // スコアリング
+  const scored=SEL_RULES.map(r=>{
+    let score=r.base;
+    if(r.scene.includes(s.scene))score+=3;
+    if(r.mood.includes(s.mood))score+=3;
+    if(r.weather.includes(s.weather))score+=2;
+    return {...r,score};
+  }).sort((a,b)=>b.score-a.score).slice(0,3);
+
+  const colors=['var(--gold)','var(--teal)','var(--violet)'];
+  const ranks=['1st','2nd','3rd'];
+  const html=scored.map((r,i)=>`
+    <div class="sel-result-card" onclick="jumpToBrand('${r.n}')">
+      <div class="sel-rank" style="background:${colors[i]}">${ranks[i]}</div>
+      <div style="flex:1">
+        <div class="sel-r-brand">${r.b} ${r.e}</div>
+        <div class="sel-r-name">${r.n}</div>
+        <div class="sel-r-reason">${r.r}</div>
+        <div style="font-family:var(--fu);font-size:.6rem;color:var(--teal);margin-top:.35rem;font-weight:600">タップしてライブラリで詳細を見る →</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('selectorCard').style.display='none';
+  document.getElementById('selResult').style.display='block';
+  document.getElementById('selResultCards').innerHTML=html;
+}
+
+function resetSelector(){
+  SEL_STATE.scene=null;SEL_STATE.mood=null;SEL_STATE.weather=null;
+  document.querySelectorAll('.sel-chip').forEach(b=>b.classList.remove('on'));
+  document.getElementById('selectorCard').style.display='block';
+  document.getElementById('selResult').style.display='none';
+}
+
+/* ── MONTH CALENDAR ── */
+const MONTH_DATA=[
+  {m:'1月',emoji:'❄️',col:'#1e3a6e',frags:'温度設計プロトコル / 秒速5cmタッチ / 別れ際ハグ',tip:'厳冬。温かい場所×ホットドリンク×ウールの温もりがオキシトシン系を最大活性化。20秒ハグが「また会いたい」を生む'},
+  {m:'2月',emoji:'💝',col:'#BE123C',frags:'別れ際ハグ / 4段階スキンシップ / 温度設計',tip:'バレンタイン月。スキンシップの全段階が集結する月。20秒ハグ×四感統合が「一生忘れられない記憶」を作る'},
+  {m:'3月',emoji:'🌸',col:'#be185d',frags:'初対面プロトコル / 個人距離への移行',tip:'出会いの季節。初対面の握手と段階的な距離縮小が最重要。春の暖かさが扁桃体の警戒心を自然に緩める'},
+  {m:'4月',emoji:'🌿',col:'#15803d',frags:'個人距離への移行 / 偶発的タッチ / 座席設計',tip:'新学期の出会い。個人距離の確立と偶発的タッチの導入が鍵。桜の下を一緒に歩く距離感が最高の状況'},
+  {m:'5月',emoji:'☀️',col:'#b45309',frags:'偶発的タッチ / 吊り橋効果',tip:'アクティブな季節。スポーツ・アウトドアデートで吊り橋効果が最大化。体験後の近接タイミングを意識'},
+  {m:'6月',emoji:'🌊',col:'#0369a1',frags:'座席設計 / 4段階スキンシップ',tip:'梅雨。室内デートが増える→座席設計と段階的スキンシップが最重要。傘を差す距離感が自然な接近の機会'},
+  {m:'7月',emoji:'🏖',col:'#0891b2',frags:'偶発的タッチ / 吊り橋効果 / 個人距離',tip:'海・プール・花火大会。肌の露出が増える季節は偶発的タッチの機会が増える。体温を感じる距離感が自然'},
+  {m:'8月',emoji:'⚡',col:'#7c3aed',frags:'吊り橋効果 / 偶発的タッチ',tip:'夏祭り・花火・縁日。人混みで自然に近づける最高の季節。偶発的タッチの機会を積極的に作る'},
+  {m:'9月',emoji:'🍂',col:'#92400e',frags:'4段階スキンシップ / 秒速5cmタッチ',tip:'秋の夜長。スキンシップが深まりやすい季節。CT繊維への意図的な刺激を段階的に進める最適なタイミング'},
+  {m:'10月',emoji:'🍁',col:'#b45309',frags:'温度設計 / 秒速5cmタッチ / 4段階',tip:'肌寒さが増す。「寒い→体を近づけたい」という本能的欲求が距離縮小を自然にサポートする季節'},
+  {m:'11月',emoji:'🌙',col:'#1e1b4b',frags:'別れ際ハグ / 4段階スキンシップ / 温度設計',tip:'スキンシップが深まる季節。温かい空間×継続的なタッチ×20秒ハグがバソプレシン絆形成を加速させる'},
+  {m:'12月',emoji:'🔥',col:'#7e1d1d',frags:'別れ際ハグ / 温度設計 / 四感統合',tip:'クリスマス。四感統合（香り×服装×声×タッチ）が完成する最高の夜。20秒ハグ×四感統合で永遠の記憶を作る'},
+];
+
+function renderMonthCalendar(){
+  const el=document.getElementById('monthCalendar');
+  if(!el)return;
+  const now=new Date().getMonth(); // 0-indexed
+  el.innerHTML=MONTH_DATA.map((m,i)=>`
+    <div class="month-cell" style="${i===now?'border-color:'+m.col+';background:'+m.col+'12':''};padding:.65rem .7rem">
+      <div class="month-num" style="color:${m.col}">${m.emoji} ${m.m}${i===now?' ← 今月':''}</div>
+      <div class="month-frag" style="font-size:.66rem">${m.frags}</div>
+      <div class="month-tip">${m.tip}</div>
+    </div>
+  `).join('');
+}
+
+/* ════════════════════════════════
+   COMPARE ENGINE
+════════════════════════════════ */
+let compareMode=false;
+let compareList=[];
+
+function toggleCompareMode(){
+  compareMode=!compareMode;
+  compareList=[];
+  const btn=document.getElementById('compareToggleBtn');
+  const goBtn=document.getElementById('compareGoBtn');
+  const status=document.getElementById('compareStatus');
+  if(compareMode){
+    btn.style.background='var(--teal)';btn.style.borderColor='var(--teal)';btn.style.color='#fff';
+    btn.textContent='⚖️ 比較モード ON';
+    status.style.display='block';status.textContent='比較したい香水を2本タップで選択';
+  }else{
+    btn.style.background='';btn.style.borderColor='';btn.style.color='';
+    btn.textContent='⚖️ 比較モード OFF';
+    goBtn.style.display='none';status.style.display='none';
+    document.querySelectorAll('.fc').forEach(c=>c.classList.remove('compare-on'));
+  }
+  renderFrags('すべて');
+}
+
+function handleCompareSelect(fragName){
+  if(!compareMode)return;
+  const idx=compareList.indexOf(fragName);
+  if(idx>-1){
+    compareList.splice(idx,1);
+  }else{
+    if(compareList.length>=2){alert('2本まで選択できます');return;}
+    compareList.push(fragName);
+  }
+  document.getElementById('compareStatus').textContent=
+    compareList.length===0?'比較したい香水を2本タップで選択':
+    compareList.length===1?`✓ ${compareList[0]} — あと1本選択`:
+    `✓ ${compareList[0]}  vs  ${compareList[1]}`;
+  document.getElementById('compareGoBtn').style.display=compareList.length===2?'block':'none';
+  // カードのハイライト更新
+  document.querySelectorAll('.fc').forEach(card=>{
+    const nm=card.querySelector('.fc-name');
+    if(nm)card.classList.toggle('compare-on',compareList.includes(nm.textContent.trim()));
+  });
+}
+
+function openCompare(){
+  if(compareList.length<2){alert('2本選んでください');return;}
+  const f1=BD.find(b=>b.name===compareList[0]);
+  const f2=BD.find(b=>b.name===compareList[1]);
+  if(!f1||!f2)return;
+  const axes=[
+    {k:'清潔感',ico:'✨'},
+    {k:'色気',ico:'🔥'},
+    {k:'信頼感',ico:'🤝'},
+    {k:'初対面',ico:'🌸'},
+    {k:'年齢幅',ico:'👥'}
+  ];
+  const barColor1='#B8860B';const barColor2='#0F766E';
+  const rows=axes.map(ax=>{
+    const v1=f1.rating[ax.k]||0,v2=f2.rating[ax.k]||0;
+    const w1=f1.rating&&f2.rating?v1>=v2:'';
+    const w2=f2.rating&&f1.rating?v2>=v1:'';
+    return `
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+        <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.4rem;text-align:center">${ax.ico} ${ax.k}</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:.5rem;align-items:center">
+          <div>
+            <div class="cmp-bar-wrap"><div class="cmp-bar" style="width:${v1}%;background:${barColor1}"></div></div>
+            <div class="cmp-val" style="color:${barColor1}">${v1}${w1&&v1>v2?' 👑':''}</div>
+          </div>
+          <div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">vs</div>
+          <div>
+            <div class="cmp-bar-wrap"><div class="cmp-bar" style="width:${v2}%;background:${barColor2}"></div></div>
+            <div class="cmp-val" style="color:${barColor2}">${v2}${w2&&v2>v1?' 👑':''}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // シーン比較
+  const sceneCmp=`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+      <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.5rem;text-align:center">📍 ベストシーン</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.6">${(f1.good_scenes||[]).map(s=>`<span style="display:block">✓ ${s}</span>`).join('')}</div>
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.6">${(f2.good_scenes||[]).map(s=>`<span style="display:block">✓ ${s}</span>`).join('')}</div>
+      </div>
+    </div>
+  `;
+
+  // 季節比較
+  const seasonCmp=f1.season&&f2.season?`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+      <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.5rem;text-align:center">🗓 季節適性</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2)">${f1.season.join(' / ')}</div>
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2)">${f2.season.join(' / ')}</div>
+      </div>
+    </div>
+  `:'';
+
+  document.getElementById('compareContent').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem">
+      <div class="cmp-head" style="border-top:3px solid ${barColor1}">
+        <span class="cmp-emoji">${f1.emoji}</span>
+        <div class="cmp-brand-lbl">${f1.brand}</div>
+        <div class="cmp-name-lbl">${f1.name}</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.3rem">${f1.type}</div>
+      </div>
+      <div class="cmp-head" style="border-top:3px solid ${barColor2}">
+        <span class="cmp-emoji">${f2.emoji}</span>
+        <div class="cmp-brand-lbl">${f2.brand}</div>
+        <div class="cmp-name-lbl">${f2.name}</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.3rem">${f2.type}</div>
+      </div>
+    </div>
+    ${rows}${sceneCmp}${seasonCmp}
+    <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.75rem .85rem;margin-top:.3rem">
+      <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--gold);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.06em">💡 総合判定</div>
+      <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.65">${generateVerdict(f1,f2)}</div>
+    </div>
+  `;
+  document.getElementById('compareModal').style.display='block';
+}
+
+function generateVerdict(f1,f2){
+  const sum1=Object.values(f1.rating||{}).reduce((a,b)=>a+b,0);
+  const sum2=Object.values(f2.rating||{}).reduce((a,b)=>a+b,0);
+  const winner=sum1>=sum2?f1.name:f2.name;
+  const loser=sum1>=sum2?f2.name:f1.name;
+  const diff=Math.abs(sum1-sum2);
+  if(diff<20)return `両作は甲乙つけがたい実力派。シーンで使い分けることが理想。${f1.name}は「${(f1.good_scenes||[])[0]||'-'}」、${f2.name}は「${(f2.good_scenes||[])[0]||'-'}」で特に輝く。`;
+  return `総合評価では <strong>${winner}</strong> が優位。ただし <strong>${loser}</strong> が得意とするシーンでは逆転する場面も多い。両方持つことが最強の戦略。`;
+}
+
+function closeCompare(){document.getElementById('compareModal').style.display='none';}
+
+/* ── SVG レーダーチャート生成 ── */
+function buildRadar(rating){
+  const keys=['誠実さ','色気','信頼感','初対面','汎用性'];
+  const vals=keys.map(k=>(rating[k]||0)/100);
+  const cx=80,cy=80,r=60;
+  const angles=keys.map((_,i)=>((i*72)-90)*Math.PI/180);
+  const points=vals.map((v,i)=>({
+    x:cx+r*v*Math.cos(angles[i]),
+    y:cy+r*v*Math.sin(angles[i])
+  }));
+  const poly=points.map(p=>`${p.x},${p.y}`).join(' ');
+  // グリッド円
+  const grids=[.25,.5,.75,1].map(g=>`<circle cx="${cx}" cy="${cy}" r="${r*g}" fill="none" stroke="var(--border)" stroke-width="1"/>`).join('');
+  // 軸
+  const axes=angles.map((a,i)=>`<line x1="${cx}" y1="${cy}" x2="${cx+r*Math.cos(a)}" y2="${cy+r*Math.sin(a)}" stroke="var(--border)" stroke-width="1"/>`).join('');
+  // ラベル
+  const labels=keys.map((k,i)=>{
+    const lx=cx+(r+14)*Math.cos(angles[i]);
+    const ly=cy+(r+14)*Math.sin(angles[i]);
+    return `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="7" fill="var(--txt3)" font-family="DM Sans,sans-serif">${k}</text>`;
+  }).join('');
+  return `<svg width="160" height="160" viewBox="0 0 160 160">${grids}${axes}<polygon points="${poly}" fill="rgba(184,134,11,.25)" stroke="var(--gold)" stroke-width="2"/>${labels}</svg>`;
+}
+
+/* ── 用語辞典デッキ（DECKS追加） ── */
+
+const TIPS=[
+  {ico:'🤲',txt:'「CT繊維（C触覚求心性線維）は毛が生えた皮膚にのみ存在する感情的タッチ専用の受容器だ。秒速3〜5cmの優しい撫でが島皮質→視床下部→オキシトシン産生という経路を最も効率的に活性化させる。」'},
+  {ico:'⏱',txt:'「20秒未満のハグではオキシトシン分泌量が有意でない。Grewen et al.（2005）で20秒以上のハグがオキシトシン有意増加+血圧低下を確認。「長いハグ」が科学的に最強のスキンシップとして正当化される。」'},
+  {ico:'☕',txt:'「ホットドリンクを渡すだけで「温かい人だ」という印象が脳で処理される（Williams & Bargh 2008, Science）。身体的温かさが社会的温かさに混同される具現化認知は最も簡単に使える触覚戦略だ。」'},
+  {ico:'📏',txt:'「扁桃体は急激な距離縮小を「脅威」として処理する。社会距離→個人距離→親密距離という段階的な移行が扁桃体に「この距離は安全」と学習させ次のステップへの許可を自動的に生成する。」'},
+  {ico:'🤝',txt:'「偶発的なタッチは意図的なタッチより効果が高い。相手の前頭前野の分析を回避し直接CT繊維→島皮質→オキシトシン分泌という感情経路を活性化させるから。笑いながら腕に触れるコンボが最強。」'},
+  {ico:'🌡',txt:'「オキシトシンには受容体増感効果がある。分泌されるたびに次の刺激への感受性が高まる。段階的なスキンシップがオキシトシン感受性を累積的に高め後の効果を倍増させる。急がないことが最速の道。」'},
+  {ico:'🌉',txt:'「恐怖・興奮による生理的覚醒が「恋愛感情」として誤帰属される（Dutton & Aron 1974）。遊園地・ホラー映画・スポーツ体験後に近くにいる人に「ドキドキはあなたのせい」と脳が処理する。」'},
+  {ico:'✨',txt:'「別れ際の20秒ハグの瞬間に香り×服装×声×体温が同時に届く。四感全てが統合された最強の感情記憶として海馬に刻まれる。EIDOS×FORMA×SONOS×HAPTOSの完成がこの瞬間にある。」'},
+];
+let tipIdx=Math.floor(Math.random()*TIPS.length);
+function rotateTip(){
+  tipIdx=(tipIdx+1)%TIPS.length;
+  const t=TIPS[tipIdx];
+  document.getElementById('tipIco').textContent=t.ico;
+  document.getElementById('tipTxt').textContent=t.txt;
+}
+
+/* ── BOOT ─── */
+function boot(){
+  const sp=document.getElementById('splash');
+  sp.style.cssText='opacity:0;transition:opacity .45s;pointer-events:none';
+  setTimeout(()=>{
+    sp.style.display='none';
+    document.getElementById('app').classList.add('on');
+    // 初期Tip設定
+    const t=TIPS[tipIdx];
+    document.getElementById('tipIco').textContent=t.ico;
+    document.getElementById('tipTxt').textContent=t.txt;
+    loadDeck('neuro',document.querySelector('.dt'));
+    // 今日ページ初期化
+    renderMonthCalendar();
+    initAI_haptos();
+    // 用語辞典タブを追加
+    const tabs=document.querySelector('.deck-tabs');
+    if(tabs&&!tabs.querySelector('[data-deck="glossary"]')){
+      const btn=document.createElement('button');
+      btn.className='dt';btn.textContent='📖 用語辞典';
+      btn.dataset.deck='glossary';
+      btn.onclick=()=>loadDeck('glossary',btn);
+      tabs.appendChild(btn);
+    }
+  },450);
+}
+
+/* ── NAV ─── */
+const PGS=['home','today','scent','learn','brands','quiz','ai'];;
+function nav(id,bIdx){
+  PGS.forEach(p=>{const el=document.getElementById('pg-'+p);if(el)el.classList.remove('on')});
+  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('on'));
+  const pg=document.getElementById('pg-'+id);
+  if(pg){pg.classList.add('on');const sb=pg.querySelector('.sb');if(sb)sb.scrollTop=0}
+  const btns=document.querySelectorAll('.bni');
+  if(btns[bIdx])btns[bIdx].classList.add('on');
+}
+
+/* ── WEATHER ─── */
+const WD={
+  sunny:'<strong>☀️ 晴れ・低湿度：</strong>香りの拡散が速い。プッシュ数は標準×1.2倍。シトラス・アクア系が最も映える。手首と鎖骨に各1プッシュが理想。',
+  cloudy:'<strong>☁️ 曇り・中湿度：</strong>最も安定した条件。全系統が標準通りに機能する。ウッディ・ムスク系の本領発揮日。',
+  rain:'<strong>🌧 雨・高湿度：</strong>香りがこもりやすい危険日。プッシュ数60%に減らし<strong>足首か膝裏</strong>に付けて下から立ち上がらせる。シトラスは避けること。',
+  night:'<strong>🌙 夜・室内：</strong>密閉空間で香りが凝縮。プッシュ数は1〜2回のみ。アンバー・ムスクを耳の後ろに半プッシュが理想。',
+  summer:'<strong>🌡 真夏・高温：</strong>重い香りが体臭と混合する危険。シトラス系1プッシュのみ。<strong>清潔感に全振り</strong>が最善。',
+  winter:'<strong>❄️ 冬・乾燥：</strong>揮発が遅く香りが長持ちする。ウッディ・スパイス・アンバー系の本領発揮。プッシュ数は標準×0.8倍に抑えてOK。',
+};
+function setW(btn,key){
+  document.querySelectorAll('.wc').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('wRes').innerHTML=WD[key];
+}
+
+/* ════════════════════════════════════
+   FLASHCARD DECKS — 香水専門 7デッキ
+════════════════════════════════════ */
+const DECKS={
+  neuro:[
+    {tag:'🧠 触覚神経科学 #1',q:'CT繊維（C触覚求心性線維）とは何か？なぜ「感情的なタッチの専用受容器」と呼ばれるか？',a:'CT繊維は無髄のC繊維で毛が生えた皮膚（腕・肩・背中・頭部）にのみ存在する。最適刺激：秒速1〜10cm（特に3〜5cm）・体温に近い温度（32〜34℃）・軽い圧力。脊髄→脳幹→島皮質（感情処理）→扁桃体→視床下部（オキシトシン産生）という感情的経路を辿る。手のひら・足裏にはないためタッチする部位の選択が極めて重要。',src:'McGLONE LÖKEN 2009 NATURE NEUROSCIENCE',frags:['秒速5cmタッチプロトコル','偶発的タッチプロトコル']},
+    {tag:'🧠 触覚神経科学 #2',q:'島皮質（Insula）がタッチに対して果たす役割は何か？',a:'島皮質は「自己感覚・感情・共感・身体意識・痛み・快楽」の中枢。CT繊維からの信号が到達し「気持ちいい・安心する・もっと触れていたい」という感情の処理センターとして機能する。島皮質の活性化がオキシトシン産生ニューロンへの信号を媒介し「心地よいタッチ→愛着形成」という経路を実現する。',src:'ISLAND CORTEX',frags:['秒速5cmタッチプロトコル']},
+    {tag:'🧠 触覚神経科学 #3',q:'「具現化認知（Embodied Cognition）」とは何か？恋愛への応用は？',a:'身体的な感覚（温かさ・硬さ・重さ等）が心理的概念（温かい人柄・頑固な性格・重要な問題）に影響を与えるという理論。Williams & Bargh（2008）の温かいカップ研究・Ackerman et al.（2010）の硬い椅子研究が代表例。デートでホットドリンク・柔らかいソファ・暖かい空間を意図的に選ぶことの神経科学的根拠。',src:'EMBODIED COGNITION',frags:['温度設計プロトコル','座席設計戦略（90度法則）']},
+    {tag:'🧠 触覚神経科学 #4',q:'タッチによるオキシトシン分泌が「双方向性」を持つ理由は？',a:'タッチする側（送り手）と触れられる側（受け手）の双方でCT繊維刺激→島皮質→オキシトシン分泌が起きる相互性がある。「触れながら触れられる」という意識がこの双方向性を意識的に活用する方法。スキンシップが両者の絆を同時に強化する唯一の感覚的コミュニケーション。',src:'BIDIRECTIONAL TOUCH',frags:['秒速5cmタッチプロトコル','別れ際ハグプロトコル（20秒の科学）']},
+    {tag:'🧠 触覚神経科学 #5',q:'吊り橋効果の神経科学的メカニズムと限界は？',a:'Dutton & Aron（1974）。恐怖・興奮による生理的覚醒（アドレナリン→ノルアドレナリン上昇）が「恋愛感情」として誤帰属される。限界：本物の信頼感・親密感（オキシトシン基盤）なしでは一時的効果に留まる。EIDOS×FORMA×SONOS×HAPTOSの四感統合の土台の上でこそ最大効果を発揮する補助戦略。',src:'DUTTON ARON 1974',frags:['吊り橋効果の科学的応用']},
+    {tag:'🧠 触覚神経科学 #6',q:'「オキシトシンの受容体増感効果」とは何か？スキンシップへの応用は？',a:'オキシトシンは分泌されるたびに受容体の感受性が高まる（増感）という性質を持つ。これが「段階的なスキンシップがオキシトシン感受性を累積的に高め後の効果を倍増させる」という「スキンシップの雪だるま効果」の神経内分泌学的根拠。急がず段階的に積み上げることが最速の絆形成になる逆説的な理由。',src:'OXYTOCIN SENSITIZATION',frags:['4段階スキンシップ設計']},
+  ],
+  proxemics:[
+    {tag:'📏 プロクセミクス #1',q:'Hallの4つの距離帯のそれぞれの範囲と特性は？',a:'①親密距離（0〜45cm）：体温・呼吸・香りが感じられる。パートナー・家族のみ許可。②個人距離（45〜120cm）：意図的タッチが可能。友人・親しい知人。③社会距離（120〜360cm）：初対面・ビジネスの標準。④公共距離（360cm以上）：見知らぬ他者。初対面デートは社会距離から段階的に個人距離へ移行することが鉄則。',src:'HALL PROXEMICS',frags:['個人距離への自然な移行']},
+    {tag:'📏 プロクセミクス #2',q:'身体の向きと足の向きが「関心度」を示す科学的根拠は？',a:'人間は興味・関心のある方向に無意識に身体を向ける傾向がある（特に足先）。「相手に足が向いている」は扁桃体レベルでの関心を示す最も正直なノンバーバルシグナル。逆に「足が出口に向いている」は意識的には興味があるように見せていても無意識に「離れたい」というシグナルを送っている。',src:'BODY ORIENTATION',frags:['個人距離への自然な移行','座席設計戦略（90度法則）']},
+    {tag:'📏 プロクセミクス #3',q:'ミラーリング（身体的同期）がラポール形成に与える効果は？',a:'相手の姿勢・動作・表情を鏡のように反映することでミラーニューロンシステムが「同族認識（この人は自分に似ている）」を発動させオキシトシン系の「わかり合っている」感覚を作る。無意識のミラーリングが増えることは親密感が高まっているサインでもある。意識的なミラーリングは自然に見せることが重要。',src:'MIRRORING PROXEMICS',frags:['個人距離への自然な移行']},
+  ],
+  touch:[
+    {tag:'🤲 タッチ #1',q:'「偶発的タッチ」が意図的タッチより効果的な神経科学的理由は？',a:'意図的なタッチは相手に「なぜ触れるのか」という前頭前野の分析を起動させる。「たまたま触れた」場合は分析を経由せず直接CT繊維→島皮質→オキシトシン分泌という感情経路が優先される。Guéguen（2003）でタッチあり67% vs なし42%という成功率の差が実証された。',src:'GUÉGUEN 2003',frags:['偶発的タッチプロトコル']},
+    {tag:'🤲 タッチ #2',q:'握手の強さが与える印象の研究（Chaplin et al. 2000）の内容は？',a:'Journal of Personality and Social Psychologyの研究で握手の強さが外向性・感情的安定性・開放性・誠実さの印象と有意に相関。適切な強さ（強すぎず弱すぎず）×体温に近い温かさ×視線×笑顔の組み合わせが「信頼できる人物」という第一印象を確定させる。',src:'CHAPLIN ET AL 2000',frags:['握手プロトコル（第一印象最大化）']},
+    {tag:'🤲 タッチ #3',q:'頭部・髪へのタッチが最大のオキシトシン分泌を引き起こす理由は？',a:'頭部（特に後頭部・髪）はCT繊維の密度が皮膚の中で特に高い部位。霊長類のグルーミング（毛づくろい）行動の神経科学的基盤と同じ経路でオキシトシンが最大量分泌される。「髪に触れる」という行動がパートナー間で持つ特別な意味の神経解剖学的根拠。',src:'GROOMING CT FIBER',frags:['秒速5cmタッチプロトコル']},
+    {tag:'🤲 タッチ #4',q:'20秒ハグのオキシトシン分泌効果を実証した研究は？',a:'Grewen et al.（2005, Biological Psychology）で20秒以上のハグがオキシトシン有意増加と収縮期血圧低下を確認。8秒未満では有意でない。継続的なCT繊維刺激がオキシトシン産生ニューロンの閾値を超える時間が約20秒。「長いハグ」が科学的に最強のスキンシップである根拠。',src:'GREWEN ET AL 2005',frags:['別れ際ハグプロトコル（20秒の科学）']},
+  ],
+  environment:[
+    {tag:'🏠 環境設計 #1',q:'「温かいカップを持つと他者が「温かい人柄」に見える」研究の意味は？',a:'Williams & Bargh（2008, Science）。身体的温かさが社会的「温かさ」に混同される「具現化認知」の実証。デートでホットドリンクを渡すだけで「温かい人」という印象が生成される実用的な応用。暖かい室内・暖炉のある場所を選ぶことの神経科学的根拠でもある。',src:'WILLIAMS BARGH 2008',frags:['温度設計プロトコル']},
+    {tag:'🏠 環境設計 #2',q:'硬い椅子に座ると交渉が硬くなる研究（Ackerman et al. 2010）の内容は？',a:'Science誌掲載。硬い椅子に座った人は交渉で硬い立場を取る傾向がある（身体的硬さ×心理的硬さの混同）。デートでは柔らかいソファ・クッションのある座席が「柔軟な心・開放的な気持ち」を促進する。座席の硬さという些細な環境が会話の方向性を変える。',src:'ACKERMAN ET AL 2010',frags:['座席設計戦略（90度法則）']},
+    {tag:'🏠 環境設計 #3',q:'「吊り橋効果」の実験設計と科学的意味は？',a:'Dutton & Aron（1974）。揺れる吊り橋を渡った後に異性の調査員に会うと好意を感じやすかった。恐怖による生理的覚醒（心拍数上昇・アドレナリン）が「この人に恋愛感情を持っている」という誤帰属を引き起こす。遊園地・ホラー映画・スポーツ体験後の近接が最も効果的な応用。',src:'DUTTON ARON 1974',frags:['吊り橋効果の科学的応用']},
+  ],
+  stage:[
+    {tag:'📈 段階的接近 #1',q:'「スキンシップの4段階設計」の各段階と科学的根拠は？',a:'①個人距離確立（45〜80cm）：扁桃体への安全学習。②偶発的タッチ（前腕・肩）：CT繊維ファーストコンタクト。③意図的CT繊維刺激（腕・背中を秒速3〜5cmで）：オキシトシン本格分泌。④手をつなぐ×20秒ハグ：オキシトシン+エンドルフィン+バソプレシン同時分泌。各段階で受容体増感が起き次の段階の効果が倍増する。',src:'STAGE APPROACH',frags:['4段階スキンシップ設計']},
+    {tag:'📈 段階的接近 #2',q:'ノンバーバルシグナルを読み取る重要性と具体的なサインは？',a:'ポジティブサイン：身体が向く・距離を保つ・笑顔が増える・瞳孔拡大・タッチへの反応がポジティブ（引かない）。ネガティブサイン：身体が向かない・距離を取る・腕を組む・足が出口を向く・タッチを回避する。ネガティブサインは即座に前の段階に戻ることが扁桃体の信頼を維持する最重要原則。',src:'NONVERBAL SIGNALS',frags:['4段階スキンシップ設計','個人距離への自然な移行']},
+  ],
+  glossary:[
+    {tag:'📖 用語 #1',q:'「プロクセミクス（proxemics）」とは何か？',a:'Edward T. Hallが提唱した「人間が対人関係において使用する空間距離についての研究」。ギリシャ語のproximo（近い）に由来。親密距離・個人距離・社会距離・公共距離の4つの距離帯と文化差を研究する学問。恋愛における距離感戦略の科学的基盤。',src:'HALL PROXEMICS GLOSSARY',frags:['個人距離への自然な移行']},
+    {tag:'📖 用語 #2',q:'「具現化認知（Embodied Cognition）」とは何か？',a:'身体的感覚が心理的処理に影響を与えるという認知科学の理論。「温かい→温かい人柄」「硬い→頑固な態度」「重い→重要な問題」などの身体×心理の混同が無意識に起きる。恋愛において環境設計（温度・座席・触覚）が感情評価に直接影響を与える根拠。',src:'EMBODIED COGNITION GLOSSARY',frags:['温度設計プロトコル','座席設計戦略（90度法則）']},
+    {tag:'📖 用語 #3',q:'「有毛皮膚（hairy skin）」と「無毛皮膚（glabrous skin）」の違いは？',a:'有毛皮膚：毛が生えた皮膚（腕・肩・背中・頭部）。CT繊維が存在し感情的タッチを処理する。無毛皮膚：手のひら・足裏。CT繊維が存在せず圧覚・振動覚のみ処理する。「腕や肩へのタッチ」が手のひらへのタッチより感情的に強い効果を持つ解剖学的根拠。',src:'HAIRY GLABROUS SKIN',frags:['秒速5cmタッチプロトコル']},
+    {tag:'📖 用語 #4',q:'「ピーク・エンドの法則」をスキンシップ設計に応用する方法は？',a:'Kahneman。人は体験のピーク（最も感情的な瞬間）とエンド（最後の印象）を最も強く記憶する。デートのエンド（別れ際）の20秒ハグが「また会いたい・あの時の温もりが忘れられない」という最強の記憶を作る。スキンシップの設計においても「最後をどう終わるか」が最重要。',src:'PEAK END RULE',frags:['別れ際ハグプロトコル（20秒の科学）']},
+    {tag:'📖 用語 #5',q:'「ラポール（Rapport）」と「スキンシップ」の関係は？',a:'ラポールとは「信頼と共感に基づく良好な関係」。スキンシップはラポールを最速で形成する手段の一つ。タッチによるオキシトシン分泌がラポールの神経化学的基盤を作る。ラポールが確立されていないスキンシップは扁桃体の「危険」判定を引き起こす。「ラポールの後にスキンシップ」が鉄則。',src:'RAPPORT TOUCH',frags:['4段階スキンシップ設計','個人距離への自然な移行']},
+  ],
+  anatomy:[
+    {tag:'🔬 解剖学 #1',q:'ペンフィールドマップ（体性感覚野の身体地図）が示す「唇が最強の性感帯」である根拠は？',a:'Penfield & Rasmussen（1950）の体性感覚野マッピングで唇が占める脳内面積は手のひら全体に匹敵する。体の表面積に占める割合は数%だが脳が割り当てるリソース（神経処理能力）が巨大であることが「唇への刺激が最大の快楽情報量を持つ」解剖学的根拠。これがキスが「人体で最も情報量の多いタッチ行為」である神経解剖学的証明（GEUSTOと統合）。',src:'PENFIELD RASMUSSEN 1950',frags:['偶発的タッチプロトコル','秒速5cmタッチプロトコル']},
+    {tag:'🔬 解剖学 #2',q:'男性の勃起が「副交感神経（S2-4）」に依存し緊張・不安で機能しない解剖学的理由は？',a:'骨盤内臓神経（仙骨副交感神経S2-4）がNO（一酸化窒素）を産生→陰茎海綿体平滑筋弛緩→血液流入→勃起。交感神経（腰部L1-2）は射精を担当するが勃起を抑制する方向に働く。緊張・不安・不信感→交感神経優位→勃起抑制という直接的な解剖学的因果関係がある。「安心できる環境・信頼関係」が男女ともに性的機能の解剖学的前提条件。',src:'PELVIC SPLANCHNIC NERVE',frags:['4段階スキンシップ設計','個人距離への自然な移行']},
+    {tag:'🔬 解剖学 #3',q:'「特異的性感帯」と「非特異的性感帯」の解剖学的違いは？',a:'特異的（Specific）：粘膜皮膚境界部位（唇・陰核・外陰・乳頭・亀頭・肛門周辺）。特殊な解剖構造でマイスナー小体・自由神経終末が超高密度。非特異的（Non-specific）：有毛皮膚と同様の神経密度だが「増強された快感」が生じる部位（首・腋窩・内腕・内腿等）。非特異的帯の感受性は心理的条件付け・繰り返しの刺激・感情状態によって大幅に変化する（Winkelmann解剖分類）。',src:'WINKELMANN EROGENOUS ANATOMY',frags:['秒速5cmタッチプロトコル']},
+    {tag:'🔬 解剖学 #4',q:'ポリヴェーガル理論（Porges 1994）が示す「安全と恋愛」の神経解剖学的関係は？',a:'迷走神経に「古い迷走神経（背側）＝凍りつき・シャットダウン」と「新しい迷走神経（腹側）＝社会的関与・愛着・親密感・笑い」の2系統があることをPortgesが提唱。全ての恋愛的スキンシップ（CT繊維刺激・20秒ハグ・囁き声）は「腹側迷走神経複合体」を活性化させ「この人は安全だ」という神経学的シグナルを送る。五感統合戦略の全てはこの「安全の神経学」の実践。',src:'PORGES 1994 POLYVAGAL',frags:['4段階スキンシップ設計','別れ際ハグプロトコル（20秒の科学）']},
+    {tag:'🔬 解剖学 #5',q:'「自律神経の最適バランス」が最良の性的・恋愛的体験を生む解剖学的理由は？',a:'副交感神経ベースライン（安心・信頼・オキシトシン産生・性器血流増加・骨盤底筋弛緩）の上に交感神経の適度な興奮（ドーパミン・ノルアドレナリン・瞳孔拡大・アポクリン腺分泌）が乗る状態が最適。副交感神経のみ→快楽なし。交感神経過剰→不安・勃起抑制・骨盤底筋収縮→機能阻害。「安心できる相手にときめく」という感情の完全な解剖学的説明がここにある。',src:'ANS BALANCE',frags:['4段階スキンシップ設計','吊り橋効果の科学的応用']},
+    {tag:'🔬 解剖学 #6',q:'性感帯の「個人差が極めて大きい」ことを示したNummenmaa（2016）の研究結果は？',a:'フィンランドと英国の704名を対象に41身体部位を感度評価した最大規模の性感帯研究。平均値のパターンはあるが個人差が極めて大きく「平均的な性感帯マップ」の実用性は限定的。最重要な知見：「唯一信頼できる性感帯マップは相手のフィードバック（非言語・言語両方）をリアルタイムで読み取ることのみ」。地図より「フィードバックを読む技術」の方が圧倒的に重要。',src:'NUMMENMAA 2016',frags:['秒速5cmタッチプロトコル','4段階スキンシップ設計']},
+    {tag:'🔬 解剖学 #7',q:'CT繊維（C触覚求心性線維）が「有毛皮膚にのみ存在する」ことの恋愛的な意味は？',a:'CT繊維は毛包に付着した有毛皮膚（腕・肩・背中・頭部・大腿）にのみ存在し手のひら・足裏（無毛皮膚）には存在しない。これが「背中・腕への撫でが手のひらへの握りより感情的に強い効果を持つ」神経解剖学的根拠。タッチする部位の選択が「感情的タッチ（CT繊維経由）」か「識別的タッチ（マイスナー小体経由）」かを決定する。',src:'CT FIBER HAIRY SKIN',frags:['秒速5cmタッチプロトコル','偶発的タッチプロトコル']},
+    {tag:'🔬 解剖学 #8',q:'「射精と勃起が拮抗する」という男性の自律神経解剖の実際は？',a:'勃起＝副交感神経（骨盤内臓神経S2-4）→NO産生→海綿体弛緩→血流増加。射精＝交感神経（腰部交感神経幹L1-2）→精管・精嚢・前立腺の収縮。性的覚醒の最終段階で交感神経優位になることで勃起の質が変化し射精が起きる。これが「安心感の維持が最良の性的機能を保つ」理由の解剖学的根拠。交感神経過剰（パフォーマンス不安）が勃起を最も強く阻害するメカニズム。',src:'SYMPATHETIC PARASYMPATHETIC ERECTION',frags:['個人距離への自然な移行']},
+  ],
+  night:[
+    {tag:'🌙 夜の科学 #1',q:'クリトリスが「人体最密度の性感神経叢」である解剖学的根拠は？',a:'O\'Connell（1998, Journal of Urology）の解剖研究でクリトリスの神経線維数が約8,000本（陰茎の2倍以上）であることが確認された。可視部分はごく一部で内部にクルラ（脚部）・前庭球が伸びる「氷山構造」を持つ。陰部神経・陰核背神経が高密度に分布し島皮質→扁桃体→視床下部（オキシトシン産生）への直接経路を持つ人体最強の性感神経叢。',src:"O'CONNELL 1998 J.UROLOGY",frags:['秒速5cmタッチプロトコル','前戯CT繊維プロトコル']},
+    {tag:'🌙 夜の科学 #2',q:'KomisarukのfMRI研究が示した「子宮頸部刺激が迷走神経を活性化する」意味は？',a:'Komisaruk et al.（2011）のfMRI研究で脊髄損傷患者（脊髄が完全切断）でも子宮頸部・腟頚部への刺激で快楽が感じられることを確認した。これは迷走神経（第10脳神経）が脊髄を完全にバイパスして脳幹→視床下部に直接信号を送ることを証明。迷走神経はオキシトシン産生ニューロンへの最強の直接経路でありこの発見が「深い性的体験が最大のオキシトシン+絆形成をもたらす」根拠。',src:'KOMISARUK ET AL 2011 fMRI',frags:['前戯CT繊維プロトコル']},
+    {tag:'🌙 夜の科学 #3',q:'「二重制御モデル（Dual Control Model）」が女性の性的反応を理解するのに重要な理由は？',a:'Bancroft & Janssen（2000）が提唱。女性の性的覚醒はアクセル（SES：性的興奮システム）とブレーキ（SIS：性的抑制システム）の両方が同時に動くシステム。不安・ストレス・不信感・心配事全てがブレーキとして機能し物理的な刺激があってもオルガズムを阻害する。「アクセルを踏む前にブレーキを外す」＝「安心感・信頼感・精神的安全性の確立」が女性の性的反応の必要条件。',src:'BANCROFT JANSSEN 2000',frags:['個人距離への自然な移行','4段階スキンシップ設計']},
+    {tag:'🌙 夜の科学 #4',q:'「外周から中心へのCT繊維刺激」がオルガズムの質を決める神経内分泌学的根拠は？',a:'オキシトシンの受容体増感効果（分泌されるたびに感受性が高まる）により背中→腰→太腿→外陰部という「外周から中心への段階的CT繊維刺激」が各段階でオキシトシンを累積させ性感神経叢への感受性を段階的に高める。「急ぐほど到達できない」という逆説の神経内分泌学的根拠。十分な前戯がオルガズムの質を決定する科学的根拠。',src:'OXYTOCIN SENSITIZATION',frags:['秒速5cmタッチプロトコル','4段階スキンシップ設計']},
+    {tag:'🌙 夜の科学 #5',q:'「濡れる」という反応が「安心感・信頼感」と直接リンクしている神経科学的理由は？',a:'腟の潤滑（浸出液分泌）は副交感神経優位（安心・リラックス状態）でのみ起きる腟壁への血流増加によって引き起こされる。交感神経優位（緊張・不安・不信感）では物理的にこの反応が抑制される。「濡れる＝副交感神経優位＝安心できる状態」は生理的証明。「信頼関係・安心感の構築」が「技術」より重要である女性性生理学の根本原理。',src:'ANS VAGINAL LUBRICATION',frags:['4段階スキンシップ設計','座席設計戦略（90度法則）']},
+    {tag:'🌙 夜の科学 #6',q:'女性オルガズム時に「30以上の脳領域が活性化する」ことの恋愛的意味は？',a:'KomisarukのfMRI研究で確認。側坐核（ドーパミン報酬・快楽）・海馬（記憶形成）・小脳（筋協調）・前頭前野（一時的抑制）・視床下部（オキシトシン産生）が同時に最大活性化。これが「一生忘れられない記憶の形成」の神経解剖学的根拠。特に海馬の強烈な活性化が「あの時の彼との体験が忘れられない」という性的記憶の永続性を作る。',src:'KOMISARUK fMRI',frags:['別れ際ハグプロトコル（20秒の科学）']},
+    {tag:'🌙 夜の科学 #7',q:'排卵期（生理周期14日目付近）に性的感受性が最大化する内分泌学的理由は？',a:'排卵期にエストロゲン（最高値）+テストステロン（LHサージに伴う増加）が同時にピークを迎える。テストステロンが性欲・感受性を高め、エストロゲンが腟粘膜の維持・潤滑液分泌・CT繊維の感受性を最大化させる。同時期に嗅覚感度も最高値になる（EIDOS効果最大化）。「生理周期が五感の全ての感受性を変化させる」という五感統合戦略の重要な変数。',src:'OVULATION HORMONES',frags:['個人距離への自然な移行','4段階スキンシップ設計']},
+    {tag:'🌙 夜の科学 #8',q:'「オキシトシン×子宮収縮の正のフィードバックループ」とは何か？',a:'性的刺激→オキシトシン分泌（視床下部）→子宮収縮（オキシトシン受容体が豊富）→子宮からさらにオキシトシン放出→次の収縮という連鎖的な増幅ループ。このループが形成されると快楽が「波が重なるように深まり続ける」状態になる。「深い体験が一生忘れられない記憶と絆になる」神経内分泌学的完全解説。バソプレシン絆形成と同時進行で「この人しかいない」感情が形成される。',src:'OXYTOCIN FEEDBACK LOOP',frags:['別れ際ハグプロトコル（20秒の科学）','4段階スキンシップ設計']},
+  ],
+  romance:[
+    {tag:'❤️ 恋愛心理 #1',q:'「四感統合（嗅覚×視覚×聴覚×触覚）」が別れ際のハグで完成する理由は？',a:'抱擁の瞬間に香り（EIDOS）×服装の温もり（FORMA）×囁く声（SONOS）×体温のタッチ（HAPTOS）が同時に届く。四感全てが統合された最強の感情記憶として海馬に刻まれる。記憶の強度は複数の感覚が同時に関与するほど指数関数的に高まる（記憶の多感覚強化効果）。',src:'MULTISENSORY MEMORY',frags:['別れ際ハグプロトコル（20秒の科学）','初対面タッチプロトコル']},
+    {tag:'❤️ 恋愛心理 #2',q:'「スキンシップの記憶」がなぜ強力な絆になるのか？',a:'タッチ×オキシトシン+エンドルフィン+バソプレシンの同時分泌が「この人との体験＝快楽+絆+独占感」という三重の感情記憶として海馬に保存される。香りのプルースト効果と同様に「あの時の温もり」が想起されるたびにオキシトシン系が再活性化し「また会いたい」という欲求を生み続ける。',src:'TOUCH MEMORY',frags:['秒速5cmタッチプロトコル','別れ際ハグプロトコル（20秒の科学）']},
+    {tag:'❤️ 恋愛心理 #3',q:'「段階的スキンシップ」が「焦るより確実」な神経科学的理由は？',a:'オキシトシンの受容体増感効果により段階的に積み上げるほど感受性が高まり後の効果が倍増する。逆に段階を飛ばすと扁桃体の「危険・不快・不信感」というネガティブ記憶が形成されオキシトシンとは逆方向のコルチゾール上昇が起きる。「急がないことが最速」という逆説の神経科学的根拠。',src:'STAGE OXYTOCIN',frags:['4段階スキンシップ設計']},
+    {tag:'❤️ 恋愛心理 #4',q:'「手をつなぐ」という行為が持つ神経科学的な特別な意味は？',a:'手をつなぐと双方の手首・前腕内側のCT繊維が刺激を受け相互オキシトシン分泌が起きる。歩きながら手をつなぐことでCT繊維への継続的刺激が維持され「歩く×話す×タッチ」の三重刺激がオキシトシンを累積的に分泌させる。「手をつなぐ」が恋愛関係の象徴として文化を超えて機能する神経生物学的根拠。',src:'HAND HOLDING',frags:['4段階スキンシップ設計','別れ際ハグプロトコル（20秒の科学）']},
+    {tag:'❤️ 恋愛心理 #5',q:'EIDOS×FORMA×SONOS×HAPTOSの「四感統合戦略」の完成形とは？',a:'嗅覚（シグネチャーセントのプルースト効果）×視覚（シグネチャースタイルの記憶の錨）×聴覚（シグネチャーボイスのオキシトシン）×触覚（段階的スキンシップのバソプレシン絆）が統合された時、相手の脳内に「会うたびに全感覚でオキシトシン+バソプレシン+エンドルフィンが同時発動する絆のシステム」が形成される。これが人類最強の恋愛設計の完成形。',src:'FOUR SENSES INTEGRATION',frags:['別れ際ハグプロトコル（20秒の科学）','初対面タッチプロトコル']},
+  ],
+};
+
+/* ── FLASHCARD ENGINE ─── */
+let curDeck=[],cIdx=0;
+function loadDeck(name,btn){
+  document.querySelectorAll('.dt').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  curDeck=[...DECKS[name]];cIdx=0;
+  document.getElementById('deckCnt').textContent=curDeck.length+'枚';
+  showCard();
+}
+function showCard(){
+  if(!curDeck.length)return;
+  const c=curDeck[cIdx];
+  document.getElementById('cfTag').textContent=c.tag;
+  document.getElementById('cfQ').textContent=c.q;
+  document.getElementById('cfA').textContent=c.a;
+  document.getElementById('cfSrc').textContent=c.src;
+  // 関連香水セクション
+  const fragEl=document.getElementById('cfFrags');
+  if(c.frags&&c.frags.length){
+    const chips=c.frags.map(f=>{
+      const bd=BD.find(b=>b.name===f||b.name.includes(f)||f.includes(b.name.split(' ')[0]&&b.name.split(' ')[1]?b.name.split(' ').slice(0,2).join(' '):b.name));
+      const emoji=bd?bd.emoji:'🧴';
+      const brand=bd?bd.brand:'';
+      return `<span class="cf-frag-chip" onclick="jumpToBrand('${f}')"><span class="chip-emoji">${emoji}</span>${brand?brand+' ':''}<strong>${f}</strong></span>`;
+    }).join('');
+    fragEl.innerHTML=`<div class="cf-frags-lbl">この効果がある香水</div><div class="cf-frag-chips">${chips}</div>`;
+    fragEl.style.display='block';
+  }else{
+    fragEl.style.display='none';
+  }
+  document.getElementById('cardFront').classList.remove('hidden');
+  document.getElementById('cardBack').classList.add('hidden');
+  document.getElementById('flipBtn').textContent='答えを見る ✨';
+  document.getElementById('ctrlPg').textContent=(cIdx+1)+' / '+curDeck.length;
+  updateDots();
+}
+
+function jumpToBrand(fragName){
+  // ブランドライブラリページに移動して該当カードを開く
+  nav('brands',3);
+  setTimeout(()=>{
+    // 全ブランド表示
+    document.querySelectorAll('.bc').forEach(b=>b.classList.remove('on'));
+    const allBtn=document.querySelector('.bc');
+    if(allBtn)allBtn.classList.add('on');
+    renderFrags('すべて');
+    // 該当カードを探して開く
+    setTimeout(()=>{
+      const cards=document.querySelectorAll('.fc');
+      cards.forEach(card=>{
+        const nameEl=card.querySelector('.fc-name');
+        if(nameEl&&(nameEl.textContent.includes(fragName)||fragName.includes(nameEl.textContent.split(' ')[0]))){
+          card.classList.add('open');
+          card.scrollIntoView({behavior:'smooth',block:'center'});
+        }
+      });
+    },200);
+  },100);
+}
+function flipCard(){
+  const front=document.getElementById('cardFront');
+  const back=document.getElementById('cardBack');
+  const btn=document.getElementById('flipBtn');
+  if(!front.classList.contains('hidden')){
+    front.classList.add('hidden');back.classList.remove('hidden');
+    btn.textContent='質問に戻る ↩';
+  }else{
+    front.classList.remove('hidden');back.classList.add('hidden');
+    btn.textContent='答えを見る ✨';
+  }
+}
+function nextCard(){cIdx=(cIdx+1)%curDeck.length;showCard()}
+function updateDots(){
+  const el=document.getElementById('pdots');el.innerHTML='';
+  const total=curDeck.length;
+  const show=Math.min(total,12);
+  const start=Math.max(0,Math.min(cIdx-5,total-show));
+  for(let i=start;i<start+show;i++){
+    const d=document.createElement('div');
+    d.className='pd'+(i<cIdx?' done':i===cIdx?' cur':'');
+    el.appendChild(d);
+  }
+}
+
+/* ════════════════════════════════════
+   BRANDS DATA — 35+ 香水
+════════════════════════════════════ */
+
+
+const BD=[
+  // ── 距離感・プロクセミクス ──
+  {brand:'距離感・プロクセミクス',color:'#9a3412',emoji:'📏',name:'個人距離への自然な移行',type:'プロクセミクス×段階的接近',notes:'Step1：社会距離（120cm）から会話を始める\nStep2：共通の物（スマホ等）を見せる口実で80cmへ\nStep3：隣を歩く・並んで座るで45cmへ',neuro:'Hallの4つの距離帯理論の応用。扁桃体は急激な距離縮小を「脅威」として処理する。段階的な距離の縮小が扁桃体に「この距離は安全」と学習させ次のステップへの許可を自動的に生成する。恋愛における距離縮小はオキシトシン系への最初の投資。',hormones:['セロトニン','オキシトシン'],hormone_detail:[{ico:'😌',name:'セロトニン — 「安全な距離」の確立',desc:'個人距離（45〜120cm）に自然に入ることで相手の扁桃体が「この人は安全で距離感を弁えている」と処理する。セロトニン系の安心感が「次はもっと近くてもいい」という許可を無意識に生成する。'},{ico:'🤝',name:'オキシトシン — 距離の縮小で分泌開始',desc:'個人距離に入ることで相手の体温・呼吸・香りが微細に感知され始める。これがCT繊維刺激の前段階としてオキシトシン系を準備状態にする。「距離を縮めること自体」がオキシトシン分泌の開始トリガー。'}],note_science:'90度の角度（L字型配置）が正面対面より「親密で協力的」な関係を感じさせる。カフェでは斜め横の席を選ぶことが最初の物理的戦略。',good_scenes:['初対面デート','カフェ','並んで歩く時','映画・コンサート'],bad_scenes:['急激な距離縮小（逆効果）'],season:['通年'],rating:{誠実さ:85,色気:72,信頼感:90,初対面:92,汎用性:97},tip:'「物を見せる」「一緒に写真を見る」「スマホで調べる」が距離縮小の最も自然な口実。',pairing:'段階的接近デッキ「プロクセミクスの科学」カード参照'},
+  {brand:'距離感・プロクセミクス',color:'#9a3412',emoji:'🪑',name:'座席設計戦略（90度法則）',type:'座席配置×親密感形成',notes:'選択：正面対面を避け斜め横（90度）に座る\n距離：肘が触れる可能性がある距離（50〜60cm）\n環境：柔らかいソファ・温かい空間を優先',neuro:'Ackerman et al.（2010, Science）の触覚具現化理論。硬い椅子→心理的硬さ・柔らかいソファ→開放的な心という身体感覚×心理の混同が確認されている。90度配置は「競争（正面）」でも「冷漠（横向き）」でもなく「協力・親密」の中間点として脳が処理する。',hormones:['セロトニン','GABA'],hormone_detail:[{ico:'😌',name:'セロトニン×GABA — 柔らかい環境の弛緩効果',desc:'柔らかい座席がGABA様の筋弛緩効果を生み全身の緊張を緩める。身体の緊張がほぐれると扁桃体の防衛機制も同時に緩む（身体×心理の双方向性）。「この場所にいると楽になる」という感覚の神経科学的根拠。'}],note_science:'室温が高い環境では他者への信頼感・親近感が増加する（Ijzerman & Semin 2010）。冬のデートで暖かい室内・暖炉のある場所を選ぶことの科学的根拠。',good_scenes:['カフェ選び','デートの席設定','家でのデート'],bad_scenes:['なし（常に意識できる）'],season:['通年'],rating:{誠実さ:82,色気:75,信頼感:88,初対面:85,汎用性:90},tip:'「どこに座る？」という選択の瞬間がデートの方向性を決める。斜め横を選べる状況を積極的に作る。',pairing:'環境設計デッキ「触覚具現化理論」カード参照'},
+
+  // ── タッチ・スキンシップ ──
+  {brand:'タッチ・スキンシップ',color:'#7c3aed',emoji:'🤲',name:'偶発的タッチプロトコル',type:'アクシデンタルタッチ×CT繊維',notes:'機会：笑いながら話す時・同意する時\n部位：前腕・手の甲・肩\n方法：0.5〜1秒の軽い接触→すぐに離す',neuro:'Guéguen（2003）の研究でタッチありの場合67% vs なし42%でアプローチの成功率が有意に異なる。「偶発的」に見えることで相手の前頭前野の分析を回避し直接CT繊維→島皮質→オキシトシン分泌という感情経路を活性化させる。',hormones:['オキシトシン','ドーパミン'],hormone_detail:[{ico:'🤝',name:'オキシトシン — CT繊維の直接刺激',desc:'前腕・肩はCT繊維の密度が高い部位。軽い接触がCT繊維を刺激し島皮質経由でオキシトシン産生ニューロンを活性化させる。「たまたま触れた」感覚が分析を回避させオキシトシン分泌の効率を高める。'},{ico:'⚡',name:'ドーパミン — 「もしかして」の期待感',desc:'偶発的なタッチが「これは意図的だったのか？」というドーパミン的予測を生む。答えが曖昧なほど予測報酬機構が活性化され「この人のことが気になる」という感情が強化される。'}],note_science:'Crusco & Wetzel（1984）のレストラン研究でウェイターの軽いタッチがチップを22%増加させた。タッチが人間関係の好意度を上げる普遍的な効果の根拠。',good_scenes:['会話が盛り上がっている時','初対面の食事','笑っている場面'],bad_scenes:['相手が緊張している時','初対面すぐ'],season:['通年'],rating:{誠実さ:80,色気:88,信頼感:82,初対面:78,汎用性:90},tip:'「笑いながら相手の腕に触れる」が最も自然。笑いのエンドルフィン効果+オキシトシンが同時発動する黄金コンボ。',pairing:'タッチデッキ「偶発的接触の科学（Guéguen研究）」カード参照'},
+  {brand:'タッチ・スキンシップ',color:'#7c3aed',emoji:'💆',name:'秒速5cmタッチプロトコル',type:'CT繊維最適速度×オキシトシン最大化',notes:'速度：秒速3〜5cm（ゆっくり優しく）\n部位：腕・肩・背中（CT繊維密度が高い部位）\n時間：20秒以上の継続（オキシトシン累積効果）',neuro:'McGlone et al. / Löken et al.（2009, Nature Neuroscience）でCT繊維の最適刺激速度が秒速1〜10cm（特に3〜5cm）・体温に近い温度・軽い圧力であることが確認された。この速度での優しい撫でが「愛情的なタッチ」として脳が本能的に処理する唯一の刺激。',hormones:['オキシトシン','エンドルフィン'],hormone_detail:[{ico:'🤝',name:'オキシトシン×CT繊維 — 「秒速5cm」の科学',desc:'CT繊維（無髄C繊維）は秒速3〜5cmの刺激に最大反応する。この速度での撫でが島皮質→視床下部→オキシトシン産生ニューロンという経路を最も効率的に活性化させる。「ゆっくり優しく」が科学的に最強のタッチ。'},{ico:'😄',name:'エンドルフィン — 継続タッチの快楽効果',desc:'20秒以上の継続的なタッチがエンドルフィン分泌を促進し「気持ちいい・もっとそばにいたい」という快楽記憶を形成する。オキシトシンとエンドルフィンの同時分泌が「この人の近くが最高」という絆感情を最速で作る。'}],note_science:'Grewen et al.（2005, Biological Psychology）で20秒以上のハグがオキシトシン有意増加+収縮期血圧低下を確認。「長いハグ」が科学的に最も効果的なスキンシップ。',good_scenes:['2回目以降のデート','関係が深まっている時','別れ際'],bad_scenes:['初対面・まだ距離がある時'],season:['通年'],rating:{誠実さ:85,色気:92,信頼感:88,初対面:55,汎用性:82},tip:'「ゆっくり・優しく・20秒」の三原則。急ぐとマイスナー小体（圧覚）が反応し心地よさが下がる。',pairing:'タッチデッキ「CT繊維とオキシトシン（Nature Neuroscience研究）」カード参照'},
+  {brand:'タッチ・スキンシップ',color:'#7c3aed',emoji:'🤝',name:'握手プロトコル（第一印象最大化）',type:'握手×第一印象×信頼感',notes:'強さ：強すぎず弱すぎず（相手の手に合わせる）\n温度：手を温めてから（32〜34℃）\nセット：視線+笑顔+名前を同時に',neuro:'Chaplin et al.（2000, Journal of Personality and Social Psychology）で握手の強さが外向性・感情的安定性・誠実さの印象と有意に相関することが実証された。適切な握手は「信頼できる人物」という第一印象を確定させる最初のCT繊維刺激。',hormones:['セロトニン','オキシトシン'],hormone_detail:[{ico:'😌',name:'セロトニン — 「信頼できる人物」の即時判定',desc:'適切な握手の強さ×温かさ×視線が扁桃体に「安全・信頼できる・感情的に安定している」というセロトニン信号を送る。初対面の第一印象を最速で好転させるCT繊維への最初の意図的なアプローチ。'},{ico:'🤝',name:'オキシトシン — 手のひらのCT繊維',desc:'手のひらにはCT繊維が少ないが手首・前腕内側にはCT繊維が豊富。握手後の「手首を少し撫でるような動作」が意識しない程度にCT繊維を刺激し初対面でのオキシトシン分泌を促進する。'}],note_science:'「手を温めてから握手する」ことの効果はWilliams & Bargh（2008）の温度×人物評価研究と一致する。温かい接触が「温かい人柄」という評価を直接生成する。',good_scenes:['初対面全般','ビジネスデート','合コン'],bad_scenes:['なし（全シーンで有効）'],season:['通年'],rating:{誠実さ:92,色気:72,信頼感:95,初対面:97,汎用性:97},tip:'「握手→名前を呼ぶ→笑顔」の三点セットが初対面最強のオープニング。手を温めておくことを忘れずに。',pairing:'状況別デッキ「初対面プロトコル」カード参照'},
+
+  // ── 環境設計 ──
+  {brand:'環境設計',color:'#B45309',emoji:'🏠',name:'温度設計プロトコル',type:'室温×温かい飲み物×身体的温かさ',notes:'飲み物：ホットドリンクを渡す（最初の一杯）\n場所：暖かい室内・暖炉のある空間\nハンドウォーマー：冬のデートで手を温める',neuro:'Williams & Bargh（2008, Science）で温かいカップを持つだけで見知らぬ人への評価が「より温かい人柄」に変化することが確認された（身体的温度×心理的温度の混同・具現化認知）。さらにIjzerman & Semin（2010）で室温が高いと他者への信頼感・親近感が増加することが確認。',hormones:['セロトニン','オキシトシン'],hormone_detail:[{ico:'😌',name:'セロトニン×GABA — 身体的温かさの弛緩効果',desc:'身体が温まると全身の筋肉が弛緩し扁桃体の防衛機制も緩む。「温かい場所にいる→安全・リラックス」という原始的な安心感がセロトニン×GABA系を活性化させ心理的な開放性を高める。'},{ico:'🤝',name:'オキシトシン — 「温かさ」の混同効果',desc:'身体的な温かさ（熱い飲み物・暖かい室内）が社会的な「温かさ（親しみ・信頼）」として脳が混同処理する具現化認知。ホットドリンクを渡すだけで「この人は温かい人だ」という評価が生成される。'}],note_science:'冬のデートで暖炉のある場所・暖かいカフェを選ぶことが科学的に恋愛感情形成に有利。「寒い場所でのデート」も体温上昇への欲求で互いに接近しやすくなる効果がある（吊り橋効果の応用）。',good_scenes:['冬のデート','室内デート全般','緊張している相手への対応'],bad_scenes:['夏（暑すぎは逆効果）'],season:['秋','冬'],rating:{誠実さ:85,色気:72,信頼感:90,初対面:85,汎用性:82},tip:'「これ飲みますか？」とホットドリンクを渡す。たったこれだけで「温かい人だ」という印象が脳で処理される。',pairing:'環境設計デッキ「具現化認知理論（Williams研究）」カード参照'},
+  {brand:'環境設計',color:'#B45309',emoji:'🌉',name:'吊り橋効果の科学的応用',type:'生理的覚醒×感情の誤帰属×恋愛感情',notes:'場所：軽い緊張感のある体験（高い場所・アトラクション・スポーツ）\n方法：体験後に近くにいる・タッチの機会を作る\nポイント：「ドキドキはあなたのせい」と脳が誤帰属する',neuro:'Dutton & Aron（1974）の吊り橋実験で恐怖・興奮による生理的覚醒（心拍数上昇・アドレナリン分泌）が「この人に恋愛感情を持っている」という感情の誤帰属（ミスアトリビューション）を引き起こすことが実証された。',hormones:['ノルアドレナリン','ドーパミン'],hormone_detail:[{ico:'💓',name:'ノルアドレナリン×ドーパミン — 誤帰属の機構',desc:'生理的覚醒（心拍数上昇・発汗・興奮）状態で近くにいる人物に「なぜドキドキしているか」の原因を探す脳が「この人のせいだ」と誤って帰属する。アドレナリン→ノルアドレナリン→「恋愛のドキドキ」という混同が起きる。'}],note_science:'吊り橋効果は恋愛感情の「引き金」として機能するが本物の信頼感・親密感の土台がない場合は一時的な効果に留まる。三感統合（EIDOS×FORMA×SONOS×HAPTOS）の土台の上でこそ最大効果を発揮する補助的な戦略。',good_scenes:['遊園地・絶叫系デート','スポーツ体験','映画（ホラー・アクション）'],bad_scenes:['真剣な告白の場（不安定な感情が邪魔する）'],season:['通年'],rating:{誠実さ:70,色気:85,信頼感:72,初対面:78,汎用性:80},tip:'体験後の「帰り道・食事」が最も感情の誤帰属が起きやすい。その瞬間に近くにいることが戦略の核心。',pairing:'状況別デッキ「吊り橋効果の応用と限界」カード参照'},
+
+  // ── 段階的接近プロトコル ──
+  {brand:'段階的接近プロトコル',color:'#14532d',emoji:'📈',name:'4段階スキンシップ設計',type:'オキシトシン累積×段階的絆形成',notes:'Phase1：個人距離の確立\nPhase2：偶発的タッチの導入\nPhase3：意図的CT繊維刺激\nPhase4：20秒ハグ×手をつなぐ',neuro:'各段階のスキンシップがオキシトシン分泌を累積的に積み上げる「オキシトシン貯蓄戦略」。急激な進行は扁桃体の警戒反応を引き起こし全てをリセットする。段階的な積み上げがバソプレシン絆形成への最も安全で確実な経路。',hormones:['オキシトシン','バソプレシン'],hormone_detail:[{ico:'🤝',name:'オキシトシン累積 — 段階的分泌の雪だるま効果',desc:'スキンシップの各段階でオキシトシンが分泌され蓄積される。オキシトシンには「受容体増感効果」があり分泌されるたびに次の刺激への感受性が高まる。つまり段階的なスキンシップがオキシトシン感受性を高め後の効果を倍増させる。'},{ico:'🔒',name:'バソプレシン — 絆の固定化',desc:'オキシトシンの累積的分泌がバソプレシン系を活性化させ「この人だけ」という独占的な絆感情を形成する。20秒ハグや手をつなぐ体験がこの段階を急速に進める。バソプレシンが分泌された後は「また会いたい」という欲求が生物学的に維持される。'}],note_science:'各段階での相手のノンバーバルサイン（身体が向く・距離を保つ・笑顔が増える）を読み取ることが最重要。サインがポジティブであれば次の段階へ。ネガティブなサインは即座に前の段階に戻る。',good_scenes:['デート全般（段階に応じて）','関係の進展を意識する時'],bad_scenes:['段階を飛ばす試み（逆効果）'],season:['通年'],rating:{誠実さ:92,色気:88,信頼感:95,初対面:70,汎用性:90},tip:'「段階を飛ばさない」が最重要。扁桃体の許可なしに進むと全てがリセットされる。',pairing:'段階的接近デッキ「4段階設計の科学」カード参照'},
+
+  // ── 状況別プロトコル ──
+  {brand:'状況別プロトコル',color:'#0c1a0e',emoji:'🌸',name:'初対面タッチプロトコル',type:'初対面×握手×偶発的タッチ',notes:'開始：手を温めてから握手\n5分以内：名前+笑顔+視線のセット\nタッチ機会：何かを見せる・渡す・説明する',neuro:'初対面で最も重要なのは扁桃体の「安全判定」を早期にクリアすること。適切な握手が最初のCT繊維刺激として機能しセロトニン×オキシトシンの連鎖を開始させる。偶発的タッチへの移行は会話が盛り上がってから（最低10〜15分後）。',hormones:['セロトニン','オキシトシン'],hormone_detail:[{ico:'😌',name:'セロトニン — 握手で「安全」を確立',desc:'温かく適切な握手が扁桃体に「危険なし・信頼できる・感情的に安定している」というセロトニン信号を送る。初対面の最初の15秒で行われる最強の触覚的第一印象形成。'},{ico:'🤝',name:'オキシトシン — 偶発的タッチで加速',desc:'会話が盛り上がった自然な流れでの偶発的タッチがCT繊維を刺激しオキシトシン分泌を開始させる。初対面でのオキシトシン分泌が海馬に「この人との初めての楽しい記憶」として保存される。'}],note_science:'「EIDOS（香り）×FORMA（服装）×SONOS（声）×HAPTOS（タッチ）」の四感が揃う初対面が最強。握手の瞬間に全ての感覚が統合される。',good_scenes:['初対面全般','合コン','友人の紹介'],bad_scenes:['なし'],season:['通年'],rating:{誠実さ:95,色気:75,信頼感:97,初対面:99,汎用性:90},tip:'初対面では握手を大切にする。その一瞬に全ての第一印象が凝縮される。手を温めておくことが唯一の準備。',pairing:'プロクセミクスデッキ「初対面の距離戦略」カード参照'},
+  {brand:'状況別プロトコル',color:'#0c1a0e',emoji:'🌙',name:'別れ際ハグプロトコル（20秒の科学）',type:'20秒ハグ×オキシトシン最大化×記憶の錨',notes:'タイミング：自然な別れの流れで\n時間：20秒以上（科学的最低ライン）\nセット：名前を呼ぶ+感謝の言葉+ゆっくりとした動作',neuro:'Grewen et al.（2005, Biological Psychology）で20秒以上のハグがオキシトシン有意増加+血圧低下を確認。ピーク・エンドの法則でデートの「エンド（別れ際）」が最も強く記憶に残る。20秒ハグ+名前+感謝が「また会いたい・あの時の彼の温もりが忘れられない」という最強の記憶を作る。',hormones:['オキシトシン','バソプレシン','エンドルフィン'],hormone_detail:[{ico:'🤝',name:'オキシトシン — 20秒の臨界点',desc:'8秒未満のハグではオキシトシン分泌が有意でない。20秒以上の継続的なCT繊維刺激が視床下部のオキシトシン産生ニューロンを十分に活性化させる。「長いハグ」が科学的に正当化される根拠。'},{ico:'🔒',name:'バソプレシン+エンドルフィン — 「忘れられない記憶」の形成',desc:'オキシトシン累積分泌がバソプレシン絆形成を起動させ「この人ともっと会いたい」という生物学的欲求を作る。同時にエンドルフィンが「また会いたい快楽記憶」として海馬に長期保存される。'}],note_science:'「別れ際の20秒ハグ」は三感統合（香り×服装×声）の全ての効果を一気に体験させる唯一の瞬間。タッチ+体温+香り+声が同時に届く最高の統合体験として海馬に永遠に残る。',good_scenes:['デートの別れ際全般','特別な夜の終わり'],bad_scenes:['まだ信頼関係が薄い段階'],season:['通年'],rating:{誠実さ:90,色気:92,信頼感:95,初対面:55,汎用性:85},tip:'別れ際の「名前+感謝+20秒ハグ」が恋愛記憶の最強アンカー。ピーク・エンドの法則で最も記憶に残る瞬間を設計する。',pairing:'状況別デッキ「ピーク・エンドの法則とハグ」カード参照'},
+
+  // ── スキンシップ深化 ──
+  {brand:'スキンシップ深化',color:'#9a3412',emoji:'💆',name:'頭部・頭皮マッサージ',type:'タッチ×グルーミング',notes:'タイミング：映画を見ながら・ソファで横に\n方法：指の腹でゆっくりと頭皮を押す\n速度：秒速2〜3cm（通常の半分以下）',neuro:'頭皮はCT繊維（C触覚求心性線維）が全身最高密度クラスの部位。霊長類のグルーミング（毛づくろい）行動と同じ神経経路——島皮質→視床下部→オキシトシン産生ニューロンを最大に活性化させる。「頭を触られると眠くなる」のはオキシトシン+エンドルフィン分泌による副交感神経優位化の生理学的正体。',hormones:['オキシトシン','エンドルフィン'],hormone_detail:[{ico:'🐒',name:'グルーミング×オキシトシン',desc:'霊長類のグルーミングと同じ神経経路（CT繊維→島皮質→視床下部）を頭皮マッサージが活性化。オキシトシン+エンドルフィンの同時分泌が「深い安らぎ・信頼感・この人のそばが安全」という感覚を作る。'}],note_science:'ゆっくりとした頭皮刺激が迷走神経を介してHRV（心拍変動）を増加させ深いリラックス状態を作ることが確認されている。',good_scenes:['3回目以降','映画鑑賞','ソファでくつろぐ時'],bad_scenes:['初対面（親密すぎる）'],season:['通年'],rating:{誠実さ:88,色気:85,信頼感:95,初対面:30,汎用性:80},tip:'「ここ凝ってる？」と聞きながら頭皮を触ることが会話×タッチ×ケアの三重効果を生む最自然なアプローチ。',pairing:'解剖学デッキ「性感帯の解剖学的地図」カード参照'},
+  {brand:'スキンシップ深化',color:'#9a3412',emoji:'🤲',name:'手のひら握り×指絡め移行',type:'タッチ段階',notes:'最初：手のひら同士を重ねる\n展開：自然に指を絡める\nポイント：相手のペースに合わせる',neuro:'手のひらのマイスナー小体（触覚受容器）が密集する部位同士の接触が「温もり×安全×信頼」の三重シグナルを同時に送る。指を絡める（interdigitating）行為が「私はあなたを離したくない」という選択的な意思シグナルとして処理される。Chaplin（2000）の握手研究の拡張版。',hormones:['オキシトシン','バソプレシン'],hormone_detail:[{ico:'🤝',name:'手のひら×マイスナー小体×オキシトシン',desc:'手のひらのマイスナー小体は指先に次ぐ高密度の触覚受容器。手のひら同士の接触がCT繊維に近い感情的タッチ効果を生む。長く繋ぎ続けることでバソプレシン絆形成が起動する。'}],note_science:'歩きながら手をつなぐことで「共同の身体的リズム」が形成され心拍同期→オキシトシン蓄積というSONOSと同じ呼吸同期効果が触覚経由で起きる。',good_scenes:['散歩','映画館','ショッピング'],bad_scenes:['初対面','仕事の場'],season:['通年'],rating:{誠実さ:88,色気:82,信頼感:90,初対面:35,汎用性:87},tip:'手が冷たい時は「手が冷たいね」と言いながら両手で包むことが「温める」という積極的なケアタッチに変換される。',pairing:'タッチデッキ「CT繊維と手のひらの神経解剖」カード参照'},
+  {brand:'スキンシップ深化',color:'#9a3412',emoji:'🌙',name:'眠る直前のCT繊維タッチ',type:'夜の触覚×絆形成',notes:'タイミング：横になった後・電気を消した後\n方法：背中・腕の外側を秒速3〜5cmで\n意識：相手の呼吸リズムに合わせて',neuro:'横になった状態でのCT繊維刺激は①体温上昇（アポクリン腺分泌増加）②副交感神経最大優位（就寝前）③迷走神経の最高感受性という三条件が重なる「CT繊維タッチの最強環境」。GEUSTOで解説した「睡眠中の海馬記憶固定化」の直前にオキシトシン+バソプレシンを最大化させることで前日の体験が最高強度で固定される。',hormones:['オキシトシン','バソプレシン','エンドルフィン'],hormone_detail:[{ico:'😴',name:'就寝前オキシトシン×海馬固定化',desc:'就寝直前のCT繊維刺激によるオキシトシン+バソプレシン最大化が直後の睡眠中の海馬記憶固定化を最強化する。「一緒に眠ると忘れられない」体験の神経内分泌学的完全設計。'}],note_science:'就寝前の副交感神経優位状態でのタッチが心拍変動（HRV）を最大化させ深い睡眠への移行を促進。翌朝のコルチゾール低値（ストレス低下）にも寄与。',good_scenes:['一緒に眠る夜'],bad_scenes:['なし（条件が揃う夜のみ）'],season:['通年'],rating:{誠実さ:82,色気:88,信頼感:98,初対面:20,汎用性:65},tip:'「ゆっくり・体温・呼吸に合わせる」の三原則。眠りに落ちるまで続けることで「この人のタッチを感じながら眠りにつく」という最強の記憶が形成される。',pairing:'夜の科学デッキ「睡眠×記憶固定化とオキシトシン」カード参照'},
+
+  // ── 距離感×環境 ──
+  {brand:'環境設計深化',color:'#0c4a6e',emoji:'🛋',name:'ソファポジショニング戦略',type:'環境×距離感',notes:'初期：同じソファの端と端\n段階1：自然に真ん中に移動\n段階2：肩・腕が触れる距離\nポイント：テレビを見る口実を使う',neuro:'ソファは「フォーマルな対面」より「リラックスした横並び」という物理的配置が副交感神経優位を自然に作り出す環境。同じ映像コンテンツを共に見ることがATTENTION SHARINGを通じてオキシトシン的共鳴体験を生む。段階的な距離縮小が扁桃体への「侵入」ではなく「自然な流れ」として処理される最適な環境設計。',hormones:['セロトニン','オキシトシン'],hormone_detail:[{ico:'🛋',name:'横並び×リラックス×オキシトシン',desc:'横並びの配置が副交感神経優位を作り骨盤底筋の弛緩を促進する（HAPTOSの解剖学的原則）。共に同じものを見ることで「共同注意（joint attention）」が形成され共感的オキシトシン分泌が起きる。'}],note_science:'「何か映画見る？」という誘いが物理的距離縮小の最も自然な口実であることの環境心理学的根拠。照明を暗くする→瞳孔拡大→Hess効果という連鎖も設計できる。',good_scenes:['3回目以降','家での時間'],bad_scenes:['初対面'],season:['通年'],rating:{誠実さ:85,色気:80,信頼感:88,初対面:30,汎用性:78},tip:'ブランケットを一枚出すことでそれ自体がCT繊維刺激（布の温かさ・肌触り）×共有（一緒にかける）という複合的なオキシトシン刺激になる。',pairing:'プロクセミクスデッキ「個人距離への自然な移行」カード参照'},
+  {brand:'環境設計深化',color:'#0c4a6e',emoji:'🚗',name:'ドライブ×助手席効果',type:'環境×距離感',notes:'配置：運転席×助手席（密接な個人距離）\nBGM：低音の穏やかな音楽（副交感優位）\n会話：正面を向きながら話す（圧力が低い）',neuro:'ドライブは「プロクセミクス的に極めて近い距離なのに対面しない」という稀有な配置。正面を向かない会話は目線の圧力がなくなり自己開示の深さがソファより1.5〜2倍増すことが研究で確認されている（「肩並べ効果」）。助手席がCT繊維刺激（腕の距離感×体温）の最小限の閾値内に入りやすい最適な位置。',hormones:['セロトニン','オキシトシン'],hormone_detail:[{ico:'🚗',name:'肩並べ×自己開示加速',desc:'横並びの配置での会話が対面比較で自己開示量を増加させることが研究で確認されている。運転手の「何かしている」という状態が会話への集中度を下げ防衛機制を弱める。SONOSの傾聴×社会浸透理論の加速環境として機能。'}],note_science:'BGMのBPM（60〜70拍/分）が心拍に同期し副交感神経を優位にする。ドライブBGM選曲がソーシャルエンジニアリングとして機能する。',good_scenes:['遠出ドライブ','夜のドライブ','帰り道'],bad_scenes:['初対面（車に乗せるのは早すぎる）'],season:['通年'],rating:{誠実さ:85,色気:82,信頼感:88,初対面:30,汎用性:82},tip:'「窓開けて風を入れながら」のドライブが嗅覚×視覚×触覚×聴覚を同時に活性化させる四感統合デートになる。',pairing:'解剖学デッキ「ポリヴェーガル理論×安全の神経学」カード参照'},
+
+  // ── 状況別深化 ──
+  {brand:'状況別プロトコル深化',color:'#0c1a0e',emoji:'💝',name:'誕生日×五感統合設計',type:'特別な日×プロトコル',notes:'香り：シグネチャーセント×特別なイベント香水\n視覚：いつもより少し特別な服装\n食事：相手の好きなものを事前に調べておく\nタッチ：20秒ハグを最初と最後に',neuro:'誕生日というすでに「特別な日」という文脈（心理的準備状態）が扁桃体の感情的開放性を最大化させる。この「開放された状態」に五感統合を加えることでカルバートの多感覚統合×ピーク・エンドの法則（誕生日＝年に一度のピーク）が重なり記憶強度が通常の何倍にもなる。「誕生日に感じた感情は1年以上鮮明に残る」の神経科学的根拠。',hormones:['ドーパミン','オキシトシン','バソプレシン'],hormone_detail:[{ico:'🎂',name:'期待×サプライズ×ドーパミン',desc:'誕生日への期待感がドーパミン的な予測を高める。この状態でのサプライズ（少し予想を超える演出）がドーパミン急増×オキシトシン蓄積の最大効果を生む。「予測可能な日に少し予想外のことが起きる」部分強化スケジュールの最高形態。'}],note_science:'事前に「好きな食べ物・好きな場所」を小さな質問から集めておき実現することが「ちゃんと聞いていた・覚えていた」という誠実さ×知性×ケアの三軸シグナルになる。',good_scenes:['誕生日・記念日'],bad_scenes:['なし（特別な日専用）'],season:['通年'],rating:{誠実さ:98,色気:88,信頼感:98,初対面:30,汎用性:70},tip:'「プレゼントより体験」を選ぶことが投資モデル（Rusbult）の「投資量（思い出の質）」を最大化する科学的根拠のある戦略。',pairing:'SENSESデッキ「ピーク・エンドの法則×五感統合」カード参照'},
+  {brand:'状況別プロトコル深化',color:'#0c1a0e',emoji:'🏃',name:'スポーツ×アクティビティデート',type:'状況別×吊り橋効果',notes:'おすすめ：テニス・ボルダリング・サイクリング\n効果：吊り橋効果（生理的覚醒×ときめき誤帰属）\nポイント：汗をかいたら必ず清潔にする',neuro:'スポーツによる身体的覚醒（心拍上昇・体温上昇・ノルアドレナリン分泌）が「恋愛のときめき」として誤帰属される吊り橋効果（Dutton & Aron 1974）の最大化環境。同時にアンドロステノール（新鮮な汗）が最大量分泌されEIDOSの嗅覚効果と統合される。「一緒に何かを達成する」共同体験がオキシトシン蓄積の強力なトリガーになる。',hormones:['ノルアドレナリン','テストステロン','オキシトシン'],hormone_detail:[{ico:'🏃',name:'生理的覚醒×ときめき誤帰属',desc:'スポーツによるノルアドレナリン上昇（心拍増加・体温上昇）が「この人といるからドキドキする」という感情的誤帰属を引き起こす吊り橋効果の身体的実現。GEUSTO（辛い食事）と同じメカニズムのアクティビティ版。'}],note_science:'ボルダリングは「サポートする×支える」というHAPTOS的なタッチの自然な機会が多く吊り橋効果+CT繊維刺激の組み合わせとして特に効果が高い。',good_scenes:['2〜3回目以降','元気なデート','共通の趣味作り'],bad_scenes:['フォーマルな場'],season:['春','夏','秋'],rating:{誠実さ:82,色気:82,信頼感:85,初対面:55,汎用性:85},tip:'スポーツ後に「一緒にシャワーを浴びる」文脈が生まれる場合はEIDOS×HAPTOSの完全統合が実現する最強の状況になる。',pairing:'GEUSTOデッキ「食の吊り橋効果×カプサイシン」カード参照'},
+  {brand:'状況別プロトコル深化',color:'#0c1a0e',emoji:'🌏',name:'旅行×非日常プロトコル',type:'状況別×記憶形成',notes:'宿泊：ダブルルーム（自然な物理的近接）\n初日：新しい場所の驚き×共有\n夜：特別な食事×シグネチャーセント\n朝：共食（テストステロン朝最大値×Dunbar）',neuro:'非日常環境（初めての場所）がドーパミン的な新規性を最大化させる。「旅行中の体験は記憶に残りやすい」のは新規環境×感情的覚醒×多感覚刺激が海馬への記憶保存強度を最大化させるためHAPTOS×GEUSTO×EIDOSの全てが一箇所に集中するからである。投資モデル（Rusbult）的に旅行は「共有体験の最高品質版」として関係コミットメントを急増させる。',hormones:['ドーパミン','オキシトシン','バソプレシン'],hormone_detail:[{ico:'✈️',name:'非日常×多感覚×記憶強化',desc:'旅行の初日に五感全てで「この人と新しい体験をした」という記憶が海馬に保存される。翌朝の共食（テストステロン朝最大値×Dunbar共食効果×前夜記憶の初回再起動）が全ホルモンを再強化。旅行は最も高効率な関係深化ツール。'}],note_science:'社会浸透理論的に旅行中は「非日常の安心感の共有」が核心層への自己開示を加速させる。「旅行で仲良くなる」の社会浸透理論×Dunbar研究による完全説明。',good_scenes:['関係が深まった後','記念日','長期休暇'],bad_scenes:['早すぎる段階（3回目以前）'],season:['通年'],rating:{誠実さ:90,色気:90,信頼感:92,初対面:20,汎用性:75},tip:'旅行先でシグネチャーセントを纏い続けることで帰宅後もその場所の記憶が香りで再起動されるプルースト効果の「旅行版」が作られる。',pairing:'SENSESデッキ「五感統合が恋愛の完全自動化システムを形成するメカニズム」カード参照'},
+];
+
+
+const QS=[
+  {q:'CT繊維（C触覚求心性線維）が最大反応する刺激の条件は？',opts:['強くゆっくり押す','秒速3〜5cmの撫で・体温に近い温度（32〜34℃）・軽い圧力（McGlone et al. 2009, Nature Neuroscience）','速く強く擦る'],ans:1,exp:'CT繊維は無髄のC繊維で伝導速度が遅い（1〜2m/s）。毛が生えた皮膚（腕・肩・背中）にのみ存在し感情的なタッチの専用受容器として機能する。この速度での優しい撫でが島皮質→視床下部→オキシトシン産生ニューロンという経路を最も効率的に活性化させる。',frags:['秒速5cmタッチプロトコル']},
+  {q:'20秒以上のハグがオキシトシン分泌を促進する研究とは？',opts:['Johnson et al. 2010','Grewen et al.（2005, Biological Psychology）で20秒以上のハグがオキシトシン有意増加と収縮期血圧低下を確認','Smith 2015'],ans:1,exp:'8秒未満のハグではオキシトシン分泌量が有意でない。20秒以上の継続的なCT繊維刺激が視床下部のオキシトシン産生ニューロンを十分に活性化させる。「長いハグ」が科学的に最強のスキンシップとして正当化される根拠。',frags:['別れ際ハグプロトコル（20秒の科学）','秒速5cmタッチプロトコル']},
+  {q:'偶発的タッチがデートの成功率を上げる研究（Guéguen 2003）の結果は？',opts:['タッチで成功率が50%上昇','タッチあり67% vs タッチなし42%とアプローチ成功率が有意に異なることを確認','タッチで100%成功'],ans:1,exp:'「偶発的」に見えることで相手の前頭前野の分析を回避し直接CT繊維→島皮質→オキシトシン分泌という感情経路を活性化させる。Crusco & Wetzel（1984）でもウェイターの軽いタッチがチップを22%増加させることが確認されている。',frags:['偶発的タッチプロトコル']},
+  {q:'「温かいカップを持つだけで他者の評価が変わる」研究（Williams & Bargh 2008）が示すことは？',opts:['暖かい飲み物が好きになる','身体的な温かさ（熱い飲み物）が社会的な「温かさ（人柄の温かさ）」として脳が混同処理する具現化認知。デートでホットドリンクを渡すだけで「温かい人」という印象が生成される。','暖かいと感情的になる'],ans:1,exp:'Science誌に掲載。身体的感覚が心理的概念に影響を与える「具現化認知（Embodied Cognition）」の代表的な研究。冬のデートで暖かい場所・ホットドリンクを渡すことの科学的根拠。',frags:['温度設計プロトコル']},
+  {q:'Hallのプロクセミクス理論における「個人距離」の範囲と恋愛への意味は？',opts:['30cm以内（触れる距離）','45〜120cmで親密関係の準備領域。意図的なタッチ（握手・肩・腕）が自然に起きる距離帯であり初対面デートで目指すべき第一段階。','2m以上（公共距離）'],ans:1,exp:'初対面は社会距離（120〜360cm）から始め段階的に個人距離→親密距離へ移行することが扁桃体の警戒反応を回避しながらオキシトシン系を活性化させる最も安全な方法。急激な距離縮小は「脅威」として処理される。',frags:['個人距離への自然な移行','座席設計戦略（90度法則）']},
+  {q:'吊り橋効果（Dutton & Aron 1974）が起きる神経科学的メカニズムは？',opts:['高いところが好きになる','恐怖・興奮による生理的覚醒（心拍数上昇・アドレナリン）が「この人に恋愛感情を持っている」という感情の誤帰属（ミスアトリビューション）を引き起こす','吊り橋が楽しい'],ans:1,exp:'アドレナリン→ノルアドレナリンによる生理的覚醒状態で近くにいる人物に「なぜドキドキしているか」の原因を誤って帰属する。遊園地・ホラー映画・スポーツ体験後に近くにいることで感情の誤帰属が最も起きやすい。',frags:['吊り橋効果の科学的応用']},
+  {q:'「90度の座席配置（L字型）」が正面対面より親密感を形成する理由は？',opts:['横に座れるから','正面が「競争・対立」の構図として脳が自動処理するのに対し90度は「協力・親密」の中間点として処理される。また物理的な近さでCT繊維へのアクセスが可能になる。','見やすいから'],ans:1,exp:'正面対面は進化的に「相手の全身の動きを監視する必要がある対立構図」として扁桃体が処理する傾向がある。カフェでの斜め横の座席選択が最初の物理的な関係設計。',frags:['座席設計戦略（90度法則）']},
+  {q:'CT繊維が存在する部位と存在しない部位の違いは？',opts:['手のひらにある','毛が生えた皮膚（腕・肩・背中・頭部）にのみ存在し手のひら・足裏には存在しない。タッチする部位の選択が重要な理由。','全身に均等に存在'],ans:1,exp:'CT繊維は毛包に付着した皮膚（有毛皮膚）にのみ存在する感情的タッチ専用の受容器。腕・肩・背中が最も効果的なタッチ部位である神経解剖学的根拠。「腕に触れる」が最もCT繊維を活性化させる。',frags:['秒速5cmタッチプロトコル','偶発的タッチプロトコル']},
+  {q:'「段階的スキンシップ」がオキシトシンを「雪だるま式に増加」させる機構は？',opts:['慣れるから','オキシトシンには「受容体増感効果」があり分泌されるたびに次の刺激への感受性が高まる。段階的なスキンシップがオキシトシン感受性を累積的に高め後の効果を倍増させる。','時間が経つから'],ans:1,exp:'オキシトシン受容体は刺激を受けるたびに感受性が高まる（増感）という性質を持つ。段階的なスキンシップが各段階でオキシトシンを蓄積させ最終的な絆形成（バソプレシン系）への閾値を下げる。',frags:['4段階スキンシップ設計']},
+  {q:'「四感統合（嗅覚×視覚×聴覚×触覚）」が別れ際のハグで完成する理由は？',opts:['全部やるから','抱擁の瞬間に香り（嗅覚）×服の感触（視覚触覚）×声（聴覚）×体温のタッチ（触覚）が同時に届き四感全てが統合された最強の感情記憶として海馬に永遠に刻まれるから','ロマンティックだから'],ans:1,exp:'香水（EIDOS）×ファッション（FORMA）×声（SONOS）×タッチ（HAPTOS）の四感が一瞬に統合される体験は海馬への記憶形成強度が最大化される。「あの時の彼の全てが好きだった」という恋愛感情の完成形。',frags:['別れ際ハグプロトコル（20秒の科学）','初対面タッチプロトコル']},
+];
+
+/* ── AI CHAT: HAPTOS ── */
+const AI_ENDPOINT_haptos = 'https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI';
+const AI_KEY_haptos = 'HeartsHouse2026Key';
+const AI_SYS_haptos = `あなたはHAPTOS触覚専門AIコーチです。
+専門知識：CT繊維（有毛皮膚・秒速5cm）・オキシトシン産生経路・4段階スキンシップ設計・20秒ハグ→バソプレシン絆形成・偶発的タッチプロトコル・個人距離→親密距離の移行・体温×湿度×圧力・固有感覚記憶（小脳）・プロキシミクス（距離の科学）。
+回答：「○○のタイミングで○○秒間○○に触れる」と段階的に具体的に。日本語200〜400文字。`;
+const AI_QUICK_haptos = [`🌸 初対面のスキンシップ`,`🤲 自然な距離の縮め方`,`⏱ 20秒ハグのタイミング`,`💫 偶発的タッチの方法`,`🔥 告白前の触れ方`];
+let aiHistory_haptos = [];
+let aiLoading_haptos = false;
+
+function initAI_haptos(){
+  // クイックボタン生成
+  const qc = document.getElementById('aiQuickBtns');
+  if(qc) qc.innerHTML = AI_QUICK_haptos.map(q=>
+    `<button onclick="aiQuick_haptos(this.textContent.replace(/^[^\s]+\s/,''))" style="padding:.38rem .72rem;border-radius:9999px;background:var(--surface2);border:1px solid var(--border2);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap">${q}</button>`
+  ).join('');
+}
+
+function aiQuick_haptos(text){
+  document.getElementById('aiInp').value = text;
+  aiSend_haptos();
+}
+
+function aiAddMsg_haptos(text, role){
+  const msgs = document.getElementById('aiMsgs');
+  if(!msgs) return null;
+  const div = document.createElement('div');
+  const colors = {user:'linear-gradient(135deg,var(--eidos,#B8860B),var(--eidos-l,#D4A017))',ai:'var(--surface)',thinking:'var(--surface2)'};
+  div.style.cssText = `background:${colors[role]||colors.ai};border:1px solid var(--border);border-radius:var(--r-lg);padding:.78rem .9rem;font-family:var(--fu);font-size:.77rem;color:${role==='user'?'#fff':'var(--txt)'};line-height:1.68;align-self:${role==='user'?'flex-end':'flex-start'};max-width:90%;border-bottom-${role==='user'?'right':'left'}-radius:4px;font-style:${role==='thinking'?'italic':'normal'}`;
+  div.innerHTML = text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);
+  msgs.parentElement.scrollTop = msgs.parentElement.scrollHeight;
+  return div;
+}
+
+async function aiSend_haptos(){
+  if(aiLoading_haptos) return;
+  const inp = document.getElementById('aiInp');
+  const text = inp?.value?.trim();
+  if(!text) return;
+  aiAddMsg_haptos(text,'user');
+  inp.value=''; inp.style.height='auto';
+  const thinking = aiAddMsg_haptos('🧠 分析中...','thinking');
+  aiLoading_haptos=true;
+  const btn=document.getElementById('aiSendBtn');
+  if(btn)btn.disabled=true;
+  aiHistory_haptos.push({role:'user',parts:[{text}]});
+  try{
+    const prompt = AI_SYS_haptos+'\n\n【会話履歴】\n'+
+      aiHistory_haptos.slice(-6).map(h=>(h.role==='user'?'ユーザー: ':'AI: ')+h.parts[0].text).join('\n')+
+      '\n\n最後のユーザーの質問に答えてください。';
+    const res = await fetch(AI_ENDPOINT_haptos,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Access-Key':AI_KEY_haptos},
+      body:JSON.stringify({prompt,model:'gemini-2.0-flash',maxTokens:600})
+    });
+    const data = await res.json();
+    thinking?.remove();
+    const t = data?.data?.candidates?.[0]?.content?.parts?.[0]?.text||data?.data?.text||'';
+    if(t){aiAddMsg_haptos(t,'ai');aiHistory_haptos.push({role:'model',parts:[{text:t}]});}
+    else aiAddMsg_haptos('⚠️ 回答を取得できませんでした。','ai');
+  }catch(e){thinking?.remove();aiAddMsg_haptos('⚠️ 通信エラーです。','ai');}
+  aiLoading_haptos=false;
+  if(btn)btn.disabled=false;
+}
+
+// グローバル公開（onclickから呼べるように）
+window.aiSend = aiSend_haptos;
+window.aiQuick_haptos = aiQuick_haptos;
+
+window.aiSend = aiSend_haptos;
+
+</script>
+</body>
+</html>
