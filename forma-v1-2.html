@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#0f172a">
+<title>FORMA — Fashion Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Sans+JP:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F8F9FB; --bg2:#EFF1F5; --bg3:#E2E6EE;
+  --surface:#FFFFFF; --surface2:#F5F7FA;
+  --gold:#B8860B; --gold-l:#D4A017; --gold-xl:#FDF8EC;
+  --navy:#0f172a; --navy-l:#1e3a6e; --navy-xl:#EFF3FB;
+  --indigo:#1e3a6e; --indigo-l:#2563eb; --indigo-xl:#EFF3FB;
+  --violet:#7c3aed; --violet-xl:#F5F3FF;
+  --rose:#BE123C; --rose-l:#F43F5E; --rose-xl:#FFF1F2;
+  --teal:#0F766E; --teal-xl:#F0FDFA;
+  --amber:#B45309; --amber-xl:#FFFBEB;
+  --sage:#4D7C0F; --sage-xl:#F7FEE7;
+  --slate:#334155; --slate-xl:#F8FAFC;
+  --txt:#1C1917; --txt2:#6B6560; --txt3:#A8A29E;
+  --border:rgba(120,100,80,.11); --border2:rgba(120,100,80,.2);
+  --sh-sm:0 1px 4px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --sh-lg:0 12px 36px rgba(0,0,0,.1);
+  --r-sm:10px; --r-md:16px; --r-lg:22px; --r-xl:28px; --r-full:9999px;
+  --sat:env(safe-area-inset-top,44px); --sab:env(safe-area-inset-bottom,0px);
+  --fd:'Playfair Display',serif; --fu:'DM Sans',sans-serif; --fb:'Noto Sans JP',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--txt);font-family:var(--fb);font-weight:300;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button{border:none;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;outline:none}
+
+/* ── SPLASH ─── */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,#FDF8EC 0%,#FAF7F2 50%,#F0FDFA 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+}
+.sp-bottle{font-size:5rem;animation:bottleFloat 3s ease-in-out infinite;margin-bottom:1.5rem}
+@keyframes bottleFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+.sp-title{font-family:var(--fd);font-size:2.8rem;font-weight:700;letter-spacing:.1em;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-l) 50%,var(--amber) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:fadeUp .7s .3s both}
+.sp-sub{font-family:var(--fu);font-size:.82rem;color:var(--txt2);margin-top:.35rem;letter-spacing:.06em;animation:fadeUp .7s .5s both}
+.sp-tagline{font-family:var(--fd);font-size:1rem;font-style:italic;color:var(--txt2);margin-top:.6rem;animation:fadeUp .7s .65s both}
+.sp-btn{
+  margin-top:2.5rem;padding:.95rem 3rem;
+  background:linear-gradient(135deg,var(--gold),var(--gold-l));
+  color:#fff;font-family:var(--fu);font-size:.95rem;font-weight:600;
+  border-radius:var(--r-full);box-shadow:0 8px 24px rgba(184,134,11,.35);
+  animation:fadeUp .7s .85s both;transition:transform .15s,box-shadow .15s;letter-spacing:.02em}
+.sp-btn:active{transform:scale(.96)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ── SHELL ─── */
+#app{display:none}
+#app.on{display:block}
+
+/* ── BOTTOM NAV ─── */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(255,255,255,.92);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+  border-top:1px solid var(--border);display:flex;padding-bottom:var(--sab);
+}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;padding:.7rem .5rem .55rem;gap:.18rem;background:none;color:var(--txt3);transition:color .18s}
+.bni.on{color:var(--gold)}
+.bni-ico{font-size:1.4rem;line-height:1}
+.bni-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0;transition:opacity .18s;margin:1px auto 0}
+.bni.on .bni-dot{opacity:1}
+.bni-lbl{font-family:var(--fu);font-size:.54rem;font-weight:500;letter-spacing:.02em}
+
+/* ── PAGES ─── */
+.page{display:none}
+.page.on{display:block;animation:pIn .28s ease both}
+@keyframes pIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.sb{overflow-y:auto;-webkit-overflow-scrolling:touch;height:100vh;padding-bottom:calc(76px + var(--sab))}
+
+/* ── TYPOGRAPHY ─── */
+.pg-title{font-family:var(--fd);font-size:1.55rem;font-weight:700}
+.sec-title{padding:1.4rem 1.25rem .65rem;font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--txt)}
+.sec-title span{font-family:var(--fu);font-size:.9rem;font-weight:400;color:var(--txt2)}
+.tag-label{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em}
+.spacer{height:1.2rem}
+
+/* ── CARD BASE ─── */
+.card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);box-shadow:var(--sh-sm);overflow:hidden;margin:0 1.25rem .85rem}
+.card-hd{padding:1rem 1.25rem .9rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem}
+.card-ico{width:38px;height:38px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.card-hd-title{font-family:var(--fd);font-size:1.02rem;font-weight:600}
+.card-hd-sub{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.1rem}
+.card-bd{padding:1.1rem 1.25rem}
+
+/* ── HOME ─── */
+.home-top{padding:calc(var(--sat) + 1rem) 1.25rem 0;display:flex;align-items:center;justify-content:space-between}
+.home-greet{font-family:var(--fu);font-size:.76rem;color:var(--txt2)}
+.home-name{font-family:var(--fd);font-size:1.4rem;font-weight:700;margin-top:.1rem}
+.home-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--amber));display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 12px rgba(184,134,11,.3)}
+.hero{
+  margin:1.1rem 1.25rem;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-l) 60%,var(--amber) 100%);
+  border-radius:var(--r-xl);padding:1.6rem 1.5rem 1.8rem;
+  position:relative;overflow:hidden;box-shadow:0 12px 36px rgba(184,134,11,.28);
+}
+.hero-bl{position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.1);top:-70px;right:-60px}
+.hero-bl2{position:absolute;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.07);bottom:-35px;left:10px}
+.hero-tag{font-family:var(--fu);font-size:.63rem;font-weight:500;color:rgba(255,255,255,.75);letter-spacing:.09em;text-transform:uppercase;margin-bottom:.55rem;position:relative}
+.hero-title{font-family:var(--fd);font-size:1.65rem;font-weight:700;color:#fff;line-height:1.25;position:relative;margin-bottom:1.3rem}
+.hero-title em{font-style:italic}
+.hero-stats{display:flex;gap:1.2rem;position:relative}
+.hs-n{font-family:var(--fd);font-size:1.5rem;font-weight:600;color:#fff;display:block}
+.hs-l{font-family:var(--fu);font-size:.54rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.05em}
+.hero-div{width:1px;background:rgba(255,255,255,.25);margin:.2rem 0}
+.tip-card{margin:0 1.25rem 1rem;background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-lg);padding:1.2rem;display:flex;gap:1rem;align-items:flex-start}
+.tip-ico{font-size:1.6rem;flex-shrink:0}
+.tip-lbl{font-family:var(--fu);font-size:.58rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem}
+.tip-txt{font-family:var(--fd);font-size:.96rem;font-style:italic;color:var(--txt);line-height:1.55}
+.mod-grid{padding:0 1.25rem;display:grid;gap:.75rem}
+.mod{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.15rem 1.1rem;display:flex;align-items:center;gap:.9rem;box-shadow:var(--sh-sm);cursor:pointer;transition:transform .12s;position:relative;overflow:hidden}
+.mod:active{transform:scale(.98)}
+.mod-ac{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+.mod-ico{width:48px;height:48px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.mod-name{font-family:var(--fd);font-size:1rem;font-weight:600}
+.mod-sub{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.1rem}
+.mod-badge{font-family:var(--fu);font-size:.58rem;font-weight:600;padding:.18rem .6rem;border-radius:var(--r-full)}
+.mod-arr{color:var(--txt3);font-size:1.1rem;margin-left:auto;flex-shrink:0}
+
+/* ── SCENT BASE PAGE ─── */
+.pg-hd{padding:calc(var(--sat) + .6rem) 1.25rem .5rem}
+.banner{margin:.5rem 1.25rem 1.1rem;border-radius:var(--r-xl);padding:1.4rem;border:1px solid}
+.banner-ico{font-size:2.4rem;margin-bottom:.7rem}
+.banner-title{font-family:var(--fd);font-size:1.35rem;font-weight:700;margin-bottom:.4rem}
+.banner-desc{font-family:var(--fu);font-size:.79rem;color:var(--txt2);line-height:1.65}
+.brain-path{display:flex;align-items:center;padding:.4rem 0 .9rem;gap:0}
+.bp-nd{display:flex;flex-direction:column;align-items:center;gap:.32rem;flex-shrink:0;width:62px}
+.bp-ci{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.35rem;box-shadow:var(--sh-sm)}
+.bp-lbl{font-family:var(--fu);font-size:.55rem;font-weight:500;color:var(--txt2);text-align:center;line-height:1.3}
+.bp-arr{flex:1;display:flex;flex-direction:column;align-items:center;gap:.18rem}
+.bp-line{width:100%;height:2px;background:#E5DDD0;border-radius:1px;position:relative;overflow:hidden}
+.bp-flow{position:absolute;top:0;left:-30%;height:100%;width:30%;border-radius:1px;animation:flow 1.6s linear infinite}
+@keyframes flow{to{left:130%}}
+.bp-skip{font-family:var(--fu);font-size:.5rem;color:var(--rose-l);font-weight:600;white-space:nowrap}
+.brain-note{font-family:var(--fu);font-size:.77rem;color:var(--txt2);line-height:1.7;text-align:center}
+.brain-note strong{color:var(--txt)}
+.neuro-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.ng{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.9rem}
+.ng-ico{font-size:1.2rem;margin-bottom:.42rem}
+.ng-name{font-family:var(--fd);font-size:.9rem;font-weight:600;margin-bottom:.15rem}
+.ng-chem{font-family:var(--fu);font-size:.56rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.42rem}
+.ng-desc{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6}
+.ng-scents{font-family:var(--fu);font-size:.63rem;font-weight:500;margin-top:.52rem;padding-top:.52rem;border-top:1px solid var(--border);color:var(--txt);line-height:1.5}
+.sr{display:flex;align-items:flex-start;gap:.8rem;padding:.9rem 1.25rem;border-bottom:1px solid var(--border)}
+.sr:last-child{border-bottom:none}
+.sr-em{font-size:1.3rem;flex-shrink:0;margin-top:.08rem}
+.sr-name{font-family:var(--fd);font-size:.96rem;font-weight:600;margin-bottom:.15rem}
+.sr-eff{font-family:var(--fu);font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.sr-desc{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.note-item{border-radius:var(--r-md);padding:.95rem;border:1px solid transparent;display:flex;gap:.8rem;margin-bottom:.6rem}
+.ni-time{flex-shrink:0;width:50px}
+.ni-phase{font-family:var(--fu);font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.ni-dur{font-family:var(--fu);font-size:.53rem;color:var(--txt2);margin-top:.08rem}
+.ni-title{font-family:var(--fd);font-size:.95rem;font-weight:600;margin-bottom:.25rem}
+.ni-body{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.push-item{background:var(--surface);border-radius:var(--r-md);border:1px solid var(--border);padding:.95rem;display:flex;gap:.8rem;margin-bottom:.6rem;box-shadow:var(--sh-sm)}
+.pi-badge{width:44px;height:44px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.pi-dist{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.18rem}
+.pi-loc{font-family:var(--fd);font-size:.96rem;font-weight:600;margin-bottom:.25rem}
+.pi-why{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.w-chips{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .5rem;scrollbar-width:none}
+.w-chips::-webkit-scrollbar{display:none}
+.wc{flex-shrink:0;padding:.48rem 1rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.wc.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(184,134,11,.28)}
+.w-result{margin:.7rem 1.25rem 0;background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-md);padding:.95rem;font-family:var(--fu);font-size:.79rem;color:var(--txt2);line-height:1.75}
+.w-result strong{color:var(--gold)}
+
+/* ── LEARN ─── */
+.learn-hd{padding:calc(var(--sat) + .75rem) 1.25rem .65rem;display:flex;align-items:center;justify-content:space-between}
+.deck-tabs{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .65rem;scrollbar-width:none}
+.deck-tabs::-webkit-scrollbar{display:none}
+.dt{flex-shrink:0;padding:.46rem .95rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.dt.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(184,134,11,.25)}
+.card-box{
+  margin:0 1.25rem;border-radius:var(--r-xl);
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:var(--sh-md);min-height:290px;
+  display:flex;flex-direction:column;overflow:hidden;
+  position:relative;
+}
+.card-box::before{content:'';position:absolute;inset:7px -4px -7px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);z-index:-1;opacity:.5}
+.card-box::after{content:'';position:absolute;inset:13px -7px -13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);z-index:-2;opacity:.28}
+.card-face{padding:1.6rem 1.45rem;display:flex;flex-direction:column;flex:1;transition:opacity .15s}
+.card-face.hidden{display:none}
+.card-face-back{background:linear-gradient(135deg,var(--gold-xl),#FEF9E7)}
+.cf-tag{font-family:var(--fu);font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.9rem}
+.cf-q{font-family:var(--fd);font-size:1.08rem;font-weight:600;color:var(--txt);line-height:1.45;flex:1}
+.cf-hint{font-family:var(--fu);font-size:.64rem;color:var(--txt3);text-align:center;margin-top:1rem;animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.8}}
+.cf-a{font-family:var(--fu);font-size:.8rem;color:var(--txt2);line-height:1.82;flex:1;border-left:3px solid var(--gold);padding-left:.85rem}
+.cf-src{font-family:var(--fu);font-size:.56rem;font-weight:600;color:var(--txt3);letter-spacing:.06em;text-transform:uppercase;margin-top:.85rem;align-self:flex-end}
+.flip-btn{width:100%;padding:.95rem;background:var(--bg2);border:none;border-top:1px solid var(--border);font-family:var(--fu);font-size:.82rem;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:.02em;transition:background .15s}
+/* ── CARD FRAG LINKS ── */
+.cf-frags{margin-top:.9rem;padding-top:.8rem;border-top:1px solid rgba(184,134,11,.2)}
+.cf-frags-lbl{font-family:var(--fu);font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem}
+.cf-frags-lbl::before{content:'👔';font-size:.7rem}
+.cf-frag-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.cf-frag-chip{font-family:var(--fu);font-size:.65rem;font-weight:600;padding:.28rem .72rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);color:var(--txt2);cursor:pointer;transition:all .16s;display:flex;align-items:center;gap:.3rem;white-space:nowrap}
+.cf-frag-chip:active{transform:scale(.95)}
+.cf-frag-chip:hover,.cf-frag-chip:active{background:var(--gold);border-color:var(--gold);color:#fff}
+.cf-frag-chip .chip-emoji{font-size:.75rem}
+.flip-btn:active{background:var(--gold-xl)}
+.pdots{display:flex;gap:.35rem;justify-content:center;padding:.6rem 0}
+.pd{width:7px;height:7px;border-radius:50%;background:var(--bg3);transition:all .28s;border:1px solid var(--border2)}
+.pd.done{background:var(--gold-l);border-color:transparent}
+.pd.cur{background:var(--gold);border-color:transparent;transform:scale(1.3)}
+.ctrl-row{padding:.8rem 1.25rem;display:flex;align-items:center;gap:.65rem}
+.ctrl-skip{flex:1;padding:.78rem;border-radius:var(--r-md);background:var(--bg2);color:var(--txt2);font-family:var(--fu);font-size:.8rem;font-weight:600;border:none;cursor:pointer;transition:background .15s}
+.ctrl-skip:active{background:var(--bg3)}
+.ctrl-next{flex:1.5;padding:.78rem;border-radius:var(--r-md);background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.8rem;font-weight:600;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(184,134,11,.3);transition:transform .12s}
+.ctrl-next:active{transform:scale(.97)}
+.ctrl-pg{font-family:var(--fu);font-size:.74rem;color:var(--txt3);min-width:48px;text-align:center}
+
+/* ── BRANDS ─── */
+.brand-chips{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .65rem;scrollbar-width:none}
+.brand-chips::-webkit-scrollbar{display:none}
+.bc{flex-shrink:0;padding:.46rem .95rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.72rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.bc.on{border-color:var(--gold);color:var(--gold);background:var(--gold-xl);box-shadow:0 3px 10px rgba(184,134,11,.2)}
+.frag-grid{padding:0 1.25rem;display:grid;gap:.72rem}
+.fc{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.15rem;box-shadow:var(--sh-sm);cursor:pointer;transition:transform .12s}
+.fc.open{border-color:rgba(184,134,11,.3);box-shadow:var(--sh-md)}
+.fc:active{transform:scale(.99)}
+.fc-top{display:flex;align-items:center;gap:.8rem}
+.fc-emoji{font-size:1.75rem;flex-shrink:0}
+.fc-info{flex:1;min-width:0}
+.fc-brand{font-family:var(--fu);font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--txt2);margin-bottom:.15rem}
+.fc-name{font-family:var(--fd);font-size:1.02rem;font-weight:600}
+.fc-type{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.08rem}
+.fc-arr{font-size:1.1rem;color:var(--txt3);transition:transform .25s;flex-shrink:0}
+.fc.open .fc-arr{transform:rotate(90deg)}
+.fc-detail{display:none;margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem}
+.fc.open .fc-detail{display:block}
+.fd-row{display:grid;grid-template-columns:1fr 1fr;gap:.58rem;margin-bottom:.8rem}
+.fd-chip{background:var(--bg2);border-radius:var(--r-sm);padding:.62rem .68rem}
+.fd-chip-lbl{font-family:var(--fu);font-size:.53rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);margin-bottom:.22rem}
+.fd-chip-val{font-family:var(--fu);font-size:.72rem;color:var(--txt);line-height:1.5}
+.fd-sec{margin-bottom:.75rem}
+.fd-sec-title{font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);margin-bottom:.38rem;display:flex;align-items:center;gap:.35rem}
+.fd-sec-body{font-family:var(--fu);font-size:.76rem;color:var(--txt2);line-height:1.75}
+.fd-sec-body strong{color:var(--txt)}
+.scene-chips{display:flex;flex-wrap:wrap;gap:.38rem;margin-top:.45rem}
+.sch{font-family:var(--fu);font-size:.64rem;font-weight:500;padding:.22rem .62rem;border-radius:var(--r-full)}
+.sch-good{background:var(--sage-xl);color:var(--sage);border:1px solid rgba(77,124,15,.2)}
+.sch-bad{background:var(--rose-xl);color:var(--rose);border:1px solid rgba(190,18,60,.2)}
+.rating-row{display:flex;align-items:center;gap:.48rem;margin-bottom:.38rem}
+.rating-lbl{font-family:var(--fu);font-size:.65rem;color:var(--txt2);width:58px;flex-shrink:0}
+.rating-bar{flex:1;height:5px;background:var(--bg3);border-radius:var(--r-full);overflow:hidden}
+.rating-fill{height:100%;border-radius:var(--r-full);background:linear-gradient(90deg,var(--gold),var(--gold-l))}
+.coloring-tip{background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-sm);padding:.65rem .8rem;margin-top:.55rem;font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.65}
+.coloring-tip strong{color:var(--gold)}
+
+/* ── TODAY PAGE ── */
+.sel-chips{display:flex;flex-wrap:wrap;gap:.38rem}
+.sel-chip{padding:.42rem .9rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .16s}
+.sel-chip.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700}
+.sel-go{width:100%;padding:.9rem;border-radius:var(--r-full);background:var(--teal);border:none;font-family:var(--fu);font-size:.9rem;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.03em;transition:opacity .15s}
+.sel-go:disabled{opacity:.4;cursor:not-allowed}
+.sel-result-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:1rem 1.1rem;display:flex;gap:.9rem;align-items:flex-start;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.sel-result-card:active{transform:scale(.98)}
+.sel-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0;margin-top:.1rem}
+.sel-r-brand{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3);margin-bottom:.12rem}
+.sel-r-name{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:.25rem}
+.sel-r-reason{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6}
+/* 月別カレンダー */
+.month-cell{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.7rem .75rem}
+.month-num{font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.month-frag{font-family:var(--fu);font-size:.68rem;font-weight:600;color:var(--txt);margin-bottom:.15rem}
+.month-tip{font-family:var(--fu);font-size:.62rem;color:var(--txt3);line-height:1.45}
+/* ── RADAR CHART ── */
+.radar-wrap{display:flex;flex-direction:column;align-items:center;gap:.4rem;margin:.5rem 0}
+.radar-labels{display:grid;grid-template-columns:1fr 1fr;gap:.2rem .5rem;width:100%}
+.radar-lbl{display:flex;align-items:center;gap:.35rem;font-family:var(--fu);font-size:.62rem;color:var(--txt2)}
+.radar-lbl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* ── COMPARE ── */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.cmp-col{display:flex;flex-direction:column;gap:.5rem}
+.cmp-head{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem;text-align:center}
+.cmp-emoji{font-size:1.6rem;display:block;margin-bottom:.25rem}
+.cmp-brand-lbl{font-family:var(--fu);font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3)}
+.cmp-name-lbl{font-family:var(--fd);font-size:.88rem;font-weight:700;color:var(--txt);line-height:1.2}
+.cmp-row{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.6rem .7rem}
+.cmp-row-lbl{font-family:var(--fu);font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3);margin-bottom:.28rem;text-align:center}
+.cmp-bar-wrap{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:.18rem}
+.cmp-bar{height:100%;border-radius:4px;transition:width .6s ease}
+.cmp-val{font-family:var(--fu);font-size:.6rem;font-weight:600;text-align:center}
+.cmp-winner{background:var(--gold-xl);border-color:rgba(184,134,11,.3)}
+/* compare chip select */
+.fc.compare-on{border:2px solid var(--teal);box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+.fc.compare-on .fc-top::after{content:'✓';position:absolute;top:.6rem;right:.6rem;width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:22px;text-align:center}
+.fci-tabs{display:flex;gap:.32rem;margin-bottom:.75rem;overflow-x:auto;scrollbar-width:none}
+.fci-tabs::-webkit-scrollbar{display:none}
+.fci-tab{flex-shrink:0;padding:.38rem .75rem;border-radius:var(--r-full);background:var(--bg2);border:1.5px solid var(--border);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fci-tab.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 3px 10px rgba(184,134,11,.25)}
+.fci-panel{animation:pIn .2s ease both}
+.fci-panel.hidden{display:none}
+.rating-row span:last-child{font-size:.58rem;color:var(--txt3);width:26px;text-align:right;flex-shrink:0}
+
+/* ── QUIZ ─── */
+.quiz-hd{padding:calc(var(--sat) + .75rem) 1.25rem .65rem;display:flex;align-items:center;justify-content:space-between}
+.quiz-sc{font-family:var(--fu);font-size:.74rem;font-weight:700;color:var(--gold);background:var(--gold-xl);padding:.28rem .88rem;border-radius:var(--r-full);border:1px solid rgba(184,134,11,.2)}
+.qprog{margin:0 1.25rem .65rem;height:5px;background:var(--bg3);border-radius:var(--r-full);overflow:hidden}
+.qprog-fi{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-l));border-radius:var(--r-full);width:0;transition:width .35s ease}
+.qcard{margin:0 1.25rem .8rem;background:var(--surface);border-radius:var(--r-xl);border:1px solid var(--border);box-shadow:var(--sh-md);padding:1.35rem}
+.qc-n{font-family:var(--fu);font-size:.62rem;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.65rem}
+.qc-q{font-family:var(--fd);font-size:1.05rem;font-weight:600;line-height:1.45;margin-bottom:1.15rem}
+.qopt{display:block;width:100%;text-align:left;background:var(--bg2);border:1.5px solid transparent;color:var(--txt);font-family:var(--fu);font-size:.81rem;font-weight:400;padding:.88rem 1rem;border-radius:var(--r-md);margin-bottom:.52rem;cursor:pointer;transition:all .18s;line-height:1.55}
+.qopt:active{background:var(--gold-xl)}
+.qopt.correct{background:var(--sage-xl);border-color:var(--sage);color:var(--sage);font-weight:500}
+.qopt.wrong{background:var(--rose-xl);border-color:var(--rose-l);color:var(--rose)}
+.qexp{display:none;margin-top:.65rem;background:var(--sage-xl);border:1px solid rgba(15,118,110,.2);border-radius:var(--r-md);padding:.9rem;font-family:var(--fu);font-size:.77rem;color:var(--txt2);line-height:1.78}
+.qexp.show{display:block}
+.qnxt{display:none;width:100%;margin-top:.65rem;background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.86rem;font-weight:600;padding:.85rem;border-radius:var(--r-md);box-shadow:0 4px 14px rgba(184,134,11,.25);transition:transform .12s}
+.qnxt.show{display:block}
+.qnxt:active{transform:scale(.98)}
+.result{display:none;margin:0 1.25rem 2rem;background:var(--surface);border-radius:var(--r-xl);border:1px solid var(--border);box-shadow:var(--sh-md);padding:2.2rem 1.5rem;text-align:center}
+.result.show{display:block}
+.res-em{font-size:3.5rem;margin-bottom:.85rem}
+.res-sc{font-family:var(--fd);font-size:3.5rem;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.res-of{font-family:var(--fu);font-size:.78rem;color:var(--txt3);margin:.28rem 0 1rem}
+.res-msg{font-family:var(--fu);font-size:.82rem;color:var(--txt2);line-height:1.8;margin-bottom:1.35rem}
+.res-retry{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.88rem;font-weight:600;padding:.88rem 2.5rem;border-radius:var(--r-full);box-shadow:0 6px 20px rgba(184,134,11,.3)}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-bottle"><svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- ハンガー -->
+  <path d="M40 12 C40 12 40 8 44 8 C48 8 48 12 48 12" stroke="#B8860B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M40 12 L10 38 Q8 40 10 42 L70 42 Q72 40 70 38 Z" fill="#1e3a6e" opacity=".9"/>
+  <path d="M40 12 L40 20" stroke="#B8860B" stroke-width="2" stroke-linecap="round"/>
+  <!-- ジャケット -->
+  <rect x="18" y="42" width="44" height="28" rx="3" fill="#1e3a6e" opacity=".85"/>
+  <path d="M40 42 L34 52 L36 70 L40 68 L44 70 L46 52 Z" fill="#0f172a" opacity=".7"/>
+  <!-- ラペル -->
+  <path d="M40 42 L30 52 L32 42 Z" fill="#2563eb" opacity=".5"/>
+  <path d="M40 42 L50 52 L48 42 Z" fill="#2563eb" opacity=".5"/>
+  <!-- ボタン -->
+  <circle cx="40" cy="54" r="1.5" fill="#B8860B"/>
+  <circle cx="40" cy="60" r="1.5" fill="#B8860B"/>
+  <!-- ポケットチーフ -->
+  <path d="M46 46 L50 44 L52 48 L48 50 Z" fill="#BE123C" opacity=".8"/>
+</svg></div>
+  <div class="sp-title">FORMA</div>
+  <div class="sp-sub">FASHION INTELLIGENCE</div>
+  <div class="sp-tagline">「服は、最も速い非言語言語だ」</div>
+  <button class="sp-btn" onclick="boot()">はじめる</button>
+</div>
+
+<div id="app">
+
+<!-- ══ HOME ══ -->
+<div class="page on" id="pg-home">
+  <div class="sb">
+    <div class="home-top">
+      <div><div class="home-greet">Parfum Intelligence 🌿</div><div class="home-name">今日の香りを設計しよう</div></div>
+      <div class="home-av"><svg width="32" height="32" viewBox="0 0 80 80" fill="none"><path d="M40 8 C40 8 40 5 43 5 C46 5 46 8 46 8" stroke="#B8860B" stroke-width="2" fill="none"/><path d="M40 8 L15 28 Q13 30 15 32 L65 32 Q67 30 65 28 Z" fill="#1e3a6e"/><rect x="20" y="32" width="40" height="28" rx="2" fill="#1e3a6e" opacity=".9"/><path d="M40 32 L35 40 L37 60 L40 58 L43 60 L45 40 Z" fill="#0f172a" opacity=".6"/><circle cx="40" cy="44" r="1.5" fill="#B8860B"/><circle cx="40" cy="50" r="1.5" fill="#B8860B"/></svg></div>
+    </div>
+    <div class="hero">
+      <div class="hero-bl"></div><div class="hero-bl2"></div>
+      <div class="hero-tag">Scent Psychology Platform</div>
+      <div class="hero-title">服は、<em>最も速い</em><br>非言語言語だ。</div>
+      <div class="hero-stats">
+        <div><span class="hs-n">30+</span><span class="hs-l">スタイル収録</span></div>
+        <div class="hero-div"></div>
+        <div><span class="hs-n">8</span><span class="hs-l">学習デッキ</span></div>
+        <div class="hero-div"></div>
+        <div><span class="hs-n">90+</span><span class="hs-l">学習カード</span></div>
+      </div>
+    </div>
+    <div class="tip-card" id="tipCard" onclick="rotateTip()" style="cursor:pointer">
+      <div class="tip-ico" id="tipIco">✨</div>
+      <div style="flex:1"><div class="tip-lbl">Today's Science Protocol <span style="font-size:.5rem;opacity:.5">— タップで更新</span></div><div class="tip-txt" id="tipTxt"></div></div>
+    </div>
+    <div class="sec-title">モジュール <span>— 学習を選ぼう</span></div>
+    <div class="mod-grid">
+      <div class="mod" onclick="nav('scent',2)"><div class="mod-ac" style="background:var(--violet)"></div><div class="mod-ico" style="background:var(--violet-xl)">🧠</div><div><div class="mod-name">視覚の科学</div><div class="mod-sub">網膜→視床→扁桃体 × 恋愛心理学</div></div><span class="mod-badge" style="background:var(--violet-xl);color:var(--violet)">必読</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('learn',3)"><div class="mod-ac" style="background:var(--gold)"></div><div class="mod-ico" style="background:var(--gold-xl)">📚</div><div><div class="mod-name">Flash Learn</div><div class="mod-sub">8デッキ 90+カード — 女性心理×脳科学</div></div><span class="mod-badge" style="background:var(--gold-xl);color:var(--gold)">HOT</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('brands',4)"><div class="mod-ac" style="background:var(--amber)"></div><div class="mod-ico" style="background:var(--amber-xl)">👔</div><div><div class="mod-name">Style Library</div><div class="mod-sub">30+ スタイル × 女性心理解説</div></div><span class="mod-badge" style="background:var(--amber-xl);color:var(--amber)">NEW</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('quiz',5)"><div class="mod-ac" style="background:var(--rose)"></div><div class="mod-ico" style="background:var(--rose-xl)">⚡</div><div><div class="mod-name">Fashion Quiz</div><div class="mod-sub">ファッション心理専門クイズ — 10問</div></div><span class="mod-arr">›</span></div>
+    </div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ TODAY ══ -->
+<div class="page" id="pg-today">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--teal)">🎯 今日のコーデ</div><div style="font-family:var(--fu);font-size:.78rem;color:var(--txt2);margin-top:.3rem">シーン・印象・気温から最適なスタイルを提案</div></div>
+
+    <!-- セレクター -->
+    <div class="card" id="selectorCard">
+      <div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">🎛</div><div><div class="card-hd-title">今日の状況を選ぶ</div><div class="card-hd-sub">3ステップで最適コーデを提案</div></div></div>
+      <div class="card-bd" style="display:flex;flex-direction:column;gap:1rem">
+
+        <!-- Step1 シーン -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 1 — 今日のシーン</div>
+          <div class="sel-chips" id="sceneChips">
+            <button class="sel-chip" data-group="scene" data-val="first">🌸 初対面</button>
+            <button class="sel-chip" data-group="scene" data-val="date2">💬 2回目以降</button>
+            <button class="sel-chip" data-group="scene" data-val="night">🌙 夜のデート</button>
+            <button class="sel-chip" data-group="scene" data-val="casual">☕ カジュアル</button>
+            <button class="sel-chip" data-group="scene" data-val="work">💼 ビジネス</button>
+            <button class="sel-chip" data-group="scene" data-val="special">🔥 勝負の夜</button>
+          </div>
+        </div>
+
+        <!-- Step2 気分 -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 2 — 女性に与えたい印象</div>
+          <div class="sel-chips" id="moodChips">
+            <button class="sel-chip" data-group="mood" data-val="clean">✨ 清潔感・誠実さ</button>
+            <button class="sel-chip" data-group="mood" data-val="sexy">🖤 権威・色気</button>
+            <button class="sel-chip" data-group="mood" data-val="trust">🤝 信頼感・頼もしさ</button>
+            <button class="sel-chip" data-group="mood" data-val="deep">🌑 謎めいた魅力</button>
+            <button class="sel-chip" data-group="mood" data-val="smart">🧠 知性・洗練</button>
+          </div>
+        </div>
+
+        <!-- Step3 天気 -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 3 — 今日の天気・気温</div>
+          <div class="sel-chips" id="weatherChips">
+            <button class="sel-chip" data-group="weather" data-val="hot">☀️ 暑い（25℃+）</button>
+            <button class="sel-chip" data-group="weather" data-val="mild">🌤 快適（15〜25℃）</button>
+            <button class="sel-chip" data-group="weather" data-val="cold">❄️ 寒い（15℃−）</button>
+          </div>
+        </div>
+
+        <button class="sel-go" id="selGoBtn" onclick="runSelector()">→ 最適なコーデを選ぶ</button>
+      </div>
+    </div>
+
+    <!-- 結果 -->
+    <div id="selResult" style="display:none">
+      <div style="font-family:var(--fu);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin:.85rem 0 .55rem;padding:0 .1rem">🎯 推奨結果</div>
+      <div id="selResultCards" style="display:flex;flex-direction:column;gap:.65rem"></div>
+      <button onclick="resetSelector()" style="width:100%;margin-top:.9rem;padding:.75rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-full);font-family:var(--fu);font-size:.8rem;font-weight:600;color:var(--txt2);cursor:pointer">← 選び直す</button>
+    </div>
+
+    <!-- 月別カレンダー -->
+    <div class="card" style="margin-top:.5rem">
+      <div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">📅</div><div><div class="card-hd-title">月別・最適コーデカレンダー</div><div class="card-hd-sub">色彩心理×季節×恋愛戦略の年間ガイド</div></div></div>
+      <div class="card-bd">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem" id="monthCalendar"></div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ SCENT SCIENCE ══ -->
+<div class="page" id="pg-scent">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--violet)">🧠 視覚の科学 完全版</div></div>
+
+    <!-- 視覚情報処理の解剖学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">👁</div><div><div class="card-hd-title">視覚情報処理の解剖学</div><div class="card-hd-sub">服を見た瞬間の0.1秒に何が起きるか</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--indigo-xl);border:1px solid rgba(30,58,110,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">👁</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo)">①角膜・水晶体（レンズ）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">光情報を収束。水晶体は毎秒自動的に焦点を調整。服の輪郭・色・光沢が同時に収集される。</div></div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(124,58,237,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">🎨</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet)">②網膜（錐体細胞3種・桿体細胞）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">L錐体（赤）・M錐体（緑）・S錐体（青）が並列処理。約600万個の錐体細胞が色情報を電気信号に変換。ここで「ネイビー」「ブラック」などの色が脳への信号として生成される。</div></div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">⚡</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--gold)">③視神経→視床（外側膝状体）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">嗅覚と違い視覚は視床を経由するが、感情系（扁桃体）への<strong>高速副経路</strong>が存在。0.03秒で感情的評価が始まる。「なんとなく素敵」という直感の神経科学的正体。</div></div></div>
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">🧩</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose)">④高次視覚野（V1〜V5 / IT野）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">V4：色の認識・V5：動き検出・IT野：形・物体・人物認識。「スーツを着た男性」という統合的認識はここで完成する。処理時間は約0.07秒。</div></div></div>
+        <div style="background:var(--amber-xl);border:1px solid rgba(180,83,9,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">💓</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--amber)">⑤扁桃体（0.1秒で感情判定）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">「好き/嫌い・安全/危険・清潔/不潔」を0.1秒で判定。前頭前野（理性）より扁桃体（感情）が先に反応するため「なんとなく嫌」という直感は実は高精度な神経処理の結果。</div></div></div>
+        <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">🏆</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--teal)">⑥眼窩前頭皮質・海馬</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">眼窩前頭皮質：社会的価値・地位・魅力度の評価。海馬：「良い印象の記憶」への保存開始。この段階で「また会いたい」という欲求が生まれる。</div></div></div>
+      </div>
+    </div></div>
+
+    <!-- 色彩と脳内ホルモン -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--indigo-xl)">🌈</div><div><div class="card-hd-title">色彩 × 女性の脳内ホルモン</div><div class="card-hd-sub">各色が女性の脳と恋愛感情に与える科学的効果</div></div></div><div class="card-bd"><div class="neuro-grid">
+      <div class="ng"><div class="ng-ico">💙</div><div class="ng-name">ネイビー・ブルー</div><div class="ng-chem" style="color:var(--indigo)">SEROTONIN</div><div class="ng-desc">信頼・誠実・知性。女性の扁桃体に「安全で近づける男性」を即時判定させる最強の色。警戒心解除に最速。</div><div class="ng-scents">ネイビースーツ / インディゴデニム</div></div>
+      <div class="ng"><div class="ng-ico">🖤</div><div class="ng-name">ブラック</div><div class="ng-chem" style="color:var(--slate)">DOPAMINE</div><div class="ng-desc">権威・謎・高級感。ドーパミン放出型の「強い存在感」。コルチゾール軽度上昇→ときめきを生む。</div><div class="ng-scents">オールブラック / ブラックスーツ</div></div>
+      <div class="ng"><div class="ng-ico">🤍</div><div class="ng-name">ホワイト</div><div class="ng-chem" style="color:var(--teal)">SEROTONIN</div><div class="ng-desc">清潔・誠実・健康。初対面の扁桃体ジャッジ最速クリア色。「健康な遺伝子」の視覚シグナル。</div><div class="ng-scents">白シャツ / ホワイトTシャツ</div></div>
+      <div class="ng"><div class="ng-ico">🩶</div><div class="ng-name">グレー</div><div class="ng-chem" style="color:var(--violet)">SEROTONIN</div><div class="ng-desc">知性・落ち着き・成熟。「感情に揺れない大人の男性」という最上の印象を前頭前野に届ける。</div><div class="ng-scents">グレースーツ / グレーニット</div></div>
+      <div class="ng"><div class="ng-ico">❤️</div><div class="ng-name">レッド・バーガンディ</div><div class="ng-chem" style="color:var(--rose)">NORADRENALINE</div><div class="ng-desc">支配・情熱・力強さ。赤を着た男性は同じ顔でも魅力度が有意に高い（Elliot et al. 2010）。</div><div class="ng-scents">バーガンディニット / レッドアクセント</div></div>
+      <div class="ng"><div class="ng-ico">🤎</div><div class="ng-name">ベージュ・アース</div><div class="ng-chem" style="color:var(--amber)">OXYTOCIN</div><div class="ng-desc">温かさ・包容力・長期的絆。「ケアしてくれそうな男性」として眼窩前頭皮質が処理。オキシトシン系直撃。</div><div class="ng-scents">キャメルコート / ベージュニット</div></div>
+    </div></div></div>
+
+    <!-- 恋愛感情形成の3段階 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">💘</div><div><div class="card-hd-title">ファッション×恋愛感情 3段階モデル</div><div class="card-hd-sub">視覚情報がどう恋愛感情に変換されるか</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.55rem">
+        <div style="background:linear-gradient(135deg,var(--rose-xl),#FFF5F7);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 1 — 欲求（Lust）0.1秒の視覚処理</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.45rem">
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--rose);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">ノルアドレナリン</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--rose);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">テストステロン様</span>
+          </div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">「かっこいい・気になる・もっと見たい」。<strong style="color:var(--txt)">フィット感・赤・ブラック・肩幅の強調</strong>が扁桃体の欲求回路を0.1秒で起動させる。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#FFF7ED,#FFFBEB);border:1px solid rgba(180,83,9,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 2 — 誘引（Attraction）3〜30秒の評価</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.45rem">
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--amber);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">ドーパミン</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--amber);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">セロトニン↑</span>
+          </div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">「この人はどんな人？また会いたい」。<strong style="color:var(--txt)">色の一貫性・清潔感・スタイルの独自性</strong>が眼窩前頭皮質の社会的価値評価を動かす。ハロー効果が全面発動。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--indigo-xl),#F0F0FF);border:1px solid rgba(67,56,202,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--indigo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 3 — 絆（Attachment）記憶への定着</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.45rem">
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--indigo);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">オキシトシン</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--indigo);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">バソプレシン</span>
+          </div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">「あの人のスタイルが好き・そばにいたい」。<strong style="color:var(--txt)">シグネチャースタイルの確立・素材の温かさ</strong>が海馬に「この人＝安全基地」を書き込む。バソプレシンが絆を強化。</div>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- シルエット・フィット感の神経科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">📐</div><div><div class="card-hd-title">シルエット × 神経科学</div><div class="card-hd-sub">形・フィット感が女性の鏡像ニューロンに与える効果</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🪞 ジャストサイズ → 鏡像ニューロン活性化</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">フィットした服を見るだけで女性の体性感覚野・補足運動野が活性化し「健康な体型」を無意識にシミュレート。「なんとなく体型が良さそう」の正体はミラーニューロンの視触覚変換。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">⬇️ Vネック・テーパードシルエット → 視覚錯視</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">視覚野の「方向性検出ニューロン」が縦のラインを延長処理しスリム・長身に知覚させる。ポンゾ錯視と同じ神経機構が働く。ファッションデザインに組み込まれた脳への介入。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">💪 肩幅強調 → 進化的な保護者シグナル</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">進化心理学的に肩幅は「資源調達能力・保護能力」の指標。構造化された肩（スーツ・ジャケット）は女性の眼窩前頭皮質に「守ってくれる男性」という進化的シグナルを送る。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">📏 サイズが合っていない服の心理的損失</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">ダブついた服は「自己管理能力の低さ」として前頭前野が処理。たった1サイズの違いが「信頼感スコア」を大幅に下げる。清潔感の次に重要なのはサイズ感という研究結果がある。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 素材・テクスチャ -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--amber-xl)">🧵</div><div><div class="card-hd-title">素材・テクスチャ × 触覚予測システム</div><div class="card-hd-sub">見るだけで触覚野が反応する神経科学</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🧶 ウール・カシミア → 「触れたい」衝動</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">柔らかい素材を視覚的に認識するだけで体性感覚野（S1野）が活性化し「触れたい・近づきたい」という触覚予測が無意識に発生。オキシトシン系を刺激し「温かみ・包容力」という印象に変換。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">👔 清潔なコットン → 健康シグナル</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">ハリのある白い布の視覚情報が「清潔・健康・自己管理」という遺伝的健康度の指標として処理される。シワのない白シャツが初対面で圧倒的な清潔感を作る神経科学的根拠。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🥋 本革レザー → 男性ホルモン様シグナル</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">レザーの硬質な光沢が進化的に「力強さ・経験・保護」の視覚シグナルを送る。女性の視覚野がテストステロン様の「支配的な男性性」として処理。本革と合成皮革では脳の反応が異なる。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">✨ 光沢素材（シルク・高級ウール） → 地位シグナル</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">光沢のある高品質素材は「高い社会的地位・成功・資源調達能力」のシグナル。眼窩前頭皮質が「長期的なパートナーとしての適合性」を高く評価する。ドーパミン放出型の高級感の発見。</div></div>
+      </div>
+    </div></div>
+
+    <!-- ハロー効果・シグネチャー -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🎭</div><div><div class="card-hd-title">シグネチャースタイル × 記憶形成戦略</div><div class="card-hd-sub">ファッション版プルースト効果の科学的応用</div></div></div><div class="card-bd">
+      <div style="background:var(--violet-xl);border:1px solid rgba(124,58,237,.12);border-radius:var(--r-md);padding:.9rem;margin-bottom:.75rem">
+        <div style="font-family:var(--fd);font-size:.92rem;font-style:italic;color:var(--txt);line-height:1.65;margin-bottom:.5rem">「毎回同じスタイルの核心を持て。相手の海馬はあなたという存在をその服装と永遠に結びつけ始める。」</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3)">— 視覚記憶研究×恋愛心理学の統合知見</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">1</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">初回：清潔感で「安全」を確立</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">ネイビー×白シャツ系。扁桃体に「安全・清潔・信頼できる」を刻む。シグネチャーはまだ見せない。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--violet);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">2</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">2〜3回目：個性を加えて「記憶の錨」を作る</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">ベースは清潔感のまま、特定のアイテム（時計・シルエット・カラー）を毎回統一。「あなたらしさ」として海馬に保存され始める。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">3</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">継続：バソプレシンが絆を強化</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">一貫したスタイルを見るたびにバソプレシンとオキシトシンが反応。「この人のそばにいたい」という帰属感が視覚情報によって自動的に再起動される。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--rose);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">+</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">ハロー効果の最大化</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">服装が良いと知性・能力・誠実さ・将来性まで全て高く評価される（実験で繰り返し実証）。ファッションは「人格の入口」として機能する。</div></div></div>
+      </div>
+    </div></div>
+
+    <!-- 進化心理学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">🧬</div><div><div class="card-hd-title">進化心理学 × ファッション</div><div class="card-hd-sub">女性が無意識に評価する3つの遺伝的指標</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--rose);margin-bottom:.3rem">① 遺伝的健康度（清潔感・シンメトリー）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">清潔な服・シワなし・きちんと手入れされた状態が「健康な免疫系・寄生虫フリー」の視覚シグナル。清潔感が恋愛において最重要な理由の進化的根拠。</div></div>
+        <div style="background:var(--indigo-xl);border:1px solid rgba(30,58,110,.12);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--indigo);margin-bottom:.3rem">② 資源調達能力（服の質・手入れ・ブランド）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">服の素材・品質・ケアの状態が「経済的資源・社会的地位・将来性」の指標として処理される。同じデザインでも素材の質が異なると脳の評価が変わる実験結果がある。</div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--gold);margin-bottom:.3rem">③ 保護能力（体格・シルエット・姿勢）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">肩幅・姿勢・動きを強調するシルエットが「物理的保護能力」の進化的シグナル。ジャケット・構造化された肩がこの評価を服装で補強できる唯一の要素。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 夜の視覚科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">🌙</div><div><div class="card-hd-title">夜の視覚科学 — 暗闇が作る最強の恋愛条件</div><div class="card-hd-sub">瞳孔拡大×照明×素材×肌露出の神経科学完全版</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose);margin-bottom:.3rem">👁 瞳孔拡大の神経科学（Hess 1975）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">Eckhard Hess（1975）の実験で<strong>瞳孔が拡大した顔は同じ顔でも「より魅力的・より温かい・より誠実」と評価</strong>されることが実証された。暗い環境（キャンドル・薄暗いバー）では瞳孔が生理的に拡大し相互に「この人は私に惹かれている」という無意識の判定が起きる。瞳孔拡大はノルアドレナリン（覚醒・興奮）とドーパミン（報酬・欲求）の分泌指標でもある。</div></div>
+        <div style="background:var(--amber-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--amber);margin-bottom:.3rem">🕯 キャンドル光×副交感神経×美化効果</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">キャンドル光（色温度1800〜2000K）はブルーライトを含まず副交感神経を優位にしメラトニン分泌を維持しながら<strong>コルチゾールを低下</strong>させる。「光のゆらぎ（1/fゆらぎ）」が脳波のα波を増加させリラクゼーション×美的知覚の向上を同時に引き起こす。暖色の光が顔の陰影を美化しシミ・毛穴を目立たなくする視覚的美化効果も重なる。</div></div>
+        <div style="background:var(--indigo-xl);border:1px solid rgba(30,58,110,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo);margin-bottom:.3rem">✨ 肌露出比率×テストステロン様視覚シグナル</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">Elliot et al.（2010）の赤×性的魅力研究の視覚的拡張として<strong>「肌の露出比率が増加するほど女性のテストステロン様評価が上昇する」</strong>という視覚的性的選択の研究が複数存在する。腕・首・胸元の肌が見える夜のスタイル（Vネック・開衿シャツ）が昼のスタイルより性的魅力評価を高める神経科学的根拠。体温の温かさが視覚的に「感じられる」触覚予測とも統合される。</div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(124,58,237,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet);margin-bottom:.3rem">🖤 暗闇での服装×素材の光反射</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">暗い環境ではマット素材より<strong>光沢素材（シルク・サテン・良質なウール）が光を拾い「存在感・高級感」</strong>を視覚野に伝達する。黒の光沢がキャンドル光に反応し「謎めいた権威感」を最大化させる。同時に暗闇で輪郭が強調されシルエットの美しさが昼間より際立つ。夜のオールブラック×光沢素材が「昼間とは別人のような色気」を作る視覚物理学的根拠。</div></div>
+        <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--teal);margin-bottom:.3rem">🛏 寝室の視覚環境設計×性的覚醒</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">寝室の照明・色彩・素材が視覚×触覚予測×ホルモン環境を同時に設計する。<strong>赤みがかった暖色照明</strong>が性的覚醒と相関することが確認されている（赤のノルアドレナリン効果の室内版）。白・クリーム系のリネン素材が視覚的に「清潔感×柔らかさ×触れたい」を誘発。照明の高さを低くすること（間接照明・フロアライト）が視線を水平にしリラックス×親密感を促進する。</div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--gold);margin-bottom:.3rem">🌃 夜のファッション戦略 — 視覚設計の完全版</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">夜の視覚戦略の統合：①<strong>暗い場所を選ぶ</strong>（瞳孔拡大の相互効果）②<strong>キャンドル・暖色照明</strong>（副交感神経優位×美化）③<strong>光沢のある黒または深色</strong>（夜の光反射×権威感）④<strong>Vネックや開衿で首・胸元を見せる</strong>（肌露出×触覚予測）⑤<strong>良質な素材</strong>（近距離での視覚×触覚予測統合）。EIDOS（香り）×HAPTOS（タッチ）×SONOS（囁き声）と合わせた視覚設計が夜の五感統合の完成形。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 眼球・視覚経路の解剖学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--indigo-xl)">🔬</div><div><div class="card-hd-title">眼球・視覚経路の解剖学</div><div class="card-hd-sub">網膜→V1〜V5→扁桃体 — 服装が0.1秒で感情を動かす完全な経路</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--indigo-xl);border:1px solid rgba(30,58,110,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo);margin-bottom:.3rem">① 網膜の解剖 — 錐体細胞と桿体細胞</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">網膜には<strong>錐体細胞（約600万個・色覚・明所視）</strong>と桿体細胞（約1億2千万個・明暗・暗所視）が分布。錐体細胞はS（青）M（緑）L（赤）の3種類。<strong>中心窩（fovea）</strong>は錐体細胞が最密で視力最高点——服装・顔の詳細認識はここが担当。「第一印象は0.1秒」の網膜解剖学的根拠。</div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet);margin-bottom:.3rem">② V1〜V5 — 視覚野の機能地図と恋愛への応用</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6"><strong>V1（一次視覚野）</strong>：輪郭・方向・空間周波数。<strong>V4（腹側経路）</strong>：色彩処理の中枢——赤がここで「情熱・性的魅力」として特別に処理される（Elliot 2010の神経解剖的根拠）。<strong>V5/MT</strong>：動き・速度検出——歩き方・ジェスチャーがここで評価される。<strong>下側頭回（IT野）</strong>：服装・顔・「清潔感あり」などの高次認識を担当。</div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--gold);margin-bottom:.3rem">③ 扁桃体への高速経路 — 0.1秒の感情判定の解剖</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">外側膝状体（LGN）→扁桃体への<strong>直接の感情評価ルート</strong>が視覚皮質を経由せずに存在。<strong>0.1秒以内</strong>に「好き/嫌い・安全/危険」の判定が完了する。上丘（中脳）への副経路も並行——これが「なぜか服装を見た瞬間に印象が決まる」という直感的評価の神経解剖学的根拠。意識的分析より先に感情的判定が起きる。</div></div>
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose);margin-bottom:.3rem">④ 腹側経路（What）× 背側経路（Where）の統合</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6"><strong>腹側経路（V1→V4→IT野）</strong>：「何が見えるか」——服装・色彩・ブランドの認識と評価。<strong>背側経路（V1→V5→頭頂葉）</strong>：「どこにあるか・どう動いているか」——姿勢・歩き方・近接距離を評価。両経路の統合が前頭前野で行われ「第一印象」として意識に上る。服装（腹側）×歩き方（背側）の一致が最強の視覚的第一印象を作る。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 色覚の神経解剖 × 恋愛 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">🎨</div><div><div class="card-hd-title">色覚の神経解剖 × 恋愛への応用</div><div class="card-hd-sub">V4×扁桃体×ホルモン — なぜ赤が最強の恋愛色か</div></div></div><div class="card-bd">
+      <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.85rem;margin-bottom:.7rem">
+        <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.35rem">🔬 Elliot et al.（2010）/ V4野の色彩解剖 / 37文化研究</div>
+        <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.7">色覚専用の<strong>V4野</strong>が赤色（波長620〜750nm）を処理する際に扁桃体・視床下部への出力が他の色より強い。Elliotの37文化研究でも赤が普遍的に性的魅力と相関。<strong>「赤＝性的魅力」は文化を超えた神経解剖学的反応</strong>。</div>
+      </div>
+      <div class="neuro-grid">
+        <div class="ng"><div class="ng-ico" style="color:#dc2626">🔴</div><div class="ng-name">赤（620〜750nm）</div><div class="ng-chem" style="color:#dc2626">TESTOSTERONE</div><div class="ng-desc">V4→扁桃体への最強の性的魅力シグナル。ノルアドレナリン軽度上昇。ドーパミン的なときめき誘発。バーガンディ・深紅・ワインレッドが最も効果的。</div></div>
+        <div class="ng"><div class="ng-ico" style="color:#1e3a6e">🔵</div><div class="ng-name">ネイビー（460nm付近）</div><div class="ng-chem" style="color:#1e3a6e">SEROTONIN</div><div class="ng-desc">信頼・権威・誠実さのセロトニン系シグナル。扁桃体の安全評価を最速でクリア。初対面・ビジネスシーンで女性ウケ最強の色彩。</div></div>
+        <div class="ng"><div class="ng-ico" style="color:#92400e">🟤</div><div class="ng-name">アースカラー（ブラウン系）</div><div class="ng-chem" style="color:#92400e">OXYTOCIN</div><div class="ng-desc">キャメル・テラコッタ・ブラウンがオキシトシン的な「温もり・包容力・安心感」を誘発。長期的パートナー評価が最も高い色系統。</div></div>
+        <div class="ng"><div class="ng-ico">⬛</div><div class="ng-name">ブラック</div><div class="ng-chem" style="color:var(--txt3)">DOPAMINE</div><div class="ng-desc">謎めいた権威感・ドーパミン的な「もっと知りたい」引き付け力。不確実性低減理論の「謎めいた魅力」を視覚的に実現する最強の色。夜に光沢で最大効果。</div></div>
+        <div class="ng"><div class="ng-ico" style="color:#6B7280">⬜</div><div class="ng-name">ホワイト・グレー</div><div class="ng-chem" style="color:#6B7280">COGNITIVE</div><div class="ng-desc">認知的負荷最低——脳がシルエット・顔・表情の評価に集中できる「引き算の美学」。清潔感シグナルとして扁桃体の安全判定を促進。</div></div>
+        <div class="ng"><div class="ng-ico" style="color:#15803d">🟢</div><div class="ng-name">グリーン・アースカラー</div><div class="ng-chem" style="color:#15803d">CORTISOL↓</div><div class="ng-desc">自然環境への連想（進化的安全環境）でコルチゾールを低下させる。副交感神経優位化の促進。屋外デートと組み合わせると最大効果。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 瞳孔解剖 × ミラーニューロン視覚 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">👁</div><div><div class="card-hd-title">瞳孔の解剖 × ミラーニューロン視覚経路</div><div class="card-hd-sub">瞳孔散大筋の自律神経支配 × 服装→触覚予測の完全経路</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">👁 瞳孔散大筋 vs 括約筋 — 自律神経の拮抗支配</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">瞳孔散大筋（放射状）は<strong>交感神経支配</strong>——興奮・覚醒・ときめき・暗闇で瞳孔を大きく開く。括約筋（輪状）は副交感神経（動眼神経）支配——明所・副交感優位で収縮。Hess（1975）実験で瞳孔拡大した顔が「より魅力的・温かい・誠実」と評価されるのは<strong>交感神経活性（好意・ときめき）の外部シグナル</strong>として無意識に処理されるため。暗い場所で瞳孔が相互に拡大する解剖的根拠。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🌙 メラノプシン含有神経節細胞 — 照明が感情に影響する解剖</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">網膜の<strong>メラノプシン含有神経節細胞（ipRGC）</strong>が青色光（460nm）に敏感で視交叉上核（SCN）に直接投射しコルチゾール分泌を制御する。キャンドル光（ブルーライトゼロ）がipRGCを刺激せずコルチゾール低下→副交感神経優位という「照明の種類が感情に影響する」完全な網膜解剖学的説明。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🪞 ミラーニューロン × 服装→触覚予測の神経経路</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">視覚野（IT野）が服装の素材・テクスチャを認識→<strong>前頭葉のミラーニューロン（F5野相当）</strong>が「触れた時どう感じるか」を自動シミュレート→島皮質が「触れたい・温かい・柔らかい」という感情的予測を生成。「ウールのニットを見ると抱きしめたくなる」の神経解剖学的正体。良質な素材がHAPTOSの段階的スキンシップを視覚的に先取りする。</div></div>
+        <div style="background:var(--indigo-xl);border:1px solid rgba(30,58,110,.15);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--indigo);margin-bottom:.3rem">🔗 視覚×HAPTOS統合 — 「見た瞬間に触れたくなる」の完全解剖</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">視覚野→ミラーニューロン→島皮質→視床下部（オキシトシン産生予測）という経路が<strong>実際に触れる前から</strong>オキシトシン系を準備状態に入れる。FORMA（視覚）がHAPTOS（触覚）の前段階として機能する五感統合の解剖学的根拠。カシミヤ・シルク・上質ウールが「視覚的CT繊維刺激」として機能。</div></div>
+      </div>
+    </div></div>
+
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ LEARN ══ -->
+<div class="page" id="pg-learn">
+  <div class="sb">
+    <div class="learn-hd"><div class="pg-title">Fashion Learn</div><div style="font-family:var(--fu);font-size:.76rem;color:var(--txt3)" id="deckCnt"></div></div>
+    <div class="deck-tabs">
+      <button class="dt on" onclick="loadDeck('neuro',this)">🧠 視覚神経科学</button>
+      <button class="dt" onclick="loadDeck('color',this)">🌈 色彩心理学</button>
+      <button class="dt" onclick="loadDeck('social',this)">👔 社会心理学</button>
+      <button class="dt" onclick="loadDeck('scene',this)">📍 シーン戦略</button>
+      <button class="dt" onclick="loadDeck('silhouette',this)">💪 シルエット科学</button>
+      <button class="dt" onclick="loadDeck('texture',this)">🧵 素材心理学</button>
+      <button class="dt" onclick="loadDeck('glossary',this)">📖 用語辞典</button>
+      <button class="dt" onclick="loadDeck('romance',this)">❤️ 恋愛心理</button>
+      <button class="dt" onclick="loadDeck('anatomy',this)">🔬 解剖学</button>
+      <button class="dt" onclick="loadDeck('night',this)">🌙 夜の視覚</button>
+    </div>
+    <div class="pdots" id="pdots"></div>
+    <div class="card-box" id="cardBox">
+      <div class="card-face" id="cardFront">
+        <p class="cf-tag" id="cfTag"></p>
+        <p class="cf-q" id="cfQ"></p>
+        <p class="cf-hint">タップして答えを見る ✨</p>
+      </div>
+      <div class="card-face card-face-back hidden" id="cardBack">
+        <p class="cf-tag" style="color:var(--gold)">ANSWER</p>
+        <p class="cf-a" id="cfA"></p>
+        <p class="cf-src" id="cfSrc"></p>
+        <div class="cf-frags" id="cfFrags"></div>
+      </div>
+      <button class="flip-btn" id="flipBtn" onclick="flipCard()">答えを見る ✨</button>
+    </div>
+    <div class="ctrl-row">
+      <button class="ctrl-skip" onclick="nextCard()">スキップ</button>
+      <span class="ctrl-pg" id="ctrlPg">1 / 1</span>
+      <button class="ctrl-next" onclick="nextCard()">次へ →</button>
+    </div>
+    <p style="text-align:center;font-family:var(--fu);font-size:.66rem;color:var(--txt3);padding:.25rem">ボタンで答え確認 → 次のカードへ</p>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ BRANDS ══ -->
+<div class="page" id="pg-brands">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--amber)">👔 スタイルライブラリ</div><div style="font-family:var(--fu);font-size:.78rem;color:var(--txt2);margin-top:.3rem">女性心理×脳科学×シーン別情報をタップで確認</div></div>
+    <div class="brand-chips" id="brandChips"></div>
+    <!-- 比較モードボタン -->
+    <div style="display:flex;align-items:center;gap:.6rem;padding:.1rem .05rem .5rem">
+      <button id="compareToggleBtn" onclick="toggleCompareMode()" style="flex:1;padding:.6rem 1rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .18s">⚖️ 比較モード OFF</button>
+      <button id="compareGoBtn" onclick="openCompare()" style="display:none;padding:.6rem 1.2rem;border-radius:var(--r-full);background:var(--gold);border:none;font-family:var(--fu);font-size:.74rem;font-weight:700;color:#fff;cursor:pointer">比較する →</button>
+    </div>
+    <!-- 比較選択状況 -->
+    <div id="compareStatus" style="display:none;font-family:var(--fu);font-size:.68rem;color:var(--gold);font-weight:600;padding:.1rem .1rem .45rem;text-align:center"></div>
+    <div class="frag-grid" id="fragGrid"></div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ COMPARE MODAL ══ -->
+<div id="compareModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)">
+  <div style="position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:var(--r-xl) var(--r-xl) 0 0;max-height:88vh;overflow-y:auto;padding:1.25rem 1.1rem 2.5rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-family:var(--fd);font-size:1.2rem;font-weight:700">⚖️ 香水比較</div>
+      <button onclick="closeCompare()" style="width:32px;height:32px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt2)">✕</button>
+    </div>
+    <div id="compareContent"></div>
+  </div>
+</div>
+  <div class="sb">
+    <div class="quiz-hd"><div class="pg-title">香水クイズ</div><div class="quiz-sc" id="qSc">0 / 0</div></div>
+    <div class="qprog"><div class="qprog-fi" id="qpFi"></div></div>
+    <div id="qArea"></div>
+    <div class="result" id="result">
+      <div class="res-em" id="rEm">🏆</div>
+      <div class="res-sc" id="rSc">0</div>
+      <div class="res-of">/ 10 問正解</div>
+      <div class="res-msg" id="rMsg"></div>
+      <button class="res-retry" onclick="startQuiz()">もう一度挑戦</button>
+    </div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+    <!-- ══ AI PAGE ══ -->
+    <div class="page" id="pg-ai">
+      <div class="sb">
+        <div class="pg-hd">
+          <div class="pg-title" style="color:#2563eb">🤖 AI コーチ</div>
+          <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt3);margin-top:.2rem">脳科学×神経科学 — 専門AIに相談</div>
+        </div>
+        <div id="aiMsgs" style="display:flex;flex-direction:column;gap:.65rem;margin-bottom:.6rem">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.82rem .92rem;font-family:var(--fu);font-size:.78rem;color:var(--txt);line-height:1.68;border-bottom-left-radius:4px">
+            こんにちは。専門AIコーチです。<br>状況を入力してください。具体的なアドバイスを返します。
+          </div>
+        </div>
+        <div id="aiQuickBtns" style="display:flex;gap:.38rem;flex-wrap:wrap;margin-bottom:.6rem"></div>
+        <div class="spacer"></div>
+      </div>
+      <!-- AI入力エリア（固定） -->
+      <div style="padding:.55rem .9rem calc(env(safe-area-inset-bottom)+4.2rem);background:var(--surface);border-top:1px solid var(--border);display:flex;gap:.45rem;align-items:flex-end">
+        <textarea id="aiInp" style="flex:1;background:var(--bg2);border:1.5px solid var(--border2);border-radius:var(--r-lg);padding:.6rem .75rem;font-family:var(--fu);font-size:.8rem;color:var(--txt);resize:none;min-height:42px;max-height:110px;outline:none;line-height:1.5"
+          placeholder="状況を入力..." rows="1"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px'"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"></textarea>
+        <button id="aiSendBtn" onclick="aiSend()" style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#2563eb99);border:none;color:#fff;font-size:1.05rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">➤</button>
+      </div>
+    </div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="bni on" onclick="nav('home',0)"><span class="bni-ico">⬡</span><div class="bni-dot"></div><span class="bni-lbl">ホーム</span></button>
+  <button class="bni" onclick="nav('today',1)"><span class="bni-ico">🎯</span><div class="bni-dot"></div><span class="bni-lbl">今日</span></button>
+  <button class="bni" onclick="nav('scent',2)"><span class="bni-ico">🧠</span><div class="bni-dot"></div><span class="bni-lbl">科学</span></button>
+  <button class="bni" onclick="nav('learn',3)"><span class="bni-ico">📚</span><div class="bni-dot"></div><span class="bni-lbl">学習</span></button>
+  <button class="bni" onclick="nav('brands',4)"><span class="bni-ico">👔</span><div class="bni-dot"></div><span class="bni-lbl">スタイル</span></button>
+  <button class="bni" onclick="nav('quiz',5)"><span class="bni-ico">⚡</span><div class="bni-dot"></div><span class="bni-lbl">クイズ</span></button>
+
+  <button class="bni" onclick="nav('ai',6)"><span class="bni-ico">🤖</span><div class="bni-dot"></div><span class="bni-lbl">AI</span></button>
+</nav>
+</div>
+
+<script>
+/* ════════════════════════════════
+   TODAY SELECTOR ENGINE
+════════════════════════════════ */
+const SEL_STATE={scene:null,mood:null,weather:null};
+
+// セレクターチップのクリック処理
+document.querySelectorAll('.sel-chip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const g=btn.dataset.group,v=btn.dataset.val;
+    document.querySelectorAll(`.sel-chip[data-group="${g}"]`).forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    SEL_STATE[g]=v;
+  });
+});
+
+// セレクションロジック: scene×mood×weather → 推奨香水リスト（スコアリング）
+const SEL_RULES=[
+  {n:'ネイビースーツスタイル',b:'フォーマル',e:'💙',r:'ネイビーのセロトニン信頼シグナルが扁桃体を最速でクリア。初対面×清潔感×信頼感の三冠王。女性評価99点クラス。',scene:['first','work','night'],mood:['clean','trust','smart'],weather:['mild','cold'],base:9},
+  {n:'グレースーツスタイル',b:'フォーマル',e:'🩶',r:'グレーの「知性・成熟」シグナルが前頭前野に届く。「感情に揺れない大人の男性」として最上位評価。知的女性に特に刺さる。',scene:['first','work','date2'],mood:['smart','trust','clean'],weather:['mild','cold'],base:8},
+  {n:'白シャツ×テーパードデニムスタイル',b:'カジュアル',e:'🤍',r:'白の清潔感×デニムの誠実さ。認知的負荷最低×清潔感最高。「飾らないのに清潔感がある」最強の組み合わせ。',scene:['first','casual'],mood:['clean','trust'],weather:['hot','mild'],base:9},
+  {n:'ネイビー×ホワイトスニーカーコーデ',b:'カジュアル',e:'👟',r:'3色パレット×春夏清潔感。認知科学的に最も「まとまりがある」コーデ。春夏の昼デート最強。',scene:['first','casual'],mood:['clean'],weather:['hot','mild'],base:8},
+  {n:'キャメルコート×シンプルコーデ',b:'アウター',e:'🤎',r:'アースカラーのオキシトシン刺激で「長期的パートナー感」最高値。秋冬の女性ウケ調査1位常連。',scene:['date2','night','special'],mood:['trust','clean'],weather:['cold'],base:9},
+  {n:'オールブラックスタイル',b:'カジュアル高感度',e:'🖤',r:'ドーパミン型「権威×謎」。コルチゾール上昇→ときめき発生。夜のデートで「なぜかこの人が気になる」を作る。',scene:['night','date2','special'],mood:['sexy','deep'],weather:['mild','cold'],base:8},
+  {n:'バーガンディニット×スラックス',b:'カジュアル高感度',e:'❤️',r:'Elliot研究実証の赤系性的魅力向上効果。「大人の官能性」を清潔感と両立した秋冬の最強カードの一つ。',scene:['date2','night','special'],mood:['sexy','deep'],weather:['cold'],base:8},
+  {n:'レザージャケット×コーデ',b:'アウター',e:'🥋',r:'本革の男性ホルモン様シグナル×白Tのギャップ効果。「強いのに清潔感がある」というドーパミン型の魅力。',scene:['night','date2'],mood:['sexy','deep'],weather:['cold','mild'],base:7},
+  {n:'トレンチコート×シンプルスタイル',b:'アウター',e:'🧥',r:'文化的記憶×オキシトシン包容力。「映画のような男性」という海馬への最強印象付け。',scene:['date2','night','casual'],mood:['smart','trust','clean'],weather:['mild','cold'],base:8},
+  {n:'ニットタートル×スラックス',b:'カジュアル',e:'🧶',r:'触覚予測×オキシトシン刺激。「抱きしめたい」衝動を視覚的に作る秋冬専用最強スタイル。',scene:['date2','night','casual'],mood:['trust','clean'],weather:['cold'],base:8},
+  {n:'シルバーウォッチ×シンプルコーデ',b:'小物・アクセント',e:'⌚',r:'「計画性・自己管理能力・資源調達能力」の視覚シグナル3点盛り。全シーン対応のコスパ最強投資。',scene:['first','date2','work','night','casual','special'],mood:['trust','smart','clean'],weather:['hot','mild','cold'],base:8},
+];
+
+function runSelector(){
+  const s=SEL_STATE;
+  if(!s.scene||!s.mood||!s.weather){
+    alert('3つ全て選んでください'); return;
+  }
+  // スコアリング
+  const scored=SEL_RULES.map(r=>{
+    let score=r.base;
+    if(r.scene.includes(s.scene))score+=3;
+    if(r.mood.includes(s.mood))score+=3;
+    if(r.weather.includes(s.weather))score+=2;
+    return {...r,score};
+  }).sort((a,b)=>b.score-a.score).slice(0,3);
+
+  const colors=['var(--gold)','var(--teal)','var(--violet)'];
+  const ranks=['1st','2nd','3rd'];
+  const html=scored.map((r,i)=>`
+    <div class="sel-result-card" onclick="jumpToBrand('${r.n}')">
+      <div class="sel-rank" style="background:${colors[i]}">${ranks[i]}</div>
+      <div style="flex:1">
+        <div class="sel-r-brand">${r.b} ${r.e}</div>
+        <div class="sel-r-name">${r.n}</div>
+        <div class="sel-r-reason">${r.r}</div>
+        <div style="font-family:var(--fu);font-size:.6rem;color:var(--teal);margin-top:.35rem;font-weight:600">タップしてライブラリで詳細を見る →</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('selectorCard').style.display='none';
+  document.getElementById('selResult').style.display='block';
+  document.getElementById('selResultCards').innerHTML=html;
+}
+
+function resetSelector(){
+  SEL_STATE.scene=null;SEL_STATE.mood=null;SEL_STATE.weather=null;
+  document.querySelectorAll('.sel-chip').forEach(b=>b.classList.remove('on'));
+  document.getElementById('selectorCard').style.display='block';
+  document.getElementById('selResult').style.display='none';
+}
+
+/* ── MONTH CALENDAR ── */
+const MONTH_DATA=[
+  {m:'1月',emoji:'❄️',col:'#1e3a6e',frags:'ネイビースーツ / ニットタートル×スラックス',tip:'厳冬。ウール・カシミア素材のオキシトシン触覚予測が最大発揮。重厚なアウターで保護者シグナルを強化'},
+  {m:'2月',emoji:'💝',col:'#BE123C',frags:'バーガンディニット / ネイビースーツ / トレンチコート',tip:'バレンタイン月。赤系の性的魅力向上効果（Elliot研究）を最大活用する季節'},
+  {m:'3月',emoji:'🌸',col:'#be185d',frags:'トレンチコート / ネイビー×ホワイトスニーカー',tip:'春の訪れ。重いアウターから軽やかなトレンチへ移行。ベージュ・ネイビー系が春の光と共鳴'},
+  {m:'4月',emoji:'🌿',col:'#15803d',frags:'白シャツ×デニム / ネイビー×スニーカー',tip:'新学期・出会いの季節。初対面が多い→清潔感×信頼感を最優先。ネイビー×白で扁桃体を最速クリア'},
+  {m:'5月',emoji:'☀️',col:'#b45309',frags:'ネイビー×スニーカー / 白シャツ×デニム',tip:'気温上昇。シワなし×清潔感が命。リネン素材で清潔感を保ちながら涼感を演出'},
+  {m:'6月',emoji:'🌊',col:'#0369a1',frags:'白シャツ×デニム / ネイビーリネン',tip:'蒸し暑さ開始。清潔感と涼感の両立が最重要。汗ジミは-50点。素材選びが勝負を決める'},
+  {m:'7月',emoji:'🏖',col:'#0891b2',frags:'白シャツ×デニム / ネイビー×スニーカー',tip:'真夏。シンプル×清潔感に全振り。ブランドより「清潔に見えること」が全て。スニーカーの白さを維持'},
+  {m:'8月',emoji:'⚡',col:'#7c3aed',frags:'白シャツ×デニム / シルバーウォッチ',tip:'猛暑。コーデより清潔感・グルーミングを最優先。高品質な白Tとジャストサイズデニムのみで十分'},
+  {m:'9月',emoji:'🍂',col:'#92400e',frags:'トレンチコート / バーガンディニット',tip:'秋の入口。秋の光が深みのある色を際立たせる季節。バーガンディ・キャメル系への移行タイミング'},
+  {m:'10月',emoji:'🍁',col:'#b45309',frags:'キャメルコート / バーガンディニット / オールブラック',tip:'本格秋。夜のデートが増える→権威感×包容力を演出できるアウターが主役になる'},
+  {m:'11月',emoji:'🌙',col:'#1e1b4b',frags:'ネイビースーツ / レザージャケット / ニットタートル',tip:'秋冬の夜デートシーズン本番。触覚予測×オキシトシン素材で「近づきたい」衝動を最大化'},
+  {m:'12月',emoji:'🔥',col:'#7e1d1d',frags:'ネイビースーツ / キャメルコート / バーガンディニット',tip:'年末勝負月。クリスマス・年越しの特別な夜。シグネチャースタイルで「一生忘れられない男」を演出'},
+];
+
+function renderMonthCalendar(){
+  const el=document.getElementById('monthCalendar');
+  if(!el)return;
+  const now=new Date().getMonth(); // 0-indexed
+  el.innerHTML=MONTH_DATA.map((m,i)=>`
+    <div class="month-cell" style="${i===now?'border-color:'+m.col+';background:'+m.col+'12':''};padding:.65rem .7rem">
+      <div class="month-num" style="color:${m.col}">${m.emoji} ${m.m}${i===now?' ← 今月':''}</div>
+      <div class="month-frag" style="font-size:.66rem">${m.frags}</div>
+      <div class="month-tip">${m.tip}</div>
+    </div>
+  `).join('');
+}
+
+/* ════════════════════════════════
+   COMPARE ENGINE
+════════════════════════════════ */
+let compareMode=false;
+let compareList=[];
+let compareSelected=[];
+
+function handleFcClick(i){
+  if(compareMode){
+    const name=BD[i]?BD[i].name:'';
+    handleCompareSelect(name);
+    return;
+  }
+  const body=document.getElementById('fcb'+i);
+  if(body){body.style.display=body.style.display==='none'?'block':'none';}
+}
+
+// 旧関数名エイリアス（互換性維持）
+function renderFrags(brand){renderBrandGrid(brand);}
+
+function toggleCompareMode(){
+  compareMode=!compareMode;
+  compareList=[];
+  const btn=document.getElementById('compareToggleBtn');
+  const goBtn=document.getElementById('compareGoBtn');
+  const status=document.getElementById('compareStatus');
+  if(compareMode){
+    btn.style.background='var(--teal)';btn.style.borderColor='var(--teal)';btn.style.color='#fff';
+    btn.textContent='⚖️ 比較モード ON';
+    status.style.display='block';status.textContent='比較したい香水を2本タップで選択';
+  }else{
+    btn.style.background='';btn.style.borderColor='';btn.style.color='';
+    btn.textContent='⚖️ 比較モード OFF';
+    goBtn.style.display='none';status.style.display='none';
+    document.querySelectorAll('.fc').forEach(c=>c.classList.remove('compare-on'));
+  }
+  renderFrags('すべて');
+}
+
+function handleCompareSelect(fragName){
+  if(!compareMode)return;
+  const idx=compareList.indexOf(fragName);
+  if(idx>-1){
+    compareList.splice(idx,1);
+  }else{
+    if(compareList.length>=2){alert('2本まで選択できます');return;}
+    compareList.push(fragName);
+  }
+  document.getElementById('compareStatus').textContent=
+    compareList.length===0?'比較したい香水を2本タップで選択':
+    compareList.length===1?`✓ ${compareList[0]} — あと1本選択`:
+    `✓ ${compareList[0]}  vs  ${compareList[1]}`;
+  document.getElementById('compareGoBtn').style.display=compareList.length===2?'block':'none';
+  // カードのハイライト更新
+  document.querySelectorAll('.fc').forEach(card=>{
+    const nm=card.querySelector('.fc-name');
+    if(nm)card.classList.toggle('compare-on',compareList.includes(nm.textContent.trim()));
+  });
+}
+
+function openCompare(){
+  if(compareList.length<2){alert('2本選んでください');return;}
+  const f1=BD.find(b=>b.name===compareList[0]);
+  const f2=BD.find(b=>b.name===compareList[1]);
+  if(!f1||!f2)return;
+  const axes=[
+    {k:'清潔感',ico:'✨'},
+    {k:'色気',ico:'🔥'},
+    {k:'信頼感',ico:'🤝'},
+    {k:'初対面',ico:'🌸'},
+    {k:'年齢幅',ico:'👥'}
+  ];
+  const barColor1='#B8860B';const barColor2='#0F766E';
+  const rows=axes.map(ax=>{
+    const v1=f1.rating[ax.k]||0,v2=f2.rating[ax.k]||0;
+    const w1=f1.rating&&f2.rating?v1>=v2:'';
+    const w2=f2.rating&&f1.rating?v2>=v1:'';
+    return `
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+        <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.4rem;text-align:center">${ax.ico} ${ax.k}</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:.5rem;align-items:center">
+          <div>
+            <div class="cmp-bar-wrap"><div class="cmp-bar" style="width:${v1}%;background:${barColor1}"></div></div>
+            <div class="cmp-val" style="color:${barColor1}">${v1}${w1&&v1>v2?' 👑':''}</div>
+          </div>
+          <div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">vs</div>
+          <div>
+            <div class="cmp-bar-wrap"><div class="cmp-bar" style="width:${v2}%;background:${barColor2}"></div></div>
+            <div class="cmp-val" style="color:${barColor2}">${v2}${w2&&v2>v1?' 👑':''}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // シーン比較
+  const sceneCmp=`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+      <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.5rem;text-align:center">📍 ベストシーン</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.6">${(f1.good_scenes||[]).map(s=>`<span style="display:block">✓ ${s}</span>`).join('')}</div>
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.6">${(f2.good_scenes||[]).map(s=>`<span style="display:block">✓ ${s}</span>`).join('')}</div>
+      </div>
+    </div>
+  `;
+
+  // 季節比較
+  const seasonCmp=f1.season&&f2.season?`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+      <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.5rem;text-align:center">🗓 季節適性</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2)">${f1.season.join(' / ')}</div>
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2)">${f2.season.join(' / ')}</div>
+      </div>
+    </div>
+  `:'';
+
+  document.getElementById('compareContent').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem">
+      <div class="cmp-head" style="border-top:3px solid ${barColor1}">
+        <span class="cmp-emoji">${f1.emoji}</span>
+        <div class="cmp-brand-lbl">${f1.brand}</div>
+        <div class="cmp-name-lbl">${f1.name}</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.3rem">${f1.type}</div>
+      </div>
+      <div class="cmp-head" style="border-top:3px solid ${barColor2}">
+        <span class="cmp-emoji">${f2.emoji}</span>
+        <div class="cmp-brand-lbl">${f2.brand}</div>
+        <div class="cmp-name-lbl">${f2.name}</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.3rem">${f2.type}</div>
+      </div>
+    </div>
+    ${rows}${sceneCmp}${seasonCmp}
+    <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.75rem .85rem;margin-top:.3rem">
+      <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--gold);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.06em">💡 総合判定</div>
+      <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.65">${generateVerdict(f1,f2)}</div>
+    </div>
+  `;
+  document.getElementById('compareModal').style.display='block';
+}
+
+function generateVerdict(f1,f2){
+  const sum1=Object.values(f1.rating||{}).reduce((a,b)=>a+b,0);
+  const sum2=Object.values(f2.rating||{}).reduce((a,b)=>a+b,0);
+  const winner=sum1>=sum2?f1.name:f2.name;
+  const loser=sum1>=sum2?f2.name:f1.name;
+  const diff=Math.abs(sum1-sum2);
+  if(diff<20)return `両作は甲乙つけがたい実力派。シーンで使い分けることが理想。${f1.name}は「${(f1.good_scenes||[])[0]||'-'}」、${f2.name}は「${(f2.good_scenes||[])[0]||'-'}」で特に輝く。`;
+  return `総合評価では <strong>${winner}</strong> が優位。ただし <strong>${loser}</strong> が得意とするシーンでは逆転する場面も多い。両方持つことが最強の戦略。`;
+}
+
+function closeCompare(){document.getElementById('compareModal').style.display='none';}
+
+/* ── SVG レーダーチャート生成 ── */
+function buildRadar(rating){
+  const keys=['清潔感','権威感','信頼感','初対面','汎用性'];
+  const vals=keys.map(k=>(rating[k]||0)/100);
+  const cx=80,cy=80,r=60;
+  const angles=keys.map((_,i)=>((i*72)-90)*Math.PI/180);
+  const points=vals.map((v,i)=>({
+    x:cx+r*v*Math.cos(angles[i]),
+    y:cy+r*v*Math.sin(angles[i])
+  }));
+  const poly=points.map(p=>`${p.x},${p.y}`).join(' ');
+  // グリッド円
+  const grids=[.25,.5,.75,1].map(g=>`<circle cx="${cx}" cy="${cy}" r="${r*g}" fill="none" stroke="var(--border)" stroke-width="1"/>`).join('');
+  // 軸
+  const axes=angles.map((a,i)=>`<line x1="${cx}" y1="${cy}" x2="${cx+r*Math.cos(a)}" y2="${cy+r*Math.sin(a)}" stroke="var(--border)" stroke-width="1"/>`).join('');
+  // ラベル
+  const labels=keys.map((k,i)=>{
+    const lx=cx+(r+14)*Math.cos(angles[i]);
+    const ly=cy+(r+14)*Math.sin(angles[i]);
+    return `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="7" fill="var(--txt3)" font-family="DM Sans,sans-serif">${k}</text>`;
+  }).join('');
+  return `<svg width="160" height="160" viewBox="0 0 160 160">${grids}${axes}<polygon points="${poly}" fill="rgba(184,134,11,.25)" stroke="var(--gold)" stroke-width="2"/>${labels}</svg>`;
+}
+
+/* ── 用語辞典デッキ（DECKS追加） ── */
+
+const TIPS=[
+  {ico:'👔',txt:'「女性は男性の服装から0.1秒で5つの情報を同時処理している。清潔感・社会的地位・遺伝的健康・性格・感情状態。この5つ全てが恋愛感情の形成に関与する。」'},
+  {ico:'🔴',txt:'「赤（バーガンディ）を着た男性は同じ顔・体型でも女性からの魅力度評価が有意に高いことが実験で繰り返し確認されている。（Elliot et al. 2010, Journal of Experimental Psychology）」'},
+  {ico:'🪞',txt:'「ジャストサイズの服は女性の鏡像ニューロンを活性化させ健康な体型を無意識にシミュレートさせる。「なんとなく体型が良さそう」という直感の神経科学的正体だ。」'},
+  {ico:'🧠',txt:'「毎回同じスタイルの核心を持て。相手の海馬はあなたという存在をその服装と永遠に結びつけ始める。視覚版プルースト効果がバソプレシンによる絆形成を加速させる。」'},
+  {ico:'🧶',txt:'「ウールやカシミアのニットを見た瞬間、女性の体性感覚野が活性化し「触れたい・近づきたい」という触覚予測が無意識に発生する。素材選びが距離感を変える。」'},
+  {ico:'💙',txt:'「ネイビーブルーはセロトニン分泌を促し警戒心を解除して扁桃体の「安全・信頼できる」判定を最速で引き出す色だ。初対面デートの第一選択肢として科学的に最も支持されている。」'},
+  {ico:'🖤',txt:'「オールブラックは女性の視覚野に「社会的地位・権威・謎めいた魅力」を伝達しコルチゾールの軽度上昇を引き起こし「生理的覚醒＝ときめき」を生む。」'},
+  {ico:'✨',txt:'「服装×香り×話し方が一致する時、女性の脳の認知的不協和が消え「矛盾のない信頼できる男性」として扁桃体が最高評価を処理する。三感の一貫性が全てを最大化する。」'},
+];
+let tipIdx=Math.floor(Math.random()*TIPS.length);
+function rotateTip(){
+  tipIdx=(tipIdx+1)%TIPS.length;
+  const t=TIPS[tipIdx];
+  document.getElementById('tipIco').textContent=t.ico;
+  document.getElementById('tipTxt').textContent=t.txt;
+}
+
+/* ── BOOT ─── */
+function boot(){
+  const sp=document.getElementById('splash');
+  sp.style.cssText='opacity:0;transition:opacity .45s;pointer-events:none';
+  setTimeout(()=>{
+    sp.style.display='none';
+    document.getElementById('app').classList.add('on');
+    // 初期Tip設定
+    const t=TIPS[tipIdx];
+    document.getElementById('tipIco').textContent=t.ico;
+    document.getElementById('tipTxt').textContent=t.txt;
+    loadDeck('neuro',document.querySelector('.dt'));
+    startQuiz(); initBrands();
+    // 今日ページ初期化
+    renderMonthCalendar();
+    initAI_forma();
+    // 用語辞典タブを追加
+    const tabs=document.querySelector('.deck-tabs');
+    if(tabs&&!tabs.querySelector('[data-deck="glossary"]')){
+      const btn=document.createElement('button');
+      btn.className='dt';btn.textContent='📖 用語辞典';
+      btn.dataset.deck='glossary';
+      btn.onclick=()=>loadDeck('glossary',btn);
+      tabs.appendChild(btn);
+    }
+  },450);
+}
+
+/* ── NAV ─── */
+const PGS=['home','today','scent','learn','brands','quiz','ai'];;
+function nav(id,bIdx){
+  PGS.forEach(p=>{const el=document.getElementById('pg-'+p);if(el)el.classList.remove('on')});
+  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('on'));
+  const pg=document.getElementById('pg-'+id);
+  if(pg){pg.classList.add('on');const sb=pg.querySelector('.sb');if(sb)sb.scrollTop=0}
+  const btns=document.querySelectorAll('.bni');
+  if(btns[bIdx])btns[bIdx].classList.add('on');
+}
+
+/* ── WEATHER ─── */
+const WD={
+  sunny:'<strong>☀️ 晴れ・低湿度：</strong>香りの拡散が速い。プッシュ数は標準×1.2倍。シトラス・アクア系が最も映える。手首と鎖骨に各1プッシュが理想。',
+  cloudy:'<strong>☁️ 曇り・中湿度：</strong>最も安定した条件。全系統が標準通りに機能する。ウッディ・ムスク系の本領発揮日。',
+  rain:'<strong>🌧 雨・高湿度：</strong>香りがこもりやすい危険日。プッシュ数60%に減らし<strong>足首か膝裏</strong>に付けて下から立ち上がらせる。シトラスは避けること。',
+  night:'<strong>🌙 夜・室内：</strong>密閉空間で香りが凝縮。プッシュ数は1〜2回のみ。アンバー・ムスクを耳の後ろに半プッシュが理想。',
+  summer:'<strong>🌡 真夏・高温：</strong>重い香りが体臭と混合する危険。シトラス系1プッシュのみ。<strong>清潔感に全振り</strong>が最善。',
+  winter:'<strong>❄️ 冬・乾燥：</strong>揮発が遅く香りが長持ちする。ウッディ・スパイス・アンバー系の本領発揮。プッシュ数は標準×0.8倍に抑えてOK。',
+};
+function setW(btn,key){
+  document.querySelectorAll('.wc').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('wRes').innerHTML=WD[key];
+}
+
+/* ════════════════════════════════════
+   FLASHCARD DECKS — 香水専門 7デッキ
+════════════════════════════════════ */
+const DECKS={
+  neuro:[
+    {tag:'🧠 視覚神経科学 #1',q:'女性が男性のファッションを判断するのにかかる時間と、その神経経路は？',a:'0.1秒。角膜→網膜（錐体細胞）→視神経→外側膝状体（視床）→一次視覚野→高次視覚野（IT野）→扁桃体という経路。嗅覚と異なり視床を経由するが感情系への高速副経路が存在する。前頭前野（理性）より扁桃体（感情）が先に反応するため「なんとなく素敵」という直感は高精度な神経処理の結果。',src:'VISUAL NEUROSCIENCE',frags:['ネイビースーツスタイル','オールブラックスタイル']},
+    {tag:'🧠 視覚神経科学 #2',q:'ハロー効果（光背効果）とはファッションにおいてどう機能するか？',a:'服装が良いと知性・能力・誠実さ・将来性まで全て高く評価される認知バイアス。脳が外見の好印象を他の属性に自動的に拡張処理するため。実験で繰り返し実証されており「清潔感のある服＝頭が良さそう・信頼できそう」という評価は神経科学的に正確。',src:'HALO EFFECT',frags:['ネイビースーツスタイル','グレースーツスタイル','白シャツ×テーパードデニムスタイル']},
+    {tag:'🧠 視覚神経科学 #3',q:'鏡像ニューロン（ミラーニューロン）がファッションに関係する理由は？',a:'女性はジャストサイズの服を「見るだけ」で体性感覚野・補足運動野が活性化し男性の体型を無意識にシミュレートする。「なんとなく体型が良さそう」という直感の神経科学的正体。ミラーニューロンの視触覚変換機能が服のテクスチャを見た時の「触れたい」衝動も生む。',src:'MIRROR NEURON',frags:['ニットタートル×スラックス','キャメルコート×シンプルコーデ']},
+    {tag:'🧠 視覚神経科学 #4',q:'「認知的不協和」がファッションに与える悪影響とは？',a:'視覚（服装）・嗅覚（香り）・聴覚（声）の情報が不一致の場合、女性の脳で「認知的不協和」が発生し「何かがおかしい」という違和感として処理される。清潔感のある服装なのに香りが悪い、という場合も扁桃体の評価が下がる。三感の一貫性が最大評価を生む。',src:'COGNITIVE DISSONANCE',frags:['ネイビースーツスタイル','グレースーツスタイル']},
+    {tag:'🧠 視覚神経科学 #5',q:'眼窩前頭皮質がファッションを「評価」する際に処理する情報は？',a:'社会的価値・地位・将来性・魅力度・資源調達能力。0.3秒で前頭前野が「社会的カテゴリ」を分類し1秒で海馬が「記憶との照合」を完了する。服装は眼窩前頭皮質に対する最も強力な社会的シグナルとして機能する。',src:'OFC RESEARCH',frags:['ネイビースーツスタイル','シルバーウォッチ×シンプルコーデ']},
+    {tag:'🧠 視覚神経科学 #6',q:'視覚錯視（シルエット効果）がファッションで機能する仕組みは？',a:'視覚野の「方向性検出ニューロン」が縦のライン（Vネック・テーパード・ロングコート）を延長処理しスリム・長身に知覚させる（ポンゾ錯視と同じ神経機構）。ファッションデザインに意図的に組み込まれた脳への介入。ヘリンボーン柄やストライプにも同様の効果。',src:'VISUAL ILLUSION',frags:['バーガンディニット×スラックス','トレンチコート×シンプルスタイル']},
+  ],
+  color:[
+    {tag:'🌈 色彩心理 #1',q:'ネイビーブルーが「初対面最強色」とされる脳科学的根拠は？',a:'青のセロトニン分泌促進効果が警戒心を解除し「安全・誠実・信頼できる男性」という扁桃体の即時判定を引き出す。女性が男性に求める「誠実さ」の視覚シグナルとして世界的研究で最も多く確認されている色。初対面デートでの着用が科学的に最も推奨される。',src:'COLOR PSYCHOLOGY',frags:['ネイビースーツスタイル','ネイビー×ホワイトスニーカーコーデ']},
+    {tag:'🌈 色彩心理 #2',q:'赤（バーガンディ）が男性の性的魅力を高める研究結果とは？',a:'Elliot et al.（2010, Journal of Experimental Psychology）で赤を着た男性は同じ顔・体型でも女性からの性的魅力評価が有意に高いことが実証。ノルアドレナリン×テストステロン様の視覚シグナルが女性の視覚野を刺激。文化を超えた普遍的効果。',src:'ELLIOT ET AL 2010',frags:['バーガンディニット×スラックス']},
+    {tag:'🌈 色彩心理 #3',q:'ブラックが「権威・謎」を演出する神経科学的理由は？',a:'黒は脳内でドーパミン放出型の「権威・高ステータス・謎めいた存在」として処理される。女性のコルチゾールが軽度上昇し「心地よい生理的覚醒＝ときめき」の状態を作る。UC Berkeley研究のAND（アンドロスタジエノン）が香りで起こす効果と同様の視覚版メカニズム。',src:'BLACK PSYCHOLOGY',frags:['オールブラックスタイル','レザージャケット×コーデ']},
+    {tag:'🌈 色彩心理 #4',q:'「3色以内のコーデ」が重要な認知科学的根拠は？',a:'認知的負荷理論の応用。脳は情報処理コストが低いものを「安心・信頼できる」と評価する。3色以内は認知的負荷が低く「まとまりがある→判断力がある→信頼できる」という自動処理が働く。色が増えるほど「不安定・信頼できない」という無意識評価につながる。',src:'COGNITIVE LOAD THEORY',frags:['白シャツ×テーパードデニムスタイル','ネイビー×ホワイトスニーカーコーデ']},
+    {tag:'🌈 色彩心理 #5',q:'グレーが「知性・成熟」を演出する理由は？',a:'グレーは前頭前野に「知性・落ち着き・成熟・感情的安定」を伝達するセロトニン系の中性色。「感情に揺れない大人の男性」という印象は女性の長期的パートナー評価において最上位のカテゴリ。ネイビーの「信頼感」より「知的な余裕のある大人」という高次の評価を作る。',src:'GREY PSYCHOLOGY',frags:['グレースーツスタイル']},
+    {tag:'🌈 色彩心理 #6',q:'アースカラー（キャメル・ベージュ）がオキシトシンを刺激する理由は？',a:'土・自然・温もりと結びついたアースカラーがオキシトシン系の「温かさ・包容力・親しみ」を刺激する。女性の眼窩前頭皮質が「ケアしてくれそうな・長期的パートナーに適した男性」として処理。短期的な「ときめき」より長期的な「信頼と絆」の形成に特に効果的。',src:'EARTH COLOR OXYTOCIN',frags:['キャメルコート×シンプルコーデ','トレンチコート×シンプルスタイル']},
+  ],
+  social:[
+    {tag:'👔 社会心理 #1',q:'「清潔感」が恋愛において最も重要な理由の進化的根拠は？',a:'清潔な服・シワなし・きちんとした状態は「健康な免疫系・寄生虫フリー・高い遺伝的健康度」の視覚シグナル。進化的に「健康なパートナーを選ぶ」という本能が服装の清潔感を評価する基準として機能している。どんな高価な服より清潔感が優先される神経科学的理由。',src:'EVOLUTIONARY PSYCHOLOGY',frags:['白シャツ×テーパードデニムスタイル','ネイビースーツスタイル']},
+    {tag:'👔 社会心理 #2',q:'服装が「社会的地位」の指標として機能する認知心理学的理由は？',a:'服の素材・品質・ブランド・ケアの状態が「経済的資源・社会的地位・将来性」の指標として処理される。同じデザインでも素材の質が異なると脳の評価が変わる実験結果がある（消費者神経科学）。女性の眼窩前頭皮質が「資源調達能力の指標」として自動的に読み取る。',src:'STATUS SIGNALING',frags:['ネイビースーツスタイル','シルバーウォッチ×シンプルコーデ']},
+    {tag:'👔 社会心理 #3',q:'「初頭効果」がファッションにおいて意味することは？',a:'最初の0.1〜3秒の印象が最も強く・長く残る認知バイアス。後から行動・言葉でどんなに挽回しようとしても初頭効果による第一印象の修正は困難。だからこそファッション（視覚情報の第一印象）への投資が全ての恋愛戦略の中で最高のROIを持つ。',src:'PRIMACY EFFECT',frags:['ネイビースーツスタイル','白シャツ×テーパードデニムスタイル']},
+    {tag:'👔 社会心理 #4',q:'「自己提示理論（Goffman）」とファッションの関係は？',a:'人は社会的相互作用において「自分が望む印象を相手に与えるためにパフォーマンスを行う」という理論。ファッションはこのパフォーマンスの最重要ツール。「なりたい自分」ではなく「なりたい自分として相手に認識されたい自分」を着ることが戦略的ファッションの本質。',src:'GOFFMAN SELF-PRESENTATION',frags:['ネイビースーツスタイル','オールブラックスタイル']},
+    {tag:'👔 社会心理 #5',q:'「期待確認バイアス」がファッションに与える影響は？',a:'第一印象が良いと相手はその後の行動を「この人らしい」とポジティブに解釈する。反対に第一印象が悪いと同じ行動が「やっぱりそういう人だ」とネガティブに解釈される。ファッションで作った第一印象が会話全体の解釈の枠組みを決定するという極めて重要な心理効果。',src:'CONFIRMATION BIAS',frags:['グレースーツスタイル','キャメルコート×シンプルコーデ']},
+  ],
+  silhouette:[
+    {tag:'💪 シルエット #1',q:'肩幅を強調するシルエット（スーツ・ジャケット）が女性に与える進化的効果は？',a:'進化心理学的に肩幅は「保護能力・資源調達能力」の指標。構造化された肩のシルエットは女性の眼窩前頭皮質に「守ってくれる・頼れる男性」という進化的シグナルを送る。テーラードスーツの肩パッドはこの効果を意図的に最大化するための設計。',src:'EVOLUTIONARY PSYCHOLOGY',frags:['ネイビースーツスタイル','レザージャケット×コーデ']},
+    {tag:'💪 シルエット #2',q:'テーパードシルエット（先細り）が視覚的に優れている神経科学的理由は？',a:'視覚野の「方向性検出ニューロン」が縦のラインを延長処理しスリム・長身に知覚させる（ポンゾ錯視と同じ機構）。腰から足先に向けて細くなるシルエットが最も効果的に縦のラインを作る。テーパードパンツが男性ファッションの基本である科学的根拠。',src:'VISUAL CORTEX',frags:['白シャツ×テーパードデニムスタイル','グレースーツスタイル']},
+    {tag:'💪 シルエット #3',q:'サイズが合っていない服が「信頼感スコアを下げる」心理学的理由は？',a:'ダブついた服は「自己管理能力の低さ」として女性の前頭前野が処理する。「自分の体型を把握していない→自己認識能力が低い→判断力が低い」という連鎖処理が無意識に行われる。清潔感の次に重要なのはサイズ感という研究結果がある。',src:'FIT PSYCHOLOGY',frags:['ネイビースーツスタイル','ニットタートル×スラックス']},
+    {tag:'💪 シルエット #4',q:'「黄金比（1:1.618）」がファッションに応用できる具体的な方法は？',a:'上半身と下半身の比率・ジャケットの丈・ボタンの位置・ラペルの幅などに黄金比を意識することで脳が「美しい・バランスが良い」と自動処理する。人間の視覚野は黄金比に対して審美的報酬（軽いドーパミン）を分泌することが確認されている。',src:'GOLDEN RATIO',frags:['グレースーツスタイル','ネイビースーツスタイル']},
+  ],
+  texture:[
+    {tag:'🧵 素材心理 #1',q:'本革レザーと合成皮革で女性の脳の評価が異なる科学的根拠は？',a:'本革の独特の光沢・テクスチャ・素材感が「高い素材調達コスト＝資源能力の高さ」として処理される。合成皮革は視覚的・嗅覚的情報が「偽物・コスト削減」と処理され評価が下がる。消費者神経科学の研究で高品質素材と低品質素材では眼窩前頭皮質の活性パターンが異なることが確認。',src:'MATERIAL PSYCHOLOGY',frags:['レザージャケット×コーデ','シルバーウォッチ×シンプルコーデ']},
+    {tag:'🧵 素材心理 #2',q:'ウール・カシミアのニットを見た時の「触れたい」衝動の神経科学的根拠は？',a:'ミラーニューロンの視触覚変換機能により、柔らかい素材を視覚的に認識するだけで体性感覚野（SI野）と補足運動野が活性化し触れた時の感覚を予測的に処理する。この「触覚予測」がオキシトシン系を刺激し「近づきたい・触れたい」という衝動として意識される。',src:'SOMATOSENSORY CORTEX',frags:['ニットタートル×スラックス','キャメルコート×シンプルコーデ']},
+    {tag:'🧵 素材心理 #3',q:'シワのある服が与える心理的損失の神経科学的背景は？',a:'シワは「自己管理能力の低さ・清潔でない」という視覚シグナルとして扁桃体が処理する。進化的に「シワ＝乱れた状態」という認知が健康評価と紐付いている。研究では同じスタイルでもシワあり・シワなしで信頼感評価が20〜30%変化するという結果も。',src:'WRINKLE RESEARCH',frags:['白シャツ×テーパードデニムスタイル','ネイビースーツスタイル']},
+  ],
+  scene:[
+    {tag:'📍 シーン戦略 #1',q:'初対面デートで「清潔感＞ブランド」が成立する理由は？',a:'女性の扁桃体が①清潔感（健康シグナル）②サイズ感（自己管理能力）③色の一貫性（審美眼）の順に評価する。高価なブランドロゴより清潔で正しいサイズの服の方が扁桃体のジャッジをクリアしやすい。ロゴの「ブランド価値」は眼窩前頭皮質の後続処理で評価されるため初対面の即時反応には清潔感が優先。',src:'FIRST IMPRESSION',frags:['ネイビースーツスタイル','白シャツ×テーパードデニムスタイル']},
+    {tag:'📍 シーン戦略 #2',q:'告白シーンに最適なファッションの科学的根拠は？',a:'オキシトシン系を刺激する素材（ウール・カシミア）と色（アースカラー・ネイビー）の組み合わせが「安心・絆・長期的な関係」の感情的土台を作る。ドーパミン型の「謎・権威」より「温かさ・信頼」が告白場面では最重要。ニットタートル×スラックスやキャメルコート系が最適。',src:'ATTACHMENT STRATEGY',frags:['ニットタートル×スラックス','キャメルコート×シンプルコーデ']},
+    {tag:'📍 シーン戦略 #3',q:'「コントラスト戦略」とはファッションにおいてどういう戦術か？',a:'普段は清潔感のあるカジュアルスタイルを使い、特別な夜だけスーツまたはオールブラックに切り替える。脳は「いつもと違う」変化にドーパミンで反応し「特別な存在感」を感じる。香水アプリのコントラスト効果と同じ神経機構。「普段の彼がこんな姿に」というギャップが強い記憶を作る。',src:'CONTRAST STRATEGY',frags:['オールブラックスタイル','ネイビースーツスタイル']},
+    {tag:'📍 シーン戦略 #4',q:'季節とファッションが「感情記憶」を作る仕組みは？',a:'季節の光・気温・香りとファッションが組み合わさった時、海馬が「この服装×この季節×この感情」をセットで保存する（ファッション版プルースト効果）。秋の紅葉×キャメルコート、夏の海×ネイビーリネン、冬の夜×ニットなど、季節に合ったスタイルが強い感情記憶の錨になる。',src:'SEASONAL MEMORY',frags:['キャメルコート×シンプルコーデ','ネイビー×ホワイトスニーカーコーデ']},
+  ],
+  glossary:[
+    {tag:'📖 用語 #1',q:'ドレスコードとは何か？TPOとの関係は？',a:'Time（時間）・Place（場所）・Occasion（機会）に応じた服装の基準。フォーマル→インフォーマル→カジュアルの3段階が基本。TPOを無視した服装は「空気が読めない・社会的知性が低い」という評価につながる。ドレスコードを「知っている」こと自体が社会的知性のシグナル。',src:'DRESS CODE',frags:['ネイビースーツスタイル','グレースーツスタイル']},
+    {tag:'📖 用語 #2',q:'カプセルワードローブとは何か？恋愛戦略への応用は？',a:'少数の高品質・汎用性の高いアイテムで構成されたコアワードローブ。シグネチャースタイルの確立に直結する。「多くの服を持つ」より「厳選された服を着こなす」ことが一貫性→記憶の錨→バソプレシン絆形成という恋愛戦略と一致する。',src:'CAPSULE WARDROBE',frags:['ネイビースーツスタイル','トレンチコート×シンプルスタイル']},
+    {tag:'📖 用語 #3',q:'「テーラード」とはどういう意味か？なぜ重要か？',a:'仕立て（tailor）された服を意味し、体型に合わせて縫製された服のこと。ジャストサイズの鏡像ニューロン効果・肩幅の進化的保護者シグナル・全体の縦ラインの視覚錯視が全て発動する男性ファッションの最重要カテゴリ。',src:'TAILORED GLOSSARY',frags:['ネイビースーツスタイル','グレースーツスタイル']},
+    {tag:'📖 用語 #4',q:'カラーパレットとは何か？3色ルールとの関係は？',a:'コーディネートに使う色の組み合わせ体系。認知的負荷理論により3色以内が最も脳に「安心・信頼・まとまり」を与える。メインカラー（60%）・サブカラー（30%）・アクセントカラー（10%）の配分が黄金比率。ネイビー×白×シルバーが最も汎用性の高いパレット。',src:'COLOR PALETTE',frags:['ネイビー×ホワイトスニーカーコーデ','グレースーツスタイル']},
+    {tag:'📖 用語 #5',q:'シルエットとは何か？男性が意識すべき4種は？',a:'服が作る輪郭・形の総称。男性が意識すべき4種：①Iライン（縦長・スリム）②Vライン（肩幅強調→ウエスト細め）③Aライン（上半身ゆったり）④Xライン（肩と裾を強調）。IラインとVラインが視覚野の錯視効果を最大化し最も高い評価を得る。',src:'SILHOUETTE TYPES',frags:['バーガンディニット×スラックス','白シャツ×テーパードデニムスタイル']},
+    {tag:'📖 用語 #6',q:'「グルーミング」とはファッションにおいて何を指すか？',a:'髪型・髭・爪・肌の手入れなど服装以外の身だしなみ全般。清潔感の評価において服装（50%）と並んでグルーミング（50%）が重要。どんな高価な服でもグルーミングが整っていないと「自己管理能力が低い」という信号を送り扁桃体の評価を大幅に下げる。',src:'GROOMING',frags:['シルバーウォッチ×シンプルコーデ','白シャツ×テーパードデニムスタイル']},
+  ],
+  anatomy:[
+    {tag:'🔬 解剖学 #1',q:'網膜の「中心窩（fovea）」が服装評価に特に重要な理由は？',a:'中心窩は網膜で錐体細胞（色覚・高解像度処理）が最も高密度に集中する点。視力が最高となる約1〜2度の極めて狭い領域で人物の服装・顔・表情の詳細を処理する。視線を向けた瞬間に中心窩が作動し0.1秒以内に「色彩（V4）→形状（V2・V3）→高次認識（IT野）」のカスケードが起動する。「第一印象は視線が向いた瞬間から始まる」の網膜解剖学的根拠。',src:'FOVEA ANATOMY',frags:['ネイビースーツスタイル','オールブラックスタイル']},
+    {tag:'🔬 解剖学 #2',q:'V4野が「赤色を特別に処理する」ことがElliot研究の神経解剖学的根拠になる理由は？',a:'V4野は色彩専用の視覚皮質領域で赤色（L錐体：長波長620〜750nm）への反応が他の色より強い神経発火パターンを示す。V4から扁桃体への出力が赤色刺激で特に強くなることで「赤＝性的魅力・情熱」という評価が感情系に直接的に入力される。Elliot et al.（2010）の37文化研究でこの反応が普遍的であることが確認された。進化的にも赤（血色・性的発情シグナル）への反応が霊長類に保存されている。',src:'V4 RED ANATOMY',frags:['バーガンディニット×スラックス']},
+    {tag:'🔬 解剖学 #3',q:'扁桃体への「高速感情ルート（外側膝状体→扁桃体）」が服装評価で機能する解剖的根拠は？',a:'外側膝状体（視床）から扁桃体への直接投射経路が通常の視覚野経路（LGN→V1→V2〜V5→IT野→扁桃体）と並行して存在する。この高速ルートは詳細な視覚分析を経ずに感情的評価を開始し0.1秒以内に「好き/嫌い・安全/危険」の判定を完了させる。「理由はわからないがなんとなく印象が良い/悪い」という直感の解剖学的実体がこの高速経路による先行的感情判定。',src:'AMYGDALA FAST ROUTE',frags:['ネイビースーツスタイル','オールブラックスタイル']},
+    {tag:'🔬 解剖学 #4',q:'瞳孔散大筋の交感神経支配とHess（1975）実験の解剖学的関係は？',a:'瞳孔散大筋（虹彩の放射状筋）は頸部交感神経（上頸神経節→毛様体神経節をバイパス）に支配される。交感神経活性（興奮・ときめき・好意・覚醒）が瞳孔散大筋を収縮させ瞳孔を拡大させる。Hess実験で瞳孔拡大した顔が「より魅力的」と評価されるのは瞳孔拡大が「交感神経活性＝この人に惹かれている」という生理的シグナルとして無意識に処理されるため。暗い環境での相互的な瞳孔拡大が「相互の好意確認」として機能する解剖学的根拠。',src:'PUPIL DILATOR ANATOMY',frags:['キャメルコート×シンプルコーデ','オールブラックスタイル']},
+    {tag:'🔬 解剖学 #5',q:'メラノプシン含有神経節細胞（ipRGC）がキャンドル照明と恋愛感情を結びつける解剖的経路は？',a:'ipRGCは網膜の第3の光受容体で青色光（460nm・ブルーライト）に特に敏感。視交叉上核（SCN：概日リズムの中枢）に直接投射し①コルチゾール分泌制御②メラトニン抑制を担う。キャンドル光はブルーライトをほぼ含まないためipRGCを刺激せずコルチゾール低下→副交感神経優位→扁桃体防衛機制の緩和→感情的開放性向上というカスケードが起きる。「キャンドルの場所で落ち着く・心が開く」の完全な網膜→神経内分泌学的説明。',src:'IPRGC CANDLELIGHT',frags:['キャメルコート×シンプルコーデ','ニットタートル×スラックス']},
+    {tag:'🔬 解剖学 #6',q:'ミラーニューロン（前頭葉F5野相当）が服装の素材から「触覚予測」を生成する神経経路は？',a:'視覚野（腹側経路・IT野）が服装のテクスチャ・素材を視覚的に認識→前頭葉の鏡像ニューロン（F5野相当・ブロードマン6野）が「この素材に触れた時の感覚」をシミュレート→島皮質前部が「触れたい・温かい・気持ちよさそう」という感情的予測を生成。この予測がオキシトシン系を「実際に触れる前から」準備状態にする。カシミヤ・シルク・上質ウールが「視覚的CT繊維刺激」として機能する神経解剖学的根拠。',src:'MIRROR NEURON TEXTURE',frags:['ニットタートル×スラックス','キャメルコート×シンプルコーデ']},
+    {tag:'🔬 解剖学 #7',q:'「腹側経路（What）×背側経路（Where）」の統合が「第一印象」を形成する解剖的プロセスは？',a:'腹側経路（V1→V4→IT野）：服装の色・形・ブランド・清潔感（「何が見えるか」の高次認識）。背側経路（V1→V5→頭頂葉）：姿勢・歩き方・距離感（「どこにあるか・どう動くか」）。両経路の情報が前頭前野連合野で統合され「この人はどんな人か」という総合的な第一印象が形成される。服装（腹側評価）×歩き方・姿勢（背側評価）の一致が最高の視覚的第一印象を作る解剖学的根拠。',src:'VENTRAL DORSAL STREAM',frags:['ネイビースーツスタイル','グレースーツスタイル']},
+    {tag:'🔬 解剖学 #8',q:'FORMA（視覚）がHAPTOS（触覚）の「先行準備」として機能する五感統合の解剖学的完全説明は？',a:'視覚野（IT野）→ミラーニューロン（前頭葉F5）→島皮質（触覚的感情予測）→視床下部（オキシトシン産生ニューロンの予測的活性化）というカスケードが服装を「見た瞬間」に起動する。実際のCT繊維刺激（HAPTOS）が始まる前にオキシトシン系が準備状態に入ることで、タッチが始まった時のオキシトシン分泌効率が高まる。FORMAが五感統合における「視覚的前菜」として機能する神経解剖学的証明。',src:'FORMA HAPTOS INTEGRATION',frags:['オールブラックスタイル','ニットタートル×スラックス']},
+  ],
+  night:[
+    {tag:'🌙 夜の視覚 #1',q:'瞳孔拡大が「より魅力的に見える」Hess（1975）実験の内容と夜への応用は？',a:'Eckhard Hessの実験で瞳孔が拡大した同一人物の顔写真が「より魅力的・温かい・誠実」と評価された。暗い環境では瞳孔が生理的に拡大し双方向で「この人は私に惹かれている」という無意識の判定が起きる。ノルアドレナリン（覚醒）とドーパミン（欲求）の分泌指標でもある瞳孔拡大が暗いバー・キャンドルディナーで「自動的に」相互に発生する。',src:'HESS 1975',frags:['オールブラックスタイル','バーガンディニット×スラックス']},
+    {tag:'🌙 夜の視覚 #2',q:'キャンドル光（色温度1800K）が副交感神経を優位にする物理的・神経科学的根拠は？',a:'キャンドル光はブルーライト（460nm）をほぼ含まない。ブルーライトは網膜のメラノプシン含有神経節細胞を刺激し視交叉上核（SCN）を通じてコルチゾール分泌を促進する。キャンドル光ではこの経路が活性化されず副交感神経優位が維持され脳波のα波が増加しリラックス×美的知覚向上が同時に起きる。「キャンドルの場所で食事すると落ち着く」の神経光学的根拠。',src:'CANDLELIGHT NEURO',frags:['ネイビースーツスタイル','オールブラックスタイル']},
+    {tag:'🌙 夜の視覚 #3',q:'「1/fゆらぎ」とは何か？キャンドルの炎が持つ特別な効果は？',a:'1/fゆらぎは自然界に存在するランダムでありながら一定のリズムを持つゆらぎのパターン（心拍・小川の流れ・風の音等）。脳のα波と共鳴し深いリラクゼーション状態を誘発する。キャンドルの炎の揺れが1/fゆらぎを持つことが確認されており扁桃体の防衛機制を緩め「安心して自己開示できる状態」を自然に作り出す。デートでキャンドルを選ぶことの神経物理学的根拠。',src:'1/F FLUCTUATION',frags:['キャメルコート×シンプルコーデ','ニットタートル×スラックス']},
+    {tag:'🌙 夜の視覚 #4',q:'夜の「肌露出」が昼間より性的魅力評価を高める視覚神経科学的理由は？',a:'Vネック・開衿シャツ・半袖等の肌露出が増加すると視覚野の「生物学的運動検出システム」が活性化し体温の温かさを予測する触覚予測（ミラーニューロン）が発動する。夜の環境では肌の色と周囲の暗さのコントラストが強調され視覚野への刺激強度が昼間より増大する。Elliot（2010）の赤×性的魅力研究の「コントラスト強調効果」の視覚版。',src:'SKIN EXPOSURE NIGHT',frags:['オールブラックスタイル','バーガンディニット×スラックス']},
+    {tag:'🌙 夜の視覚 #5',q:'光沢素材（シルク・サテン・良質ウール）が夜に「特別な存在感」を生む物理的・心理的根拠は？',a:'光沢素材はキャンドルや間接照明の光を反射し暗い環境でも視覚野への刺激を維持する。マット素材が光を吸収し存在感が低下するのに対して光沢素材は「光の動き」を作り視覚的注目を引く。脳は動く光刺激を静止した刺激より優先処理するため「目が離せない存在感」が神経学的に生成される。夜のオールブラック光沢スタイルが「別人のような色気」を作る光学的根拠。',src:'GLOSS MATERIAL NIGHT',frags:['オールブラックスタイル','レザージャケット×コーデ']},
+    {tag:'🌙 夜の視覚 #6',q:'寝室の「赤みがかった暖色照明」が性的覚醒と相関する神経科学的根拠は？',a:'赤色光（波長620〜750nm）が視覚野V4（色処理）を経由して扁桃体に「興奮・覚醒・情熱」のシグナルを送る。Elliot et al.（2010）の赤×魅力研究の環境版として機能する。暖色照明が顔の血色を改善して見せ（視覚的健康シグナル）同時に副交感神経×ドーパミン系を活性化させる。「赤い部屋」の心理学実験で性的な評価と親密感が有意に高まることが確認されている。',src:'RED LIGHT AROUSAL',frags:['バーガンディニット×スラックス','オールブラックスタイル']},
+    {tag:'🌙 夜の視覚 #7',q:'「脱ぐという行為」の視覚心理学的な最大効果とは？',a:'「徐々に明かされる肌」という視覚的変化が脳の予測誤差報酬機構（ドーパミン系）を最大活性化させる。完全に明かされた状態より「見えそうで見えない」「これから明かされる」というプロセスの視覚的誘引力が最強。服を脱ぐという「変化の過程」が側坐核のドーパミン放出を段階的に増加させる「視覚的テーザー効果」として機能する。',src:'DISROBING VISUAL',frags:['オールブラックスタイル','レザージャケット×コーデ']},
+    {tag:'🌙 夜の視覚 #8',q:'夜の「五感統合視覚戦略」の完成形とは？',a:'①暗い場所（瞳孔拡大の相互効果）②キャンドル・暖色照明（1/fゆらぎ×副交感優位×美化）③光沢のある黒または深色（光反射×権威感）④Vネックや開衿で首・胸元を見せる（肌露出×触覚予測）⑤良質な素材（視覚×触覚予測統合）という5要素が揃った時EIDOS（香り）×HAPTOS（タッチ）×SONOS（囁き声）と統合され相手の脳内で「一生忘れられない夜の記憶」が形成される条件が完成する。',src:'NIGHT VISION INTEGRATION',frags:['オールブラックスタイル','バーガンディニット×スラックス']},
+  ],
+  romance:[
+    {tag:'❤️ 恋愛心理 #1',q:'シグネチャースタイルを確立すべき神経科学的・恋愛心理学的理由は？',a:'毎回同じスタイルの核心を持つことで相手の海馬が「この人＝この印象」を強固に記録する（視覚版プルースト効果）。一貫したスタイルを見るたびにオキシトシン・バソプレシンが反応し「この人のそばにいたい」という帰属感が視覚情報によって自動的に再起動される。',src:'SIGNATURE STYLE',frags:['ネイビースーツスタイル','キャメルコート×シンプルコーデ']},
+    {tag:'❤️ 恋愛心理 #2',q:'「ファッション×香り×話し方」の三位一体が最強な理由は？',a:'視覚（服装）・嗅覚（香り）・聴覚（声のトーン・話し方）の三感が一致すると認知的不協和がゼロになり女性の扁桃体が「矛盾のない信頼できる男性」として最高評価を処理する。どれか一つが欠けると無意識の違和感が発生し全体評価が下がる。三感一致が全ての恋愛戦術の完成形。',src:'TRICOLOR STRATEGY',frags:['ネイビースーツスタイル','オールブラックスタイル']},
+    {tag:'❤️ 恋愛心理 #3',q:'女性の生理周期とファッション評価の変化には関係があるか？',a:'排卵期（エストロゲン最大時）に女性の視覚的魅力評価感度が最大化することが研究で確認されている。この時期は肩幅・体格・対称性・清潔感への評価が平常時より高くなる。嗅覚感度の変化（香水研究）と同様に視覚感度も生理周期で変動する。',src:'MENSTRUAL CYCLE',frags:['ネイビースーツスタイル','バーガンディニット×スラックス']},
+    {tag:'❤️ 恋愛心理 #4',q:'「ピーク・エンドの法則」をファッションで活用する方法は？',a:'人は体験の最も感情的なピークと最後の印象（エンド）を記憶する（Kahneman）。デートの「エンド（別れ際）」に最も印象的なアイテムが記憶に残る。別れ際にコートを脱いでかけてあげる・手元のウォッチが光る など「エンドの演出」を意識したスタイリングが強い記憶を作る。',src:'PEAK END RULE',frags:['キャメルコート×シンプルコーデ','トレンチコート×シンプルスタイル']},
+    {tag:'❤️ 恋愛心理 #5',q:'「進化的な保護者シグナル」を服装で最大化する方法は？',a:'①肩幅を強調するテーラードジャケット②高さを強調するロングコート③直立した姿勢を保てるジャストサイズ④上質な素材（力強さ・資源能力の視覚証明）の4要素が進化的な「保護者・資源提供者」シグナルを最大化する。女性の長期的パートナー評価において最重要な視覚情報。',src:'PROTECTOR SIGNAL',frags:['ネイビースーツスタイル','レザージャケット×コーデ','キャメルコート×シンプルコーデ']},
+  ],
+};
+
+/* ── FLASHCARD ENGINE ─── */
+let curDeck=[],cIdx=0;
+function loadDeck(name,btn){
+  document.querySelectorAll('.dt').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  curDeck=[...DECKS[name]];cIdx=0;
+  document.getElementById('deckCnt').textContent=curDeck.length+'枚';
+  showCard();
+}
+function showCard(){
+  if(!curDeck.length)return;
+  const c=curDeck[cIdx];
+  document.getElementById('cfTag').textContent=c.tag;
+  document.getElementById('cfQ').textContent=c.q;
+  document.getElementById('cfA').textContent=c.a;
+  document.getElementById('cfSrc').textContent=c.src;
+  // 関連香水セクション
+  const fragEl=document.getElementById('cfFrags');
+  if(c.frags&&c.frags.length){
+    const chips=c.frags.map(f=>{
+      const bd=BD.find(b=>b.name===f||b.name.includes(f)||f.includes(b.name.split(' ')[0]&&b.name.split(' ')[1]?b.name.split(' ').slice(0,2).join(' '):b.name));
+      const emoji=bd?bd.emoji:'🧴';
+      const brand=bd?bd.brand:'';
+      return `<span class="cf-frag-chip" onclick="jumpToBrand('${f}')"><span class="chip-emoji">${emoji}</span>${brand?brand+' ':''}<strong>${f}</strong></span>`;
+    }).join('');
+    fragEl.innerHTML=`<div class="cf-frags-lbl">この効果がある香水</div><div class="cf-frag-chips">${chips}</div>`;
+    fragEl.style.display='block';
+  }else{
+    fragEl.style.display='none';
+  }
+  document.getElementById('cardFront').classList.remove('hidden');
+  document.getElementById('cardBack').classList.add('hidden');
+  document.getElementById('flipBtn').textContent='答えを見る ✨';
+  document.getElementById('ctrlPg').textContent=(cIdx+1)+' / '+curDeck.length;
+  updateDots();
+}
+
+function jumpToBrand(fragName){
+  // ブランドライブラリページに移動して該当カードを開く
+  nav('brands',3);
+  setTimeout(()=>{
+    // 全ブランド表示
+    document.querySelectorAll('.bc').forEach(b=>b.classList.remove('on'));
+    const allBtn=document.querySelector('.bc');
+    if(allBtn)allBtn.classList.add('on');
+    renderFrags('すべて');
+    // 該当カードを探して開く
+    setTimeout(()=>{
+      const cards=document.querySelectorAll('.fc');
+      cards.forEach(card=>{
+        const nameEl=card.querySelector('.fc-name');
+        if(nameEl&&(nameEl.textContent.includes(fragName)||fragName.includes(nameEl.textContent.split(' ')[0]))){
+          card.classList.add('open');
+          card.scrollIntoView({behavior:'smooth',block:'center'});
+        }
+      });
+    },200);
+  },100);
+}
+function flipCard(){
+  const front=document.getElementById('cardFront');
+  const back=document.getElementById('cardBack');
+  const btn=document.getElementById('flipBtn');
+  if(!front.classList.contains('hidden')){
+    front.classList.add('hidden');back.classList.remove('hidden');
+    btn.textContent='質問に戻る ↩';
+  }else{
+    front.classList.remove('hidden');back.classList.add('hidden');
+    btn.textContent='答えを見る ✨';
+  }
+}
+function nextCard(){cIdx=(cIdx+1)%curDeck.length;showCard()}
+function updateDots(){
+  const el=document.getElementById('pdots');el.innerHTML='';
+  const total=curDeck.length;
+  const show=Math.min(total,12);
+  const start=Math.max(0,Math.min(cIdx-5,total-show));
+  for(let i=start;i<start+show;i++){
+    const d=document.createElement('div');
+    d.className='pd'+(i<cIdx?' done':i===cIdx?' cur':'');
+    el.appendChild(d);
+  }
+}
+
+/* ════════════════════════════════════
+   BRANDS DATA — 35+ 香水
+════════════════════════════════════ */
+const BD=[
+  // ── ネイビースーツ系 ──
+  {brand:'フォーマル',color:'#1e3a6e',emoji:'💙',name:'ネイビースーツスタイル',type:'テーラード・フォーマル',notes:'トップ：ネイビースーツ（ジャストサイズ）\nミドル：白シャツ、シルバーネクタイ\nラスト：ブラックレザーシューズ、シルバーウォッチ',neuro:'青のセロトニン効果×テーラードの構造が女性の扁桃体に「信頼できる・頼もしい・清潔感のある男性」を0.1秒で刻む。ジャストサイズによる鏡像ニューロン活性化が「健康な体型」を無意識に評価させる。眼窩前頭皮質が「社会的地位が高い」と処理し恋愛感情の土台を作る最強の一着。',hormones:['セロトニン','ノルアドレナリン'],hormone_detail:[{ico:'😌',name:'セロトニン — ネイビーの信頼シグナル',desc:'青のセロトニン促進効果が警戒心を解除。「安全で誠実な男性」という扁桃体の即時判定を引き出す。初対面の第一印象を最速で確定させる最強の色。'},{ico:'💪',name:'ノルアドレナリン — スーツの権威',desc:'テーラードの肩幅強調が進化的な「保護者・資源調達能力」シグナルを送る。女性の眼窩前頭皮質が「社会的地位が高い男性」として無意識に評価。'}],female_reaction:[
+    {phase:'0.1秒（扁桃体）',emotion:'「きちんとしてる・清潔感がある・安心できる」',brain:'扁桃体が即時「安全・信頼できる男性」と判定',hormone:'セロトニン↑'},
+    {phase:'3秒（眼窩前頭皮質）',emotion:'「仕事できそう・社会的地位が高そう・頼りになる」',brain:'眼窩前頭皮質が社会的価値・資源調達能力を評価',hormone:'ドーパミン↑'},
+    {phase:'30秒（海馬）',emotion:'「また会いたい・もっと話したい・信頼できる人」',brain:'海馬が「良い印象の記憶」として保存開始・オキシトシン分泌',hormone:'オキシトシン↑'}
+  ],note_science:'ジャストサイズのスーツ1着で初対面評価が最大化する。ダブつきは「自己管理能力の低さ」として処理されスコアが大幅に下がる。素材はウール混が最も高い視覚的評価を得る。',good_scenes:['初対面デート','ビジネス食事','記念日','重要な告白'],bad_scenes:['カジュアルカフェ','アクティブデート','夏の昼間'],season:['春','秋','冬'],rating:{清潔感:97,権威感:97,信頼感:97,初対面:97,汎用性:80},tip:'迷ったらこれ。全シーン中で最高の初対面評価を持つ最強の一着。',pairing:'視覚神経科学デッキ「0.1秒の判断」カード参照'},
+
+  {brand:'フォーマル',color:'#4a4a4a',emoji:'🩶',name:'グレースーツスタイル',type:'テーラード・ビジネス',notes:'トップ：チャコールグレースーツ\nミドル：ライトブルーシャツ、無地ネクタイ\nラスト：ブラウンレザーシューズ、レザーベルト',neuro:'グレーは前頭前野に「知性・落ち着き・成熟」を伝達するセロトニン系の安定色。ネイビーの「信頼感」より「知的な余裕のある大人の男性」という上位の印象を作る。ライトブルーシャツとの組み合わせが清潔感×知性のダブル効果を発動。',hormones:['セロトニン'],hormone_detail:[{ico:'😌',name:'セロトニン×知性 — グレーの成熟シグナル',desc:'グレーのセロトニン安定効果が「感情に揺れない落ち着いた男性」という印象を作る。女性の前頭前野が「知性・経験・成熟」として処理する最も「大人」を演出できる色。'}],note_science:'チャコールグレーは「リーダーシップ・信頼・知性」を同時に演出できる最もバランスのとれたスーツカラー。ビジネスデートや知的な女性へのアプローチに最適。',good_scenes:['知的なカフェデート','ビジネス食事','30〜40代の女性'],bad_scenes:['カジュアル','夏'],season:['春','秋','冬'],rating:{清潔感:93,権威感:92,信頼感:97,初対面:90,汎用性:85},tip:'「頭が良さそう」という第一印象を作りたい時の最強選択。',pairing:'色彩心理学デッキ「グレーの脳科学」カード参照'},
+
+  // ── オールブラック ──
+  {brand:'カジュアル高感度',color:'#0f172a',emoji:'🖤',name:'オールブラックスタイル',type:'モノトーン・カジュアル',notes:'トップ：ブラックTシャツ（良質コットン）\nミドル：ブラックテーパードパンツ\nラスト：ブラックスニーカーまたはローファー',neuro:'ブラックはドーパミン放出型の「権威・謎・高級感」カラー。女性の視覚野が「社会的地位が高い・謎めいた存在」として処理しコルチゾール軽度上昇→ときめきを生む。素材の質が鍵で良質コットンが「触れたい」触覚予測を引き起こす。',hormones:['ドーパミン'],hormone_detail:[{ico:'⚡',name:'ドーパミン — ブラックの権威シグナル',desc:'黒は脳内で「権威・高ステータス・謎」として処理される。女性のコルチゾールが軽度上昇し「生理的覚醒＝ときめき」が発生。「なぜかこの人が気になる」の正体はこの神経処理。'}],female_reaction:[
+    {phase:'0.1秒',emotion:'「なんか気になる・目が離せない・謎めいてる」',brain:'コルチゾール軽度上昇→生理的覚醒（ときめき）発生',hormone:'コルチゾール↑・ドーパミン↑'},
+    {phase:'5秒',emotion:'「自信がありそう・大人っぽい・センスがいい」',brain:'眼窩前頭皮質が「高ステータス・審美眼がある男性」として評価',hormone:'ドーパミン↑'},
+    {phase:'30秒',emotion:'「もっと話したい・この人に近づきたい」',brain:'報酬回路（側坐核）が活性化し「また会いたい」という欲求を生成',hormone:'ドーパミン↑↑'}
+  ],note_science:'オールブラックは素材の質で全て決まる。ユニクロのハイクオリティコットンでも十分な効果が出る。シルエットの一貫性がドーパミン型の「謎めいた存在感」を最大化させる。',good_scenes:['夜のデート','バー・ラウンジ','2回目以降','アート系のデート'],bad_scenes:['初対面（重すぎる場合も）','昼の明るいカフェ'],season:['通年'],rating:{清潔感:85,権威感:95,信頼感:82,初対面:78,汎用性:90},tip:'夜のデートで清潔感のあるオールブラックは最強。素材だけは絶対に妥協するな。',pairing:'色彩心理学デッキ「ブラックの脳科学」カード参照'},
+
+  // ── 白シャツ×テーパードデニム ──
+  {brand:'カジュアル',color:'#f0f4ff',emoji:'🤍',name:'白シャツ×テーパードデニムスタイル',type:'スマートカジュアル',notes:'トップ：白シャツ（ハリのあるコットン）\nミドル：インディゴテーパードデニム\nラスト：ホワイトスニーカーまたはローファー',neuro:'白シャツのセロトニン×清潔感シグナルがインディゴデニムの「誠実・地に足がついた」印象と融合。女性の扁桃体が「清潔で自然体で信頼できる男性」として即時評価する。テーパードシルエットの縦のラインが鏡像ニューロンを活性化させ体型を最大限に魅せる。',hormones:['セロトニン'],hormone_detail:[{ico:'😌',name:'セロトニン×清潔感 — 白×デニムの定番最強',desc:'白の清潔感シグナルとデニムの「自然体・誠実さ」が組み合わさる。「飾らないのに清潔感がある」という最高の評価を作る組み合わせ。世代問わず女性の評価が安定して高い。'}],note_science:'シンプルなのに印象が良い理由は認知的負荷の低さにある。脳は「3色以内のコーデ」を処理しやすく安心感として評価する。白×ネイビーの2色コンビは最も認知的負荷が低い組み合わせ。',good_scenes:['初対面カフェデート','昼のデート全般','デイリー使い'],bad_scenes:['夜の勝負場面','重厚なムード'],season:['春','夏','通年'],rating:{清潔感:97,権威感:72,信頼感:90,初対面:95,汎用性:97},tip:'迷ったらこれ。最もコスパが高い恋愛ファッション。白シャツの質だけには投資する。',pairing:'シーン戦略デッキ「初対面最強スタイル」カード参照'},
+
+  // ── キャメルコート ──
+  {brand:'アウター',color:'#c8956c',emoji:'🤎',name:'キャメルコート×シンプルコーデ',type:'アウター・秋冬',notes:'トップ：キャメルチェスターコート\nミドル：グレーまたはネイビーニット\nラスト：スラックス、革靴またはローファー',neuro:'キャメルのアースカラーはオキシトシン系の「温かさ・包容力・親しみ」を最も直接的に刺激する色。女性の眼窩前頭皮質が「ケアしてくれそうな・長期的パートナーに適した男性」として処理する。コートの長いシルエットが肩幅と縦のラインを同時に強調しノルアドレナリン系の保護者シグナルも加わる。',hormones:['オキシトシン','ノルアドレナリン'],hormone_detail:[{ico:'🤝',name:'オキシトシン — キャメルの包容力',desc:'アースカラーのオキシトシン刺激が「温かさ・親しみ・包容力」という感情を作る。「長期的な関係を築ける男性」として評価される進化的根拠がある。'},{ico:'💪',name:'ノルアドレナリン — コートの保護者シグナル',desc:'チェスターコートの構造化されたシルエットが肩幅を強調し「保護者・頼もしさ」という進化的シグナルを送る。秋冬の外でのデートで最大効果。'}],note_science:'キャメルコートは秋冬の「女性ウケ最強アウター」として多数の調査で1位を獲得。アースカラーの視覚的温かさとコートの権威感が組み合わさった唯一無二の組み合わせ。',good_scenes:['秋冬のデート全般','公園・紅葉デート','2回目以降','記念日'],bad_scenes:['春夏','室内のみのデート'],season:['秋','冬'],rating:{清潔感:90,権威感:88,信頼感:93,初対面:88,汎用性:85},tip:'秋冬の最強投資アイテム。1着持っていると全てのデートで評価が上がる。',pairing:'色彩心理学デッキ「アースカラーとオキシトシン」カード参照'},
+
+  // ── レザージャケット ──
+  {brand:'アウター',color:'#1a1a1a',emoji:'🥋',name:'レザージャケット×コーデ',type:'カジュアル・エッジー',notes:'トップ：ブラックレザージャケット（本革推奨）\nミドル：白Tまたはグレーニット\nラスト：テーパードデニムまたはスラックス',neuro:'本革レザーの視覚・嗅覚情報が「力強さ・経験・男性性」の進化的シグナルを送る。女性の視覚野がテストステロン様の「支配的男性性」として処理。白Tとの対比が「強いのに清潔感もある」というギャップ効果でドーパミンを放出させる。',hormones:['ドーパミン','テストステロン様'],hormone_detail:[{ico:'⚡',name:'ドーパミン — ギャップ効果',desc:'「ハードなレザー×清潔な白T」という対比が「予測を超えた魅力の発見」としてドーパミンを放出させる。「思ったより清潔感がある」という驚きが強い記憶を作る。'},{ico:'💪',name:'テストステロン様 — 革の男性性シグナル',desc:'本革の硬質な光沢と素材感が女性の視覚野に「力強さ・経験・保護能力」という進化的シグナルを送る。合成皮革と本革では脳の評価が明確に異なる研究結果がある。'}],note_science:'本革と合成皮革で女性の評価が大きく異なる。投資すべきはここ。1着良質なレザージャケットを持つことで「わかっている男性」という付加価値が生まれる。',good_scenes:['夜のカジュアルデート','バー・ライブ','2回目以降'],bad_scenes:['初対面フォーマル','昼の清潔感重視の場面'],season:['秋','冬','春'],rating:{清潔感:78,権威感:90,信頼感:80,初対面:72,汎用性:80},tip:'本革に限る。合成皮革は「本物を知らない男性」という逆シグナルになる危険がある。',pairing:'素材心理学デッキ「レザーの神経科学」カード参照'},
+
+  // ── ネイビー×ホワイトスニーカー ──
+  {brand:'カジュアル',color:'#1e3a6e',emoji:'👟',name:'ネイビー×ホワイトスニーカーコーデ',type:'スマートカジュアル・春夏',notes:'トップ：ネイビーリネンまたはコットンシャツ\nミドル：ベージュまたはホワイトチノパン\nラスト：ホワイトレザースニーカー',neuro:'ネイビー×ベージュ×白の三色は認知的負荷が最も低いカラーパレット。脳が「一貫した審美眼を持つ男性」として処理しドーパミン型の「センスの発見」を誘発。清潔感のある色使いが扁桃体の警戒心を解除し親密感を加速させる。',hormones:['セロトニン','ドーパミン'],hormone_detail:[{ico:'😌',name:'セロトニン — 3色統一の安心感',desc:'脳が3色以内のコーデを「認知的負荷が低い＝安心・信頼できる」として処理する神経科学的根拠。色の一貫性が「判断力のある男性」という評価を作る。'},{ico:'⚡',name:'ドーパミン — センスの発見',desc:'さりげない色の組み合わせが「このコーデは計算されている」という発見型のドーパミン放出を誘発。「センスが良い」という評価の正体はこの予測報酬機構。'}],note_science:'春夏の女性ウケ最強スタイルのひとつ。ホワイトレザースニーカーは清潔感×カジュアル感の両立を最も効率的に実現するアイテム。汚れていると全効果が失われる。',good_scenes:['春夏の昼デート','カフェ','初対面','アクティブなデート'],bad_scenes:['秋冬','夜の重厚なムード'],season:['春','夏'],rating:{清潔感:93,権威感:72,信頼感:88,初対面:92,汎用性:90},tip:'スニーカーの清潔さが全てを決める。汚れたスニーカーは-30点。',pairing:'シーン戦略デッキ「春夏デート最強」カード参照'},
+
+  // ── バーガンディニット ──
+  {brand:'カジュアル高感度',color:'#7f1d1d',emoji:'❤️',name:'バーガンディニット×スラックス',type:'カジュアル・秋冬',notes:'トップ：バーガンディ（深いえんじ色）Vネックニット\nミドル：チャコールグレースラックス\nラスト：ブラックローファーまたは革靴',neuro:'赤系（バーガンディ）はノルアドレナリン×テストステロン様シグナルで女性の性的魅力評価を有意に上げる（Elliot et al. 2010）。しかしバーガンディは純粋な赤より落ち着いた深みがあるため「大人の官能性」として処理される。Vネックの縦ラインが知性と体型を同時に演出。',hormones:['ノルアドレナリン','テストステロン様'],hormone_detail:[{ico:'🔥',name:'ノルアドレナリン — 赤系の性的魅力向上',desc:'Elliot et al.（2010, Journal of Experimental Psychology）の研究で赤を着た男性は同じ顔・体型でも性的魅力評価が有意に高いことが確認。文化を超えた普遍的な効果。'},{ico:'💪',name:'テストステロン様 — バーガンディの官能性',desc:'純粋な赤より落ち着いたバーガンディは「大人の情熱・官能性」として処理される。若者向けの「活発な赤」ではなく成熟した男性の「深い赤」というシグナルを送る。'}],female_reaction:[
+    {phase:'0.1秒',emotion:'「かっこいい・大人っぽい・何か気になる」',brain:'扁桃体の欲求回路が赤系のノルアドレナリン刺激を受ける',hormone:'ノルアドレナリン↑'},
+    {phase:'5秒',emotion:'「色気がある・経験豊富そう・モテそう」',brain:'視覚野が「成熟した男性性・社会的魅力」として処理',hormone:'テストステロン様↑'},
+    {phase:'30秒',emotion:'「この人のこと、もっと知りたい」',brain:'海馬への強い記憶保存。「あの赤いニットの彼」として長期記憶化',hormone:'ドーパミン↑'}
+  ],note_science:'バーガンディは「使える赤」として最も洗練されたアプローチ。派手すぎず、しかし赤の性的魅力効果を十分に発揮できる絶妙なトーン。秋冬限定の使用を推奨。',good_scenes:['秋冬のデート','夜の食事','2回目以降'],bad_scenes:['初対面（主張が強い）','春夏','昼間'],season:['秋','冬'],rating:{清潔感:83,権威感:85,信頼感:80,初対面:75,汎用性:78},tip:'秋冬に一枚持つ価値がある「色気のあるカジュアル」の最高峰。',pairing:'色彩心理学デッキ「赤の恋愛科学（Elliot研究）」カード参照'},
+
+  // ── トレンチコート ──
+  {brand:'アウター',color:'#c8956c',emoji:'🧥',name:'トレンチコート×シンプルスタイル',type:'アウター・クラシック',notes:'トップ：ベージュトレンチコート\nミドル：ネイビーまたはグレーインナー\nラスト：スラックス、レザーシューズ',neuro:'トレンチコートは「映画・文化・洗練されたイメージ」という文化的記憶と結びついたアーキタイプ的なアイテム。女性の海馬が「文化的教養・洗練された審美眼」と結びつけて処理。ベージュのオキシトシン効果＋コートの権威感＋文化的シグナルの三重奏。',hormones:['オキシトシン','セロトニン'],hormone_detail:[{ico:'🤝',name:'オキシトシン×文化資本 — トレンチの複合効果',desc:'ベージュのオキシトシン包容力シグナルとトレンチコートが持つ「知的・文化的男性」のアーキタイプが融合。「会話が合いそう・長く一緒にいられそう」という長期的絆形成の感情を作る。'}],note_science:'トレンチコートは「清潔感のある大人の男性」の代名詞的存在。秋雨のデートで着用すると「映画のワンシーン」的なプルースト効果の記憶が形成される。',good_scenes:['秋の雨のデート','知的なデート','映画・美術館デート'],bad_scenes:['真夏','カジュアルすぎる場面'],season:['春','秋'],rating:{清潔感:93,権威感:88,信頼感:92,初対面:87,汎用性:83},tip:'「映画のような男性」という印象を作る最高の一着。雨の日に着ると最強。',pairing:'恋愛心理デッキ「シグネチャースタイル戦略」カード参照'},
+
+  // ── ニットタートル ──
+  {brand:'カジュアル',color:'#374151',emoji:'🧶',name:'ニットタートル×スラックス',type:'スマートカジュアル・秋冬',notes:'トップ：グレーまたはネイビーニットタートル\nミドル：チャコールまたはブラックスラックス\nラスト：ローファーまたは革靴',neuro:'ニットの柔らかい素材感が視覚的に触覚野（S1野）を活性化させ「触れたい・近づきたい」というオキシトシン的衝動を生む。タートルネックのシルエットが首から顔への視線誘導を作り「表情・清潔感」を強調する効果がある。',hormones:['オキシトシン'],hormone_detail:[{ico:'🤝',name:'オキシトシン×触覚予測 — ニットの包容力',desc:'柔らかいニットを見るだけで体性感覚野が活性化し触覚予測が発生。「触れると温かくて安心できそう」という感覚がオキシトシン系を刺激。「抱きしめてほしい」という感情の視覚的トリガー。'}],note_science:'ニット系は秋冬の「触覚予測最強アイテム」。素材の質（ウール・カシミア）が高いほど触覚予測の強度が上がる。タートルの場合は肌トーンとの相性が全体の印象を左右する。',good_scenes:['秋冬カフェデート','室内デート全般','2回目以降'],bad_scenes:['夏','フォーマルなシーン'],season:['秋','冬'],rating:{清潔感:88,権威感:78,信頼感:90,初対面:82,汎用性:88},tip:'素材だけは妥協するな。ウール混かカシミア。触覚予測の強さが素材で決まる。',pairing:'素材心理学デッキ「ニット×触覚予測」カード参照'},
+
+  // ── 小物戦略 ──
+  {brand:'小物・アクセント',color:'#B8860B',emoji:'⌚',name:'シルバーウォッチ×シンプルコーデ',type:'アクセサリー戦略',notes:'トップ：清潔感のあるベース（白シャツ×ネイビーなど）\nミドル：シルバーまたはゴールドウォッチ\nラスト：統一感のある革靴またはスニーカー',neuro:'腕時計は「時間管理・計画性・社会的規律」の視覚シグナル。女性の前頭前野が「自己管理能力が高い→将来のパートナーとして適している」と評価する。視線が自然に手首→顔へと誘導される視覚動線効果もある。',hormones:['セロトニン','ドーパミン'],hormone_detail:[{ico:'😌',name:'セロトニン — 時計の「計画性」シグナル',desc:'腕時計は「時間を守る・きちんとした人」という社会的信頼シグナル。女性の前頭前野が「信頼できるパートナー候補」として処理。デジタルウォッチより機械式・シンプルなアナログが高評価。'},{ico:'⚡',name:'ドーパミン — さりげない上質さの発見',desc:'シンプルで良質な時計は「上質なものを知っている」という発見型のドーパミン放出を誘発。高価格よりも「センスの良さ」が重要。'}],note_science:'時計1つでコーデ全体の評価が上がる唯一のアイテム。スマートウォッチより機械式か上品なクオーツが女性評価が高い傾向。腕時計なしより「似合う時計1つ」が圧倒的に有利。',good_scenes:['全シーン対応','フォーマルデート','初対面'],bad_scenes:['激しいアクティビティ'],season:['通年'],rating:{清潔感:90,権威感:88,信頼感:92,初対面:88,汎用性:97},tip:'1本良質な時計への投資は最もROIが高いファッション投資。',pairing:'進化心理学デッキ「資源調達能力のシグナル」カード参照'},
+
+  // ── 春夏スタイル ──
+  {brand:'春夏スタイル',color:'#0369a1',emoji:'☀️',name:'リネンシャツ×チノパン',type:'カジュアル・春夏',notes:'色：白・ベージュ・サックスブルー\n素材：リネン・コットン混（清涼感）\n合わせ：ローファー・レザースニーカー',neuro:'リネン素材の自然なシワと軽やかさが「清潔感+リラックス感」という春夏に最適な二軸を同時表現。視覚野のV4が明るい色（ベージュ×白）を「健康・明るさ・前向きさ」として処理。屋外デートでの自然な色彩が副交感神経優位を促進する。',hormones:['セロトニン','ドーパミン'],hormone_detail:[{ico:'☀️',name:'セロトニン×明るい色彩',desc:'白・ベージュ系の明るい色が視覚野→扁桃体経路で「安全・健康・清潔」のセロトニン系シグナルを送る。春の屋外光と組み合わさることでコルチゾール低下×副交感神経優位が最大化。'}],note_science:'春夏の強い日光でリネン素材が適度に輝き視覚的な健康シグナルを増幅させる。',good_scenes:['ランチデート','屋外デート','カフェデート'],bad_scenes:['フォーマルな場'],season:['春','夏'],rating:{誠実さ:85,色気:72,信頼感:88,初対面:88,汎用性:90},tip:'リネンシャツは腕まくりで肌を見せることで「CT繊維×触覚予測」を視覚的に誘発する最強のトリックになる。',pairing:'視覚デッキ「腹側経路（What経路）の服装評価」カード参照'},
+  {brand:'春夏スタイル',color:'#0369a1',emoji:'🏖',name:'ネイビーショーツ×白Tシャツ',type:'カジュアル・夏',notes:'Tシャツ：厚手のコットン（ジャストフィット）\nショーツ：膝上5cmのテーラードショーツ\n靴：白スニーカーまたはサンダル',neuro:'夏の肌露出が視覚野ミラーニューロン（F5野）を通じて「触覚予測×温かさ×健康シグナル」を送る。筋肉質なシルエットがBuss研究の「保護能力・身体的健康」シグナルとして機能。白Tのジャストフィットがシルエットを最大限に見せる最低限のアイテム。',hormones:['テストステロン','ノルアドレナリン'],hormone_detail:[{ico:'💪',name:'筋肉量×テストステロンシグナル',desc:'腕・肩の筋肉が見えることで視覚的なテストステロン指標を女性の視覚野が処理。Bussの「身体的健康・保護能力」シグナルに直接対応。筋トレ×良質な睡眠がこの効果の生物学的基盤。'}],note_science:'夏の屋外でのスポーツ後のシャワー済み状態（アンドロステノール最大・アンドロステノン最小）との組み合わせが嗅覚×視覚の最強統合効果を生む。',good_scenes:['海・プール','スポーツデート','BBQ'],bad_scenes:['フォーマル','初対面食事デート'],season:['夏'],rating:{誠実さ:75,色気:88,信頼感:78,初対面:65,汎用性:72},tip:'腕まくり×ちょうど良いサイズが夏の最強公式。ダボダボは全ての効果を消す。',pairing:'解剖学デッキ「ミラーニューロン×服装→触覚予測の神経経路」カード参照'},
+
+  // ── アウター深化 ──
+  {brand:'アウター深化',color:'#1e40af',emoji:'🧥',name:'チェスターコート×黒スラックス',type:'フォーマル・秋冬',notes:'色：チャコールグレー・ブラック・キャメル\n丈：ヒップ下10cm程度\n着こなし：インナーにタートルネット',neuro:'チェスターコートは最も「身長が高く見える」シルエットを作るコート。背が高いシルエットが視覚野の背側経路（Where経路）で「保護能力・権威感・資源力」として処理される。Bussの女性選択基準①（資源調達能力）⑥（保護能力）に直接対応する視覚的シグナル。',hormones:['ノルアドレナリン','セロトニン'],hormone_detail:[{ico:'🏛',name:'権威感×ノルアドレナリン',desc:'垂直ラインが強調されたシルエットが女性の視覚野で「保護・権威・頼れる」という感情的評価を引き起こしノルアドレナリン軽度上昇（ときめき）を誘発。チェスターコートが「着るだけで印象が変わる」最強のアウターである解剖学的根拠。'}],note_science:'チェスターコートのラペル×細いシルエットが視覚的に肩幅を広げ腰を細く見せる最適な光学的効果を持つ。',good_scenes:['ディナーデート','冬の告白','特別な夜'],bad_scenes:['カジュアルなデート'],season:['秋','冬'],rating:{誠実さ:90,色気:88,信頼感:92,初対面:90,汎用性:82},tip:'チェスターコート+タートルネック+黒スラックスの三点セットが秋冬の「最強告白コーデ」。これだけで全シグナルを満たす。',pairing:'進化心理学デッキ「女性の選択基準①資源×⑥保護」カード参照'},
+  {brand:'アウター深化',color:'#1e40af',emoji:'🌧',name:'トレンチコート×デニム',type:'トランジション・秋春',notes:'色：ベージュ・カーキが定番\n素材：コットンギャバジン\n合わせ：白シャツまたはボーダーニット',neuro:'トレンチコートのベルト×エポレット×ダブルブレストという「軍服由来の権威デザイン」が視覚野のIT野（高次認識）で「知的・クラシック・洗練された自信」として処理される。「清潔感（ベージュ）×権威感（軍服デザイン）×知性」という三軸を一着で表現できる稀有なアイテム。',hormones:['セロトニン','ドーパミン'],hormone_detail:[{ico:'🎩',name:'クラシック×知性シグナル',desc:'軍服由来のデザイン要素が進化的な「高地位・知性・戦略的能力」のシグナルとして処理される。ベージュの明るい色彩がセロトニン系の安心感と組み合わさる。'}],note_science:'映画・文化的文脈でのトレンチコートの「カッコいい人が着るもの」という記憶が単純接触効果として女性の評価を底上げする。',good_scenes:['雨のデート','秋のランチデート','美術館'],bad_scenes:['夏（暑すぎる）'],season:['春','秋'],rating:{誠実さ:88,色気:82,信頼感:90,初対面:87,汎用性:88},tip:'トレンチコートの衿を立てるだけで謎めいた魅力が増す。不確実性低減理論の「適度な謎感」を衿1つで作れる。',pairing:'夜の視覚デッキ「夜の五感統合視覚戦略の完成形」カード参照'},
+
+  // ── カジュアル深化 ──
+  {brand:'カジュアル深化',color:'#374151',emoji:'👕',name:'ヘビーウェイトTシャツ×スラックス',type:'カジュアル高感度',notes:'Tシャツ：300g以上の厚手コットン（白・黒・グレー）\nスラックス：テーパードシルエット\n靴：ローファーまたは白スニーカー',neuro:'高品質ヘビーウェイトTの「素材の重量感と適度な厚み」がミラーニューロン（F5野）の触覚予測を「上質・心地よさ・温かさ」に向ける。「シンプルに見えるが近くで見ると明らかに違う」という「わかる人にはわかる品質感」がIT野の高次認識を通じてドーパミン的な「もっと知りたい」引き付け力を生む。',hormones:['ドーパミン','オキシトシン'],hormone_detail:[{ico:'✨',name:'「わかる人にはわかる」ドーパミン効果',desc:'表面上はシンプルだが近くで感じられる素材の上質さがドーパミン的な予測誤差（思ったより良い）を生む。「この人は普通に見えるが何かが違う」という感覚の視覚×触覚予測の神経科学的正体。'}],note_science:'ヘビーウェイトTはハンガーにかけた時のシルエットの違いで遠目にも品質が伝わる。安いTシャツとの差が最も際立つアイテム。',good_scenes:['カジュアルデート','ランチ','2回目以降'],bad_scenes:['フォーマルな場'],season:['春','夏','秋'],rating:{誠実さ:82,色気:78,信頼感:82,初対面:78,汎用性:92},tip:'白ヘビーウェイトT×黒テーパードスラックス×白スニーカーは「シンプルだが印象に残る」最強の方程式。',pairing:'解剖学デッキ「ミラーニューロン×服装→触覚予測の神経経路」カード参照'},
+  {brand:'カジュアル深化',color:'#374151',emoji:'🦺',name:'セットアップスーツ（カジュアル使い）',type:'カジュアル×フォーマル中間',notes:'素材：コットン・リネン混またはウールライク\n色：グレー・ライトブルー・ベージュ\n着こなし：Tシャツやプルオーバーニットを中に',neuro:'セットアップが持つ「揃いの上下」の視覚的統一感が腹側経路（What経路）で「整理されている・計画的・知性がある」という高次認識を引き出す。スーツほどフォーマルではないため「敷居が高くない権威感」——デートで女性が「緊張しすぎず、でも特別な気持ちになれる」最適な位置づけ。',hormones:['セロトニン','ノルアドレナリン'],hormone_detail:[{ico:'⚖️',name:'適度な権威×リラックス感の両立',desc:'カジュアルセットアップが「フォーマル（信頼・知性）」と「カジュアル（親しみやすさ）」の中間位置に設計される。自律神経的には副交感（安心）と軽度の交感（ときめき）の両立状態を視覚的に誘発。'}],note_science:'2回目のデートにセットアップスーツを投入すると「前回より少し特別感がある」という単純接触効果×新規性の最適な組み合わせになる。',good_scenes:['2回目のデート','ランチ後の美術館','半フォーマルなディナー'],bad_scenes:['完全カジュアルな屋外'],season:['春','秋'],rating:{誠実さ:88,色気:82,信頼感:90,初対面:85,汎用性:85},tip:'セットアップの上着を脱いでシャツかTシャツになる瞬間が「脱ぐという行為」の視覚的テーザー効果として機能する。',pairing:'夜の視覚デッキ「脱ぐという行為の視覚心理学」カード参照'},
+
+  // ── 小物・グルーミング ──
+  {brand:'グルーミング×清潔感',color:'#065f46',emoji:'✂️',name:'ヘアスタイル×清潔感設計',type:'グルーミング',notes:'基本：3〜4週ごとの定期カット\n整髪料：ツヤ出し系（マットすぎない）\n眉毛：整えるだけで印象が激変',neuro:'ヘアスタイルは顔の「額縁」として視覚野のIT野が最初に顔全体の評価の文脈を設定する。整ったヘアが「自己管理能力・清潔感・自尊心の高さ」という複合的なシグナルを0.1秒で送る。眉毛の整えは顔の対称性（テストステロン×遺伝子品質指標）を強調し視覚的健康シグナルを高める。',hormones:['セロトニン'],hormone_detail:[{ico:'💈',name:'清潔感×自己管理能力シグナル',desc:'整ったヘアスタイルが「この人は自己管理できる」という判断を扁桃体に高速で送る。Bussの選択基準④（身体的健康・清潔感）への最も直接的なシグナル。'}],note_science:'「整えていないより整えている方が良い」は全ての状況で真。ヘアカットへの月3,000〜5,000円の投資が全ての服装・香水の効果を最大化する土台になる。',good_scenes:['全シーン'],bad_scenes:['なし'],season:['通年'],rating:{誠実さ:92,色気:82,信頼感:92,初対面:95,汎用性:99},tip:'ヘアスタイルが整っていれば他の全ての要素（服装・香水・声）の評価が底上げされる。ハロー効果の最強の起点。',pairing:'視覚デッキ「ハロー効果の神経科学」カード参照'},
+  {brand:'グルーミング×清潔感',color:'#065f46',emoji:'🦷',name:'歯・口臭の完全管理',type:'グルーミング',notes:'基本：電動歯ブラシ+フロス+舌クリーナー\nホワイトニング：歯磨き粉での日常的ケア\nデート前：マウスウォッシュ+ミント',neuro:'口臭はGEUSTOのキス科学・MHC評価・テストステロン転移の全てを台無しにする最大のネガティブ要因。嗅覚は視床をバイパスして扁桃体に0.03秒で到達するため口臭が「危険・不健康・不衛生」のシグナルとして即座に感情的拒絶反応を引き起こす。逆に白い歯は「健康・遺伝子品質」の視覚的シグナルとして笑顔の魅力を最大化させる。',hormones:['セロトニン'],hormone_detail:[{ico:'😁',name:'白い歯×健康シグナル',desc:'白い歯・清潔な口腔が「健康な遺伝子・高いテストステロン（免疫機能の維持）」の視覚的シグナルとしてBussの選択基準④に直接対応。笑顔と組み合わさることでドーパミン的報酬反応を引き起こす。'}],note_science:'EIDOSの香水の効果は口臭があれば完全に消える。香水の前に口腔ケアが最優先。「嗅覚戦略は口からも始まる」。',good_scenes:['全シーン（特にキスを想定する場合）'],bad_scenes:['なし'],season:['通年'],rating:{誠実さ:95,色気:90,信頼感:95,初対面:98,汎用性:99},tip:'電動歯ブラシ+フロスの習慣化は月2,000円以下でHAPTOSとGEUSTOの全ての効果を最大化する最高ROIの投資。',pairing:'GEUSTOデッキ「キス相性5軸同時評価」カード参照'},
+];
+
+
+/* ── BRANDS ENGINE ─── */
+const ALL_BRANDS=['すべて','フォーマル','カジュアル','カジュアル高感度','アウター','小物・アクセント','春夏スタイル','アウター深化','カジュアル深化','グルーミング×清潔感'];
+// ホルモン→色マップ（ファッション版）
+const HORMONE_MAP={
+  'セロトニン':'#0F766E','ドーパミン':'#BE123C','オキシトシン':'#4338CA',
+  'GABA':'#6D28D9','ノルアドレナリン':'#b45309','テストステロン様':'#7e1d1d',
+  'コルチゾール↑':'#BE123C'
+};
+
+let curBrandFilter='すべて';
+function initBrands(){
+  renderBrandChips();
+  renderBrandGrid('すべて');
+}
+function renderBrandChips(){
+  const el=document.getElementById('brandChips');
+  if(!el)return;
+  el.innerHTML=ALL_BRANDS.map(b=>`<button class="bc${b==='すべて'?' on':''}" onclick="filterBrand('${b}',this)">${b}</button>`).join('');
+}
+function filterBrand(brand,btn){
+  curBrandFilter=brand;
+  document.querySelectorAll('.bc').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  renderBrandGrid(brand);
+}
+function renderBrandGrid(brand){
+  const el=document.getElementById('fragGrid');
+  if(!el)return;
+  const items=brand==='すべて'?BD:BD.filter(d=>d.brand===brand);
+  el.innerHTML=items.map((d,i)=>{
+    const hc=HORMONE_MAP[d.hormones[0]]||'var(--gold)';
+    return `<div class="fc${compareMode&&compareSelected.includes(i)?' fc-sel':''}" id="fc${i}" onclick="handleFcClick(${i})">
+      <div class="fc-top">
+        <span class="fc-emoji">${d.emoji}</span>
+        <div style="flex:1;min-width:0">
+          <div class="fc-brand" style="color:${d.color}">${d.brand}</div>
+          <div class="fc-name">${d.name}</div>
+          <div class="fc-type">${d.type}</div>
+        </div>
+        <div class="fc-hormones">${(d.hormones||[]).map(h=>`<span class="fc-horm" style="background:${(HORMONE_MAP[h]||'#888')}22;color:${HORMONE_MAP[h]||'#888'}">${h}</span>`).join('')}</div>
+      </div>
+      <div class="fc-body" id="fcb${i}" style="display:none">
+        <div class="fc-notes">${(d.notes||'').replace(/\n/g,'<br>')}</div>
+        <div class="fc-neuro">${d.neuro||''}</div>
+        ${d.tip?`<div class="fc-tip">💡 ${d.tip}</div>`:''}
+        <div class="fc-rating-row">${Object.entries(d.rating||{}).map(([k,v])=>`<div class="fc-rat"><div class="fc-rat-lbl">${k}</div><div class="fc-rat-bar"><div class="fc-rat-fi" style="width:${v}%;background:${hc}"></div></div></div>`).join('')}</div>
+        ${d.pairing?`<div class="fc-pair">🔗 ${d.pairing}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+const QS=[
+  {q:'女性が男性のファッションを「判断」するのにかかる時間は？',opts:['約3秒','約0.1秒 — 視覚信号が扁桃体に到達する時間','約30秒'],ans:1,exp:'角膜→網膜→視神経→外側膝状体（視床）→視覚野→扁桃体という経路で感情的評価が0.1秒で完了する。前頭前野（理性）より扁桃体（感情）が先に反応するため「なんとなく素敵」という直感は高精度な神経処理の結果。',frags:['ネイビースーツスタイル','ホワイトTシャツ×テーパードデニム']},
+  {q:'赤（バーガンディ）を着た男性が同じ顔でも魅力度が高く評価される科学的根拠は？',opts:['赤が目立つから','赤はノルアドレナリン×テストステロン様の視覚シグナルを送り女性が無意識に「支配的・力強い男性性」として処理するから（Elliot et al. 2010）','赤が好きな女性が多いから'],ans:1,exp:'Journal of Experimental Psychologyに掲載されたElliot et al.（2010）の研究で実証。赤は文化を超えた普遍的な性的魅力シグナル。バーガンディは「大人の深い赤」として落ち着いた官能性を演出できる。',frags:['バーガンディニット×スラックス','オールブラックスタイル']},
+  {q:'「ハロー効果」がファッションにおいて意味することは？',opts:['明るい服が印象を良くする効果','服装が良いと知性・能力・誠実さ・将来性まで全て高く評価される光背効果。ファッションが「人格の入口」として機能する。','清潔感だけで印象が決まる効果'],ans:1,exp:'心理学の光背効果（ハロー効果）の実験で繰り返し実証されている。清潔感のある服装をした男性は同じ発言でも「賢そう・信頼できる・将来性がある」と評価される。ファッションは人格評価の入口として機能する。',frags:['ネイビースーツスタイル','グレースーツスタイル']},
+  {q:'ジャストサイズの服が重要な神経科学的理由は？',opts:['見た目が良いから','ジャストサイズの服を見た女性の鏡像ニューロン（ミラーニューロン）が活性化し「健康な体型」を無意識にシミュレートするから','大きい方が楽だから'],ans:1,exp:'ミラーニューロンの視触覚変換機能により女性の脳はフィットした服を見るだけで体性感覚野が活性化し男性の体型を無意識に評価する。「なんとなく体型が良さそう」という直感の正体はこの神経処理。',frags:['白シャツ×テーパードデニムスタイル','ネイビースーツスタイル']},
+  {q:'初対面デートで最も重要なファッション要素の優先順位は？',opts:['ブランド > 清潔感 > サイズ感','清潔感 > サイズ感 > 色の一貫性','色 > シルエット > ブランド'],ans:1,exp:'女性の扁桃体は①清潔感（健康シグナル）②サイズ感（自己管理能力）③色の一貫性（審美眼）の順に無意識に評価する。高価なブランドより清潔で正しいサイズの服の方が初対面評価が高い。',frags:['ネイビー×ホワイトスニーカーコーデ','白シャツ×テーパードデニムスタイル']},
+  {q:'ウールやカシミアのニットを見た時に女性の脳で起きることは？',opts:['暖かそうと思うだけ','体性感覚野（S1野）が活性化し「触れたい・近づきたい」という触覚予測が無意識に発生する。ミラーニューロンの視触覚変換機能による。','柔らかいと判断するだけ'],ans:1,exp:'神経科学研究で視覚から触覚野への信号変換（視触覚ミラーニューロン）が確認されている。柔らかい素材を見るだけで触れた時の感覚が予測的に処理され「近づきたい」というオキシトシン的衝動が発生する。',frags:['ニットタートル×スラックス','キャメルコート×シンプルコーデ']},
+  {q:'「シグネチャースタイル」を確立すべき恋愛心理学的な理由は？',opts:['毎回違うスタイルが新鮮さを生むから','毎回同じスタイルの核心を持つことで相手の海馬が「この人＝この印象」を強固に記録しバソプレシンが絆形成を加速させるから','流行を常に追うべきだから'],ans:1,exp:'香水のプルースト効果と同じ原理がファッションにも適用される。一貫したスタイルを見るたびにオキシトシン・バソプレシンが反応し「この人のそばにいたい」という帰属感が視覚情報によって自動的に再起動される。',frags:['ネイビースーツスタイル','キャメルコート×シンプルコーデ']},
+  {q:'オールブラックが「色気」を生む脳科学的な理由は？',opts:['黒が引き締まって見えるから','黒はドーパミン放出型の「権威・謎・高ステータス」シグナルを送りコルチゾールの軽度上昇→生理的覚醒（ときめき）を引き起こすから','シンプルで失敗がないから'],ans:1,exp:'黒の視覚処理で女性のコルチゾールが軽度上昇する。これは「心地よい生理的覚醒＝ときめき」の状態。「なぜかこの人が気になる」「目が離せない」の正体はこの神経処理。素材の質で効果の強さが変わる。',frags:['オールブラックスタイル','レザージャケット×コーデ']},
+  {q:'色の一貫性（3色以内のコーデ）が重要な認知科学的根拠は？',opts:['見た目が整うから','脳が3色以内のコーデを認知的負荷が低い＝安心・信頼できると処理し「判断力のある男性」という評価を自動的に生成するから','おしゃれに見えるから'],ans:1,exp:'認知心理学の「認知的負荷理論」の応用。脳は情報処理のコストが低いものを「安全・信頼できる」と評価する傾向がある。コーデの色数が増えると処理負荷が上がり「まとまりがない→信頼できない」という無意識の評価につながる。',frags:['ネイビー×ホワイトスニーカーコーデ','白シャツ×テーパードデニムスタイル']},
+  {q:'ファッション×香り×話し方の一貫性が最強な理由は？',opts:['全部良ければ当然良い','視覚（服装）・嗅覚（香り）・聴覚（声）の情報が「一致している」ことで認知的不協和が消え、女性の扁桃体が「矛盾のない信頼できる男性」として最高評価を処理するから','印象が強いから'],ans:1,exp:'脳は複数の感覚情報を統合評価する際に「一貫性＝安全・信頼」という原則で処理する。ファッションが良くても香りがおかしいと「違和感」が生じ扁桃体の評価が下がる。三感の一貫性が全てを最大化する。',frags:['ネイビースーツスタイル','グレースーツスタイル']},
+];
+let qIdx=0,score=0;
+function startQuiz(){
+  qIdx=0;score=0;
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('qArea').style.display='block';
+  renderQ();
+}
+function renderQ(){
+  if(qIdx>=QS.length){showResult();return}
+  const q=QS[qIdx];
+  document.getElementById('qpFi').style.width=((qIdx/QS.length)*100)+'%';
+  document.getElementById('qSc').textContent=score+' / '+qIdx;
+  document.getElementById('qArea').innerHTML=`
+    <div class="qcard">
+      <div class="qc-n">問 ${String(qIdx+1).padStart(2,'0')} / ${String(QS.length).padStart(2,'0')}</div>
+      <div class="qc-q">${q.q}</div>
+      ${q.opts.map((o,i)=>`<button class="qopt" onclick="ansQ(this,${i},${q.ans})">${o}</button>`).join('')}
+      <div class="qexp" id="qexp">${q.exp}</div>
+      <div id="qfrags" style="display:none"></div>
+      <button class="qnxt" id="qnxt" onclick="nextQ()">次の問題へ →</button>
+    </div>`;
+}
+function ansQ(btn,chosen,correct){
+  document.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  if(chosen===correct){btn.classList.add('correct');score++}
+  else{btn.classList.add('wrong');document.querySelectorAll('.qopt')[correct].classList.add('correct')}
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnxt').classList.add('show');
+  document.getElementById('qSc').textContent=score+' / '+(qIdx+1);
+  // 関連香水チップ
+  const q=QS[qIdx];
+  if(q.frags&&q.frags.length){
+    const el=document.getElementById('qfrags');
+    if(el){
+      const chips=q.frags.map(f=>{
+        const bd=BD.find(b=>b.name===f||b.name.includes(f.split(' ')[0]));
+        const emoji=bd?bd.emoji:'🧴';
+        return `<span class="cf-frag-chip" onclick="jumpToBrand('${f}')"><span class="chip-emoji">${emoji}</span>${f}</span>`;
+      }).join('');
+      el.innerHTML=`<div class="cf-frags-lbl" style="margin-top:.7rem">🧴 関連する香水</div><div class="cf-frag-chips">${chips}</div>`;
+      el.style.display='block';
+    }
+  }
+}
+function nextQ(){qIdx++;renderQ()}
+function showResult(){
+  document.getElementById('qArea').innerHTML='';
+  document.getElementById('qpFi').style.width='100%';
+  document.getElementById('qSc').textContent=score+' / '+QS.length;
+  const pct=score/QS.length;
+  let em,msg;
+  if(pct>=.9){em='🏆';msg='完璧な香水マスター。全ての知識が実戦で使える武器となった。あなたの香りが、相手の脳に永遠に刻まれる。'}
+  else if(pct>=.7){em='⭐';msg='優秀な理解度。実戦で使える知識は十分揃っている。あと少しで完全マスター。弱点を重点学習せよ。'}
+  else if(pct>=.5){em='📚';msg='基礎は理解できている。学習カードで重点的に復習を。香水の知識は蓄積するほど強力な武器になる。'}
+  else{em='🌱';msg='ここからが出発点。香水の世界は奥深い。学習カードから始めて基礎を固めよう。'}
+  document.getElementById('rEm').textContent=em;
+  document.getElementById('rSc').textContent=score;
+  document.getElementById('rMsg').textContent=msg;
+  document.getElementById('result').classList.add('show');
+}
+
+/* ── AI CHAT: FORMA ── */
+const AI_ENDPOINT_forma = 'https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI';
+const AI_KEY_forma = 'HeartsHouse2026Key';
+const AI_SYS_forma = `あなたはFORMAスタイリストAIコーチです。
+専門知識：視覚の脳科学・色彩心理（ネイビー=セロトニン信頼シグナル・白=清潔感・黒=権威）・体型シルエット・素材の触覚予測（ミラーニューロン）・季節別コーデ・シーン別（初対面/夜デート/カジュアル/ビジネス）・視線誘導・FORMA×EIDOS×SONOS三感統合。
+回答：「○○×○○のコーデ 理由：△△の神経科学的効果」と具体的に。日本語200〜400文字。`;
+const AI_QUICK_forma = [`🌸 初対面のコーデを提案`,`🌙 夜デートの服装`,`👔 清潔感MAX スタイル`,`❄️ 今の季節のコーデ`,`💼 ビジネスカジュアル`];
+let aiHistory_forma = [];
+let aiLoading_forma = false;
+
+function initAI_forma(){
+  // クイックボタン生成
+  const qc = document.getElementById('aiQuickBtns');
+  if(qc) qc.innerHTML = AI_QUICK_forma.map(q=>
+    `<button onclick="aiQuick_forma(this.textContent.replace(/^[^\s]+\s/,''))" style="padding:.38rem .72rem;border-radius:9999px;background:var(--surface2);border:1px solid var(--border2);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap">${q}</button>`
+  ).join('');
+}
+
+function aiQuick_forma(text){
+  document.getElementById('aiInp').value = text;
+  aiSend_forma();
+}
+
+function aiAddMsg_forma(text, role){
+  const msgs = document.getElementById('aiMsgs');
+  if(!msgs) return null;
+  const div = document.createElement('div');
+  const colors = {user:'linear-gradient(135deg,var(--eidos,#B8860B),var(--eidos-l,#D4A017))',ai:'var(--surface)',thinking:'var(--surface2)'};
+  div.style.cssText = `background:${colors[role]||colors.ai};border:1px solid var(--border);border-radius:var(--r-lg);padding:.78rem .9rem;font-family:var(--fu);font-size:.77rem;color:${role==='user'?'#fff':'var(--txt)'};line-height:1.68;align-self:${role==='user'?'flex-end':'flex-start'};max-width:90%;border-bottom-${role==='user'?'right':'left'}-radius:4px;font-style:${role==='thinking'?'italic':'normal'}`;
+  div.innerHTML = text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);
+  msgs.parentElement.scrollTop = msgs.parentElement.scrollHeight;
+  return div;
+}
+
+async function aiSend_forma(){
+  if(aiLoading_forma) return;
+  const inp = document.getElementById('aiInp');
+  const text = inp?.value?.trim();
+  if(!text) return;
+  aiAddMsg_forma(text,'user');
+  inp.value=''; inp.style.height='auto';
+  const thinking = aiAddMsg_forma('🧠 分析中...','thinking');
+  aiLoading_forma=true;
+  const btn=document.getElementById('aiSendBtn');
+  if(btn)btn.disabled=true;
+  aiHistory_forma.push({role:'user',parts:[{text}]});
+  try{
+    const prompt = AI_SYS_forma+'\n\n【会話履歴】\n'+
+      aiHistory_forma.slice(-6).map(h=>(h.role==='user'?'ユーザー: ':'AI: ')+h.parts[0].text).join('\n')+
+      '\n\n最後のユーザーの質問に答えてください。';
+    const res = await fetch(AI_ENDPOINT_forma,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Access-Key':AI_KEY_forma},
+      body:JSON.stringify({prompt,model:'gemini-2.0-flash',maxTokens:600})
+    });
+    const data = await res.json();
+    thinking?.remove();
+    const t = data?.data?.candidates?.[0]?.content?.parts?.[0]?.text||data?.data?.text||'';
+    if(t){aiAddMsg_forma(t,'ai');aiHistory_forma.push({role:'model',parts:[{text:t}]});}
+    else aiAddMsg_forma('⚠️ 回答を取得できませんでした。','ai');
+  }catch(e){thinking?.remove();aiAddMsg_forma('⚠️ 通信エラーです。','ai');}
+  aiLoading_forma=false;
+  if(btn)btn.disabled=false;
+}
+
+// グローバル公開（onclickから呼べるように）
+window.aiSend = aiSend_forma;
+window.aiQuick_forma = aiQuick_forma;
+
+window.aiSend = aiSend_forma;
+
+</script>
+</body>
+</html>
