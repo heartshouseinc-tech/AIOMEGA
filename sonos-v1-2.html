@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#0c1a0e">
+<title>SONOS — Voice Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Noto+Sans+JP:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7FAF7; --bg2:#ECFAEC; --bg3:#D8F5D8;
+  --surface:#FFFFFF; --surface2:#F5F7FA;
+  --gold:#B8860B; --gold-l:#D4A017; --gold-xl:#FDF8EC;
+  --navy:#0c1a0e; --navy-l:#14532d; --navy-xl:#F0FDF4;
+  --indigo:#14532d; --indigo-l:#16a34a; --indigo-xl:#F0FDF4;
+  --violet:#7c3aed; --violet-xl:#F5F3FF;
+  --rose:#BE123C; --rose-l:#F43F5E; --rose-xl:#FFF1F2;
+  --teal:#0F766E; --teal-xl:#F0FDFA;
+  --amber:#B45309; --amber-xl:#FFFBEB;
+  --sage:#4D7C0F; --sage-xl:#F7FEE7;
+  --slate:#334155; --slate-xl:#F8FAFC;
+  --txt:#1C1917; --txt2:#6B6560; --txt3:#A8A29E;
+  --border:rgba(120,100,80,.11); --border2:rgba(120,100,80,.2);
+  --sh-sm:0 1px 4px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --sh-lg:0 12px 36px rgba(0,0,0,.1);
+  --r-sm:10px; --r-md:16px; --r-lg:22px; --r-xl:28px; --r-full:9999px;
+  --sat:env(safe-area-inset-top,44px); --sab:env(safe-area-inset-bottom,0px);
+  --fd:'Playfair Display',serif; --fu:'DM Sans',sans-serif; --fb:'Noto Sans JP',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--txt);font-family:var(--fb);font-weight:300;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button{border:none;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;outline:none}
+
+/* ── SPLASH ─── */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,#FDF8EC 0%,#FAF7F2 50%,#F0FDFA 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+}
+.sp-bottle{font-size:5rem;animation:bottleFloat 3s ease-in-out infinite;margin-bottom:1.5rem}
+@keyframes bottleFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+.sp-title{font-family:var(--fd);font-size:2.8rem;font-weight:700;letter-spacing:.1em;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-l) 50%,var(--amber) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:fadeUp .7s .3s both}
+.sp-sub{font-family:var(--fu);font-size:.82rem;color:var(--txt2);margin-top:.35rem;letter-spacing:.06em;animation:fadeUp .7s .5s both}
+.sp-tagline{font-family:var(--fd);font-size:1rem;font-style:italic;color:var(--txt2);margin-top:.6rem;animation:fadeUp .7s .65s both}
+.sp-btn{
+  margin-top:2.5rem;padding:.95rem 3rem;
+  background:linear-gradient(135deg,var(--gold),var(--gold-l));
+  color:#fff;font-family:var(--fu);font-size:.95rem;font-weight:600;
+  border-radius:var(--r-full);box-shadow:0 8px 24px rgba(184,134,11,.35);
+  animation:fadeUp .7s .85s both;transition:transform .15s,box-shadow .15s;letter-spacing:.02em}
+.sp-btn:active{transform:scale(.96)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ── SHELL ─── */
+#app{display:none}
+#app.on{display:block}
+
+/* ── BOTTOM NAV ─── */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(255,255,255,.92);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);
+  border-top:1px solid var(--border);display:flex;padding-bottom:var(--sab);
+}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;padding:.7rem .5rem .55rem;gap:.18rem;background:none;color:var(--txt3);transition:color .18s}
+.bni.on{color:var(--gold)}
+.bni-ico{font-size:1.4rem;line-height:1}
+.bni-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0;transition:opacity .18s;margin:1px auto 0}
+.bni.on .bni-dot{opacity:1}
+.bni-lbl{font-family:var(--fu);font-size:.54rem;font-weight:500;letter-spacing:.02em}
+
+/* ── PAGES ─── */
+.page{display:none}
+.page.on{display:block;animation:pIn .28s ease both}
+@keyframes pIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.sb{overflow-y:auto;-webkit-overflow-scrolling:touch;height:100vh;padding-bottom:calc(76px + var(--sab))}
+
+/* ── TYPOGRAPHY ─── */
+.pg-title{font-family:var(--fd);font-size:1.55rem;font-weight:700}
+.sec-title{padding:1.4rem 1.25rem .65rem;font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--txt)}
+.sec-title span{font-family:var(--fu);font-size:.9rem;font-weight:400;color:var(--txt2)}
+.tag-label{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em}
+.spacer{height:1.2rem}
+
+/* ── CARD BASE ─── */
+.card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);box-shadow:var(--sh-sm);overflow:hidden;margin:0 1.25rem .85rem}
+.card-hd{padding:1rem 1.25rem .9rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem}
+.card-ico{width:38px;height:38px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.card-hd-title{font-family:var(--fd);font-size:1.02rem;font-weight:600}
+.card-hd-sub{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.1rem}
+.card-bd{padding:1.1rem 1.25rem}
+
+/* ── HOME ─── */
+.home-top{padding:calc(var(--sat) + 1rem) 1.25rem 0;display:flex;align-items:center;justify-content:space-between}
+.home-greet{font-family:var(--fu);font-size:.76rem;color:var(--txt2)}
+.home-name{font-family:var(--fd);font-size:1.4rem;font-weight:700;margin-top:.1rem}
+.home-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--amber));display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 12px rgba(184,134,11,.3)}
+.hero{
+  margin:1.1rem 1.25rem;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-l) 60%,var(--amber) 100%);
+  border-radius:var(--r-xl);padding:1.6rem 1.5rem 1.8rem;
+  position:relative;overflow:hidden;box-shadow:0 12px 36px rgba(184,134,11,.28);
+}
+.hero-bl{position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.1);top:-70px;right:-60px}
+.hero-bl2{position:absolute;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.07);bottom:-35px;left:10px}
+.hero-tag{font-family:var(--fu);font-size:.63rem;font-weight:500;color:rgba(255,255,255,.75);letter-spacing:.09em;text-transform:uppercase;margin-bottom:.55rem;position:relative}
+.hero-title{font-family:var(--fd);font-size:1.65rem;font-weight:700;color:#fff;line-height:1.25;position:relative;margin-bottom:1.3rem}
+.hero-title em{font-style:italic}
+.hero-stats{display:flex;gap:1.2rem;position:relative}
+.hs-n{font-family:var(--fd);font-size:1.5rem;font-weight:600;color:#fff;display:block}
+.hs-l{font-family:var(--fu);font-size:.54rem;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.05em}
+.hero-div{width:1px;background:rgba(255,255,255,.25);margin:.2rem 0}
+.tip-card{margin:0 1.25rem 1rem;background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-lg);padding:1.2rem;display:flex;gap:1rem;align-items:flex-start}
+.tip-ico{font-size:1.6rem;flex-shrink:0}
+.tip-lbl{font-family:var(--fu);font-size:.58rem;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem}
+.tip-txt{font-family:var(--fd);font-size:.96rem;font-style:italic;color:var(--txt);line-height:1.55}
+.mod-grid{padding:0 1.25rem;display:grid;gap:.75rem}
+.mod{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.15rem 1.1rem;display:flex;align-items:center;gap:.9rem;box-shadow:var(--sh-sm);cursor:pointer;transition:transform .12s;position:relative;overflow:hidden}
+.mod:active{transform:scale(.98)}
+.mod-ac{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+.mod-ico{width:48px;height:48px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.mod-name{font-family:var(--fd);font-size:1rem;font-weight:600}
+.mod-sub{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.1rem}
+.mod-badge{font-family:var(--fu);font-size:.58rem;font-weight:600;padding:.18rem .6rem;border-radius:var(--r-full)}
+.mod-arr{color:var(--txt3);font-size:1.1rem;margin-left:auto;flex-shrink:0}
+
+/* ── SCENT BASE PAGE ─── */
+.pg-hd{padding:calc(var(--sat) + .6rem) 1.25rem .5rem}
+.banner{margin:.5rem 1.25rem 1.1rem;border-radius:var(--r-xl);padding:1.4rem;border:1px solid}
+.banner-ico{font-size:2.4rem;margin-bottom:.7rem}
+.banner-title{font-family:var(--fd);font-size:1.35rem;font-weight:700;margin-bottom:.4rem}
+.banner-desc{font-family:var(--fu);font-size:.79rem;color:var(--txt2);line-height:1.65}
+.brain-path{display:flex;align-items:center;padding:.4rem 0 .9rem;gap:0}
+.bp-nd{display:flex;flex-direction:column;align-items:center;gap:.32rem;flex-shrink:0;width:62px}
+.bp-ci{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.35rem;box-shadow:var(--sh-sm)}
+.bp-lbl{font-family:var(--fu);font-size:.55rem;font-weight:500;color:var(--txt2);text-align:center;line-height:1.3}
+.bp-arr{flex:1;display:flex;flex-direction:column;align-items:center;gap:.18rem}
+.bp-line{width:100%;height:2px;background:#E5DDD0;border-radius:1px;position:relative;overflow:hidden}
+.bp-flow{position:absolute;top:0;left:-30%;height:100%;width:30%;border-radius:1px;animation:flow 1.6s linear infinite}
+@keyframes flow{to{left:130%}}
+.bp-skip{font-family:var(--fu);font-size:.5rem;color:var(--rose-l);font-weight:600;white-space:nowrap}
+.brain-note{font-family:var(--fu);font-size:.77rem;color:var(--txt2);line-height:1.7;text-align:center}
+.brain-note strong{color:var(--txt)}
+.neuro-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.ng{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.9rem}
+.ng-ico{font-size:1.2rem;margin-bottom:.42rem}
+.ng-name{font-family:var(--fd);font-size:.9rem;font-weight:600;margin-bottom:.15rem}
+.ng-chem{font-family:var(--fu);font-size:.56rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.42rem}
+.ng-desc{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6}
+.ng-scents{font-family:var(--fu);font-size:.63rem;font-weight:500;margin-top:.52rem;padding-top:.52rem;border-top:1px solid var(--border);color:var(--txt);line-height:1.5}
+.sr{display:flex;align-items:flex-start;gap:.8rem;padding:.9rem 1.25rem;border-bottom:1px solid var(--border)}
+.sr:last-child{border-bottom:none}
+.sr-em{font-size:1.3rem;flex-shrink:0;margin-top:.08rem}
+.sr-name{font-family:var(--fd);font-size:.96rem;font-weight:600;margin-bottom:.15rem}
+.sr-eff{font-family:var(--fu);font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.sr-desc{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.note-item{border-radius:var(--r-md);padding:.95rem;border:1px solid transparent;display:flex;gap:.8rem;margin-bottom:.6rem}
+.ni-time{flex-shrink:0;width:50px}
+.ni-phase{font-family:var(--fu);font-size:.58rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.ni-dur{font-family:var(--fu);font-size:.53rem;color:var(--txt2);margin-top:.08rem}
+.ni-title{font-family:var(--fd);font-size:.95rem;font-weight:600;margin-bottom:.25rem}
+.ni-body{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.push-item{background:var(--surface);border-radius:var(--r-md);border:1px solid var(--border);padding:.95rem;display:flex;gap:.8rem;margin-bottom:.6rem;box-shadow:var(--sh-sm)}
+.pi-badge{width:44px;height:44px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.pi-dist{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.18rem}
+.pi-loc{font-family:var(--fd);font-size:.96rem;font-weight:600;margin-bottom:.25rem}
+.pi-why{font-family:var(--fu);font-size:.74rem;color:var(--txt2);line-height:1.65}
+.w-chips{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .5rem;scrollbar-width:none}
+.w-chips::-webkit-scrollbar{display:none}
+.wc{flex-shrink:0;padding:.48rem 1rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.wc.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(184,134,11,.28)}
+.w-result{margin:.7rem 1.25rem 0;background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-md);padding:.95rem;font-family:var(--fu);font-size:.79rem;color:var(--txt2);line-height:1.75}
+.w-result strong{color:var(--gold)}
+
+/* ── LEARN ─── */
+.learn-hd{padding:calc(var(--sat) + .75rem) 1.25rem .65rem;display:flex;align-items:center;justify-content:space-between}
+.deck-tabs{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .65rem;scrollbar-width:none}
+.deck-tabs::-webkit-scrollbar{display:none}
+.dt{flex-shrink:0;padding:.46rem .95rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.dt.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 4px 12px rgba(184,134,11,.25)}
+.card-box{
+  margin:0 1.25rem;border-radius:var(--r-xl);
+  background:var(--surface);border:1px solid var(--border);
+  box-shadow:var(--sh-md);min-height:290px;
+  display:flex;flex-direction:column;overflow:hidden;
+  position:relative;
+}
+.card-box::before{content:'';position:absolute;inset:7px -4px -7px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);z-index:-1;opacity:.5}
+.card-box::after{content:'';position:absolute;inset:13px -7px -13px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);z-index:-2;opacity:.28}
+.card-face{padding:1.6rem 1.45rem;display:flex;flex-direction:column;flex:1;transition:opacity .15s}
+.card-face.hidden{display:none}
+.card-face-back{background:linear-gradient(135deg,var(--gold-xl),#FEF9E7)}
+.cf-tag{font-family:var(--fu);font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.9rem}
+.cf-q{font-family:var(--fd);font-size:1.08rem;font-weight:600;color:var(--txt);line-height:1.45;flex:1}
+.cf-hint{font-family:var(--fu);font-size:.64rem;color:var(--txt3);text-align:center;margin-top:1rem;animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:.8}}
+.cf-a{font-family:var(--fu);font-size:.8rem;color:var(--txt2);line-height:1.82;flex:1;border-left:3px solid var(--gold);padding-left:.85rem}
+.cf-src{font-family:var(--fu);font-size:.56rem;font-weight:600;color:var(--txt3);letter-spacing:.06em;text-transform:uppercase;margin-top:.85rem;align-self:flex-end}
+.flip-btn{width:100%;padding:.95rem;background:var(--bg2);border:none;border-top:1px solid var(--border);font-family:var(--fu);font-size:.82rem;font-weight:600;color:var(--gold);cursor:pointer;letter-spacing:.02em;transition:background .15s}
+/* ── CARD FRAG LINKS ── */
+.cf-frags{margin-top:.9rem;padding-top:.8rem;border-top:1px solid rgba(184,134,11,.2)}
+.cf-frags-lbl{font-family:var(--fu);font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:.35rem}
+.cf-frags-lbl::before{content:'🎙';font-size:.7rem}
+.cf-frag-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.cf-frag-chip{font-family:var(--fu);font-size:.65rem;font-weight:600;padding:.28rem .72rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);color:var(--txt2);cursor:pointer;transition:all .16s;display:flex;align-items:center;gap:.3rem;white-space:nowrap}
+.cf-frag-chip:active{transform:scale(.95)}
+.cf-frag-chip:hover,.cf-frag-chip:active{background:var(--gold);border-color:var(--gold);color:#fff}
+.cf-frag-chip .chip-emoji{font-size:.75rem}
+.flip-btn:active{background:var(--gold-xl)}
+.pdots{display:flex;gap:.35rem;justify-content:center;padding:.6rem 0}
+.pd{width:7px;height:7px;border-radius:50%;background:var(--bg3);transition:all .28s;border:1px solid var(--border2)}
+.pd.done{background:var(--gold-l);border-color:transparent}
+.pd.cur{background:var(--gold);border-color:transparent;transform:scale(1.3)}
+.ctrl-row{padding:.8rem 1.25rem;display:flex;align-items:center;gap:.65rem}
+.ctrl-skip{flex:1;padding:.78rem;border-radius:var(--r-md);background:var(--bg2);color:var(--txt2);font-family:var(--fu);font-size:.8rem;font-weight:600;border:none;cursor:pointer;transition:background .15s}
+.ctrl-skip:active{background:var(--bg3)}
+.ctrl-next{flex:1.5;padding:.78rem;border-radius:var(--r-md);background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.8rem;font-weight:600;border:none;cursor:pointer;box-shadow:0 4px 14px rgba(184,134,11,.3);transition:transform .12s}
+.ctrl-next:active{transform:scale(.97)}
+.ctrl-pg{font-family:var(--fu);font-size:.74rem;color:var(--txt3);min-width:48px;text-align:center}
+
+/* ── BRANDS ─── */
+.brand-chips{display:flex;gap:.42rem;overflow-x:auto;padding:0 1.25rem .65rem;scrollbar-width:none}
+.brand-chips::-webkit-scrollbar{display:none}
+.bc{flex-shrink:0;padding:.46rem .95rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.72rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.bc.on{border-color:var(--gold);color:var(--gold);background:var(--gold-xl);box-shadow:0 3px 10px rgba(184,134,11,.2)}
+.frag-grid{padding:0 1.25rem;display:grid;gap:.72rem}
+.fc{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.15rem;box-shadow:var(--sh-sm);cursor:pointer;transition:transform .12s}
+.fc.open{border-color:rgba(184,134,11,.3);box-shadow:var(--sh-md)}
+.fc:active{transform:scale(.99)}
+.fc-top{display:flex;align-items:center;gap:.8rem}
+.fc-emoji{font-size:1.75rem;flex-shrink:0}
+.fc-info{flex:1;min-width:0}
+.fc-brand{font-family:var(--fu);font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--txt2);margin-bottom:.15rem}
+.fc-name{font-family:var(--fd);font-size:1.02rem;font-weight:600}
+.fc-type{font-family:var(--fu);font-size:.68rem;color:var(--txt2);margin-top:.08rem}
+.fc-arr{font-size:1.1rem;color:var(--txt3);transition:transform .25s;flex-shrink:0}
+.fc.open .fc-arr{transform:rotate(90deg)}
+.fc-detail{display:none;margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem}
+.fc.open .fc-detail{display:block}
+.fd-row{display:grid;grid-template-columns:1fr 1fr;gap:.58rem;margin-bottom:.8rem}
+.fd-chip{background:var(--bg2);border-radius:var(--r-sm);padding:.62rem .68rem}
+.fd-chip-lbl{font-family:var(--fu);font-size:.53rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);margin-bottom:.22rem}
+.fd-chip-val{font-family:var(--fu);font-size:.72rem;color:var(--txt);line-height:1.5}
+.fd-sec{margin-bottom:.75rem}
+.fd-sec-title{font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txt2);margin-bottom:.38rem;display:flex;align-items:center;gap:.35rem}
+.fd-sec-body{font-family:var(--fu);font-size:.76rem;color:var(--txt2);line-height:1.75}
+.fd-sec-body strong{color:var(--txt)}
+.scene-chips{display:flex;flex-wrap:wrap;gap:.38rem;margin-top:.45rem}
+.sch{font-family:var(--fu);font-size:.64rem;font-weight:500;padding:.22rem .62rem;border-radius:var(--r-full)}
+.sch-good{background:var(--sage-xl);color:var(--sage);border:1px solid rgba(77,124,15,.2)}
+.sch-bad{background:var(--rose-xl);color:var(--rose);border:1px solid rgba(190,18,60,.2)}
+.rating-row{display:flex;align-items:center;gap:.48rem;margin-bottom:.38rem}
+.rating-lbl{font-family:var(--fu);font-size:.65rem;color:var(--txt2);width:58px;flex-shrink:0}
+.rating-bar{flex:1;height:5px;background:var(--bg3);border-radius:var(--r-full);overflow:hidden}
+.rating-fill{height:100%;border-radius:var(--r-full);background:linear-gradient(90deg,var(--gold),var(--gold-l))}
+.coloring-tip{background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-sm);padding:.65rem .8rem;margin-top:.55rem;font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.65}
+.coloring-tip strong{color:var(--gold)}
+
+/* ── TODAY PAGE ── */
+.sel-chips{display:flex;flex-wrap:wrap;gap:.38rem}
+.sel-chip{padding:.42rem .9rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:500;color:var(--txt2);cursor:pointer;transition:all .16s}
+.sel-chip.on{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700}
+.sel-go{width:100%;padding:.9rem;border-radius:var(--r-full);background:var(--teal);border:none;font-family:var(--fu);font-size:.9rem;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.03em;transition:opacity .15s}
+.sel-go:disabled{opacity:.4;cursor:not-allowed}
+.sel-result-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:1rem 1.1rem;display:flex;gap:.9rem;align-items:flex-start;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.sel-result-card:active{transform:scale(.98)}
+.sel-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0;margin-top:.1rem}
+.sel-r-brand{font-family:var(--fu);font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3);margin-bottom:.12rem}
+.sel-r-name{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:.25rem}
+.sel-r-reason{font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6}
+/* 月別カレンダー */
+.month-cell{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.7rem .75rem}
+.month-num{font-family:var(--fu);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
+.month-frag{font-family:var(--fu);font-size:.68rem;font-weight:600;color:var(--txt);margin-bottom:.15rem}
+.month-tip{font-family:var(--fu);font-size:.62rem;color:var(--txt3);line-height:1.45}
+/* ── RADAR CHART ── */
+.radar-wrap{display:flex;flex-direction:column;align-items:center;gap:.4rem;margin:.5rem 0}
+.radar-labels{display:grid;grid-template-columns:1fr 1fr;gap:.2rem .5rem;width:100%}
+.radar-lbl{display:flex;align-items:center;gap:.35rem;font-family:var(--fu);font-size:.62rem;color:var(--txt2)}
+.radar-lbl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* ── COMPARE ── */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.cmp-col{display:flex;flex-direction:column;gap:.5rem}
+.cmp-head{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.75rem;text-align:center}
+.cmp-emoji{font-size:1.6rem;display:block;margin-bottom:.25rem}
+.cmp-brand-lbl{font-family:var(--fu);font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3)}
+.cmp-name-lbl{font-family:var(--fd);font-size:.88rem;font-weight:700;color:var(--txt);line-height:1.2}
+.cmp-row{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.6rem .7rem}
+.cmp-row-lbl{font-family:var(--fu);font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3);margin-bottom:.28rem;text-align:center}
+.cmp-bar-wrap{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:.18rem}
+.cmp-bar{height:100%;border-radius:4px;transition:width .6s ease}
+.cmp-val{font-family:var(--fu);font-size:.6rem;font-weight:600;text-align:center}
+.cmp-winner{background:var(--gold-xl);border-color:rgba(184,134,11,.3)}
+/* compare chip select */
+.fc.compare-on{border:2px solid var(--teal);box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+.fc.compare-on .fc-top::after{content:'✓';position:absolute;top:.6rem;right:.6rem;width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:22px;text-align:center}
+.fci-tabs{display:flex;gap:.32rem;margin-bottom:.75rem;overflow-x:auto;scrollbar-width:none}
+.fci-tabs::-webkit-scrollbar{display:none}
+.fci-tab{flex-shrink:0;padding:.38rem .75rem;border-radius:var(--r-full);background:var(--bg2);border:1.5px solid var(--border);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .15s;white-space:nowrap}
+.fci-tab.on{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 3px 10px rgba(184,134,11,.25)}
+.fci-panel{animation:pIn .2s ease both}
+.fci-panel.hidden{display:none}
+.rating-row span:last-child{font-size:.58rem;color:var(--txt3);width:26px;text-align:right;flex-shrink:0}
+
+/* ── QUIZ ─── */
+.quiz-hd{padding:calc(var(--sat) + .75rem) 1.25rem .65rem;display:flex;align-items:center;justify-content:space-between}
+.quiz-sc{font-family:var(--fu);font-size:.74rem;font-weight:700;color:var(--gold);background:var(--gold-xl);padding:.28rem .88rem;border-radius:var(--r-full);border:1px solid rgba(184,134,11,.2)}
+.qprog{margin:0 1.25rem .65rem;height:5px;background:var(--bg3);border-radius:var(--r-full);overflow:hidden}
+.qprog-fi{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-l));border-radius:var(--r-full);width:0;transition:width .35s ease}
+.qcard{margin:0 1.25rem .8rem;background:var(--surface);border-radius:var(--r-xl);border:1px solid var(--border);box-shadow:var(--sh-md);padding:1.35rem}
+.qc-n{font-family:var(--fu);font-size:.62rem;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.65rem}
+.qc-q{font-family:var(--fd);font-size:1.05rem;font-weight:600;line-height:1.45;margin-bottom:1.15rem}
+.qopt{display:block;width:100%;text-align:left;background:var(--bg2);border:1.5px solid transparent;color:var(--txt);font-family:var(--fu);font-size:.81rem;font-weight:400;padding:.88rem 1rem;border-radius:var(--r-md);margin-bottom:.52rem;cursor:pointer;transition:all .18s;line-height:1.55}
+.qopt:active{background:var(--gold-xl)}
+.qopt.correct{background:var(--sage-xl);border-color:var(--sage);color:var(--sage);font-weight:500}
+.qopt.wrong{background:var(--rose-xl);border-color:var(--rose-l);color:var(--rose)}
+.qexp{display:none;margin-top:.65rem;background:var(--sage-xl);border:1px solid rgba(15,118,110,.2);border-radius:var(--r-md);padding:.9rem;font-family:var(--fu);font-size:.77rem;color:var(--txt2);line-height:1.78}
+.qexp.show{display:block}
+.qnxt{display:none;width:100%;margin-top:.65rem;background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.86rem;font-weight:600;padding:.85rem;border-radius:var(--r-md);box-shadow:0 4px 14px rgba(184,134,11,.25);transition:transform .12s}
+.qnxt.show{display:block}
+.qnxt:active{transform:scale(.98)}
+.result{display:none;margin:0 1.25rem 2rem;background:var(--surface);border-radius:var(--r-xl);border:1px solid var(--border);box-shadow:var(--sh-md);padding:2.2rem 1.5rem;text-align:center}
+.result.show{display:block}
+.res-em{font-size:3.5rem;margin-bottom:.85rem}
+.res-sc{font-family:var(--fd);font-size:3.5rem;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.res-of{font-family:var(--fu);font-size:.78rem;color:var(--txt3);margin:.28rem 0 1rem}
+.res-msg{font-family:var(--fu);font-size:.82rem;color:var(--txt2);line-height:1.8;margin-bottom:1.35rem}
+.res-retry{background:linear-gradient(135deg,var(--gold),var(--gold-l));color:#fff;font-family:var(--fu);font-size:.88rem;font-weight:600;padding:.88rem 2.5rem;border-radius:var(--r-full);box-shadow:0 6px 20px rgba(184,134,11,.3)}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-bottle"><svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- マイク本体 -->
+  <rect x="30" y="8" width="20" height="32" rx="10" fill="#14532d" opacity=".85"/>
+  <rect x="33" y="11" width="14" height="26" rx="7" fill="#16a34a" opacity=".5"/>
+  <!-- マイクスタンド -->
+  <path d="M18 38 C18 38 18 52 40 52 C62 52 62 38 62 38" stroke="#14532d" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <line x1="40" y1="52" x2="40" y2="66" stroke="#14532d" stroke-width="3" stroke-linecap="round"/>
+  <line x1="28" y1="66" x2="52" y2="66" stroke="#14532d" stroke-width="3" stroke-linecap="round"/>
+  <!-- 音波 -->
+  <path d="M8 24 C8 24 12 32 8 40" stroke="#16a34a" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/>
+  <path d="M2 18 C2 18 8 32 2 46" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round" opacity=".45"/>
+  <path d="M72 24 C72 24 68 32 72 40" stroke="#16a34a" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/>
+  <path d="M78 18 C78 18 72 32 78 46" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round" opacity=".45"/>
+</svg></div>
+  <div class="sp-title">SONOS</div>
+  <div class="sp-sub">VOICE INTELLIGENCE</div>
+  <div class="sp-tagline">「声は、最も深く感情に届く言語だ」</div>
+  <button class="sp-btn" onclick="boot()">はじめる</button>
+</div>
+
+<div id="app">
+
+<!-- ══ HOME ══ -->
+<div class="page on" id="pg-home">
+  <div class="sb">
+    <div class="home-top">
+      <div><div class="home-greet">Parfum Intelligence 🌿</div><div class="home-name">今日の香りを設計しよう</div></div>
+      <div class="home-av"><svg width="32" height="32" viewBox="0 0 80 80" fill="none"><rect x="30" y="10" width="20" height="30" rx="10" fill="#14532d"/><path d="M20 40 C20 40 20 52 40 52 C60 52 60 40 60 40" stroke="#14532d" stroke-width="3" fill="none" stroke-linecap="round"/><line x1="40" y1="52" x2="40" y2="64" stroke="#14532d" stroke-width="3"/><path d="M10 28 C10 28 14 40 10 50" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round" opacity=".6"/><path d="M70 28 C70 28 66 40 70 50" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round" opacity=".6"/></svg></div>
+    </div>
+    <div class="hero">
+      <div class="hero-bl"></div><div class="hero-bl2"></div>
+      <div class="hero-tag">Scent Psychology Platform</div>
+      <div class="hero-title">声は、<em>最も深く</em><br>感情に届く言語だ。</div>
+      <div class="hero-stats">
+        <div><span class="hs-n">40+</span><span class="hs-l">テクニック収録</span></div>
+        <div class="hero-div"></div>
+        <div><span class="hs-n">8</span><span class="hs-l">学習デッキ</span></div>
+        <div class="hero-div"></div>
+        <div><span class="hs-n">90+</span><span class="hs-l">学習カード</span></div>
+      </div>
+    </div>
+    <div class="tip-card" id="tipCard" onclick="rotateTip()" style="cursor:pointer">
+      <div class="tip-ico" id="tipIco">✨</div>
+      <div style="flex:1"><div class="tip-lbl">Today's Science Protocol <span style="font-size:.5rem;opacity:.5">— タップで更新</span></div><div class="tip-txt" id="tipTxt"></div></div>
+    </div>
+    <div class="sec-title">モジュール <span>— 学習を選ぼう</span></div>
+    <div class="mod-grid">
+      <div class="mod" onclick="nav('scent',2)"><div class="mod-ac" style="background:var(--violet)"></div><div class="mod-ico" style="background:var(--violet-xl)">🧠</div><div><div class="mod-name">聴覚の科学</div><div class="mod-sub">蝸牛→聴覚野→扁桃体 × 恋愛心理学</div></div><span class="mod-badge" style="background:var(--violet-xl);color:var(--violet)">必読</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('learn',3)"><div class="mod-ac" style="background:var(--gold)"></div><div class="mod-ico" style="background:var(--gold-xl)">📚</div><div><div class="mod-name">Flash Learn</div><div class="mod-sub">8デッキ 100+カード — 声×心理×恋愛</div></div><span class="mod-badge" style="background:var(--gold-xl);color:var(--gold)">HOT</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('brands',4)"><div class="mod-ac" style="background:var(--amber)"></div><div class="mod-ico" style="background:var(--amber-xl)">👔</div><div><div class="mod-name">Voice Library</div><div class="mod-sub">40+ テクニック × 脳科学解説</div></div><span class="mod-badge" style="background:var(--amber-xl);color:var(--amber)">NEW</span><span class="mod-arr">›</span></div>
+      <div class="mod" onclick="nav('quiz',5)"><div class="mod-ac" style="background:var(--rose)"></div><div class="mod-ico" style="background:var(--rose-xl)">⚡</div><div><div class="mod-name">Voice Quiz</div><div class="mod-sub">聴覚心理専門クイズ — 10問</div></div><span class="mod-arr">›</span></div>
+    </div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ TODAY ══ -->
+<div class="page" id="pg-today">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--teal)">🎯 今日のプロトコル</div><div style="font-family:var(--fu);font-size:.78rem;color:var(--txt2);margin-top:.3rem">シーン・目標・状況から最適な声と話し方を提案</div></div>
+
+    <!-- セレクター -->
+    <div class="card" id="selectorCard">
+      <div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">🎛</div><div><div class="card-hd-title">今日の状況を選ぶ</div><div class="card-hd-sub">3ステップで最適プロトコルを提案</div></div></div>
+      <div class="card-bd" style="display:flex;flex-direction:column;gap:1rem">
+
+        <!-- Step1 シーン -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 1 — 今日のシーン</div>
+          <div class="sel-chips" id="sceneChips">
+            <button class="sel-chip" data-group="scene" data-val="first">🌸 初対面</button>
+            <button class="sel-chip" data-group="scene" data-val="date2">💬 2回目以降</button>
+            <button class="sel-chip" data-group="scene" data-val="night">🌙 夜のデート</button>
+            <button class="sel-chip" data-group="scene" data-val="casual">☕ カジュアル</button>
+            <button class="sel-chip" data-group="scene" data-val="work">💼 ビジネス</button>
+            <button class="sel-chip" data-group="scene" data-val="special">🔥 勝負の夜</button>
+          </div>
+        </div>
+
+        <!-- Step2 気分 -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 2 — 演出したい声と雰囲気</div>
+          <div class="sel-chips" id="moodChips">
+            <button class="sel-chip" data-group="mood" data-val="clean">✨ 誠実さ・信頼感</button>
+            <button class="sel-chip" data-group="mood" data-val="sexy">🔥 色気・ドキドキ感</button>
+            <button class="sel-chip" data-group="mood" data-val="trust">🤝 包容力・安心感</button>
+            <button class="sel-chip" data-group="mood" data-val="deep">🧠 知性・深み</button>
+            <button class="sel-chip" data-group="mood" data-val="smart">😄 ユーモア・楽しさ</button>
+          </div>
+        </div>
+
+        <!-- Step3 天気 -->
+        <div>
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem">Step 3 — 今日の天気・気温</div>
+          <div class="sel-chips" id="weatherChips">
+            <button class="sel-chip" data-group="weather" data-val="hot">☀️ 暑い（25℃+）</button>
+            <button class="sel-chip" data-group="weather" data-val="mild">🌤 快適（15〜25℃）</button>
+            <button class="sel-chip" data-group="weather" data-val="cold">❄️ 寒い（15℃−）</button>
+          </div>
+        </div>
+
+        <button class="sel-go" id="selGoBtn" onclick="runSelector()">→ 最適なプロトコルを選ぶ</button>
+      </div>
+    </div>
+
+    <!-- 結果 -->
+    <div id="selResult" style="display:none">
+      <div style="font-family:var(--fu);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin:.85rem 0 .55rem;padding:0 .1rem">🎯 推奨結果</div>
+      <div id="selResultCards" style="display:flex;flex-direction:column;gap:.65rem"></div>
+      <button onclick="resetSelector()" style="width:100%;margin-top:.9rem;padding:.75rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r-full);font-family:var(--fu);font-size:.8rem;font-weight:600;color:var(--txt2);cursor:pointer">← 選び直す</button>
+    </div>
+
+    <!-- 月別カレンダー -->
+    <div class="card" style="margin-top:.5rem">
+      <div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">📅</div><div><div class="card-hd-title">月別・恋愛プロトコルカレンダー</div><div class="card-hd-sub">季節×シーン×声と話し方の年間戦略</div></div></div>
+      <div class="card-bd">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem" id="monthCalendar"></div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ SCENT SCIENCE ══ -->
+<div class="page" id="pg-scent">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--indigo)">🧠 聴覚の科学 完全版</div></div>
+
+    <!-- 聴覚処理の解剖学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--indigo-xl)">👂</div><div><div class="card-hd-title">聴覚情報処理の解剖学</div><div class="card-hd-sub">声が届いた瞬間の0.05秒に何が起きるか</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--indigo-xl);border:1px solid rgba(20,83,45,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">👂</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo)">①外耳・中耳：音波を機械振動に変換</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">空気の振動（音波）が耳介で集音され鼓膜を振動させる。耳小骨（ツチ骨・キヌタ骨・アブミ骨）が約22倍に増幅して蝸牛に伝達。</div></div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">🐚</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet)">②蝸牛（コルチ器）：周波数を電気信号に変換</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">約16,000個の有毛細胞が異なる周波数（20〜20,000Hz）を担当。<strong>男性の低い声（80〜180Hz）</strong>が女性の有毛細胞に最もリッチな反応を引き起こすことが確認されている。</div></div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">⚡</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--gold)">③聴神経→脳幹→視床</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">蝸牛神経核→上オリーブ核→下丘→内側膝状体（視床）という経路。視覚と同様に感情系への<strong>高速副経路</strong>が存在し0.05秒で扁桃体への信号が始まる。</div></div></div>
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">🎵</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose)">④一次聴覚野（A1）→二次聴覚野</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">側頭葉上部で音の高さ・リズム・音色を分析。二次聴覚野では「誰の声か・感情はどれか」を認識。声の評価はここで「既知の人物」との照合が起きる。</div></div></div>
+        <div style="background:var(--amber-xl);border:1px solid rgba(180,83,9,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">💓</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--amber)">⑤扁桃体：感情的評価（0.05秒）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">「この声は安全か・魅力的か・信頼できるか」を即時判定。低いピッチの声は扁桃体に「支配的・健康・力強さ」のシグナルを送る。<strong>声は服装と同速度で感情判定される。</strong></div></div></div>
+        <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.12);border-radius:var(--r-md);padding:.75rem .9rem;display:flex;align-items:center;gap:.7rem"><span style="font-size:1.2rem">🏆</span><div><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--teal)">⑥報酬回路（側坐核）・オキシトシン系</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6;margin-top:.15rem">心地よい声・音楽・笑い声が側坐核のドーパミンを放出させる。「また聞きたい・そばにいたい」という欲求の神経科学的正体。アクティブリスニングはオキシトシン分泌を直接促進する。</div></div></div>
+      </div>
+    </div></div>
+
+    <!-- 声のピッチと女性への影響 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">🎚</div><div><div class="card-hd-title">声のピッチ × 女性の脳内ホルモン</div><div class="card-hd-sub">低い声が持つ科学的な誘引力の全て</div></div></div><div class="card-bd">
+      <div style="background:var(--indigo-xl);border:1px solid rgba(20,83,45,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.75rem">
+        <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--indigo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem">🔬 研究根拠（Journal of Evolutionary Biology, 2013）</div>
+        <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt2);line-height:1.7">低いピッチの声の男性は女性から<strong style="color:var(--txt)">①性的魅力②支配性③健康度④知性⑤資源調達能力</strong>の5軸全てで高く評価されることが確認された。文化を超えた普遍的な効果。</div>
+      </div>
+      <div class="neuro-grid">
+        <div class="ng"><div class="ng-ico">🔊</div><div class="ng-name">低音（80〜150Hz）</div><div class="ng-chem" style="color:var(--indigo)">TESTOSTERONE</div><div class="ng-desc">テストステロンが声帯を太くし低音を生成。女性の蝸牛有毛細胞が最もリッチに反応。「力強い・信頼できる・守ってくれる」の即時判定。</div><div class="ng-scents">ゆっくり・深く・腹から出す声</div></div>
+        <div class="ng"><div class="ng-ico">📢</div><div class="ng-name">高音（200Hz以上）</div><div class="ng-chem" style="color:var(--rose)">STRESS SIGNAL</div><div class="ng-desc">過度な高音は「緊張・不安・未熟」のシグナルとして扁桃体が処理。日本人男性は意識しないと高くなりがちな傾向がある。</div><div class="ng-scents">意識的に1〜2トーン下げる練習を</div></div>
+        <div class="ng"><div class="ng-ico">〽️</div><div class="ng-name">抑揚（韻律・プロソディ）</div><div class="ng-chem" style="color:var(--violet)">DOPAMINE</div><div class="ng-desc">単調すぎる声はドーパミン刺激ゼロ。適切な抑揚が「興味深い・感情がある・生き生きしている」という評価を生む。音楽のように。</div><div class="ng-scents">感情のある話し方・強弱をつける</div></div>
+        <div class="ng"><div class="ng-ico">⏸</div><div class="ng-name">沈黙・間（ポーズ）</div><div class="ng-chem" style="color:var(--teal)">ANTICIPATION</div><div class="ng-desc">適切な「間」が扁桃体に「次の言葉への期待感（ドーパミン的予測）」を作る。「落ち着いた自信」のシグナルとして処理。埋めようとする必要なし。</div><div class="ng-scents">2〜3秒の沈黙は最強の武器</div></div>
+        <div class="ng"><div class="ng-ico">🐢</div><div class="ng-name">話すスピード</div><div class="ng-chem" style="color:var(--amber)">INTELLIGENCE</div><div class="ng-desc">適度なスピード（1分150〜180語相当）が最高の知性評価。速すぎ→不安・焦り。遅すぎ→退屈・自信なさ。「少し早め」が黄金比。</div><div class="ng-scents">普段より気持ち早め＋適切な間</div></div>
+        <div class="ng"><div class="ng-ico">😊</div><div class="ng-name">声のウォームさ</div><div class="ng-chem" style="color:var(--teal)">OXYTOCIN</div><div class="ng-desc">声に「温かさ・柔らかさ」が含まれると扁桃体が「安全・親しみやすい」と判定しオキシトシン分泌を促す。笑顔で話すと声が変わる神経科学的理由。</div><div class="ng-scents">笑顔で話す→声が自然に温かくなる</div></div>
+      </div>
+    </div></div>
+
+    <!-- 恋愛の3段階×聴覚 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">💘</div><div><div class="card-hd-title">聴覚×恋愛感情 3段階モデル</div><div class="card-hd-sub">声と話し方がどう恋愛感情に変換されるか</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.55rem">
+        <div style="background:linear-gradient(135deg,var(--rose-xl),#FFF5F7);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--rose);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 1 — 欲求（Lust）0.05秒の聴覚処理</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.45rem">
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--rose);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">テストステロン様</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--rose);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">ノルアドレナリン</span>
+          </div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">「声が好き・もっと聞きたい・この人気になる」。<strong style="color:var(--txt)">低いピッチ・腹から出る声・ゆっくりした呼吸感</strong>が扁桃体の欲求回路を起動させる。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1px solid rgba(20,83,45,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--indigo);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 2 — 誘引（Attraction）会話中の感情処理</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.45rem">
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--indigo);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">ドーパミン</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--indigo);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">セロトニン</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--indigo);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">コルチゾール↓</span>
+          </div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">「この人と話していると楽しい・また話したい」。<strong style="color:var(--txt)">ユーモア・適切な質問・共感的反応</strong>がドーパミンを放出させ「また会いたい」欲求を生む。</div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--indigo-xl),#E8F8E8);border:1px solid rgba(67,56,202,.15);border-radius:var(--r-md);padding:.85rem">
+          <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--violet);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.45rem">Stage 3 — 絆（Attachment）深い関係への移行</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.45rem">
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--violet);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">オキシトシン</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--violet);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">バソプレシン</span>
+            <span style="font-family:var(--fu);font-size:.63rem;font-weight:600;background:var(--violet);color:#fff;padding:.15rem .5rem;border-radius:var(--r-full)">エンドルフィン</span>
+          </div>
+          <div style="font-family:var(--fu);font-size:.71rem;color:var(--txt2);line-height:1.65">「この人の声を聞くと落ち着く・ずっと話していたい」。<strong style="color:var(--txt)">深い傾聴・名前を呼ぶ・低く温かい声</strong>がオキシトシンを分泌させ深い絆を形成する。</div>
+        </div>
+      </div>
+    </div></div>
+
+    <!-- 笑いの神経科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--amber-xl)">😄</div><div><div class="card-hd-title">笑い × 神経科学</div><div class="card-hd-sub">ユーモアが恋愛に与える科学的効果の全て</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">😄 笑わせる → エンドルフィン×オキシトシン二重放出</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">笑うとエンドルフィンが分泌され「この人といると気持ちいい・幸せ」という快楽記憶が形成される。同時にオキシトシンも分泌し「一緒にいたい」という絆の感情が同時に強化される。ユーモアが「最強の恋愛ツール」とされる神経科学的根拠。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🧠 ユーモアは「知性の証明」として処理される</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">Miller（1999）の性的選択理論で「ユーモアの能力は前頭前野の高い実行機能を必要とする複雑な認知活動」であり遺伝的知性のシグナルとして機能することが示された。「面白い男性＝賢い男性」という評価の神経科学的根拠。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🔄 笑われるより「一緒に笑う」が最強</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">研究で相手を笑わせることよりも「一緒に笑えること（shared laughter）」の方がカップル形成に強く相関することが確認されている。「私たちだけがわかるユーモア」がバソプレシン絆形成を最速で進める。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">⚠️ 避けるべきユーモアの神経科学的理由</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">他人を傷つける笑い・下品なジョーク・自虐の過剰使用は扁桃体に「攻撃性・自己評価の低さ・不安定さ」のシグナルを送り信頼感スコアを大幅に下げる。ユーモアの質が知性と人格の評価を同時に決定する。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 傾聴の科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--teal-xl)">👂</div><div><div class="card-hd-title">傾聴（アクティブリスニング）× オキシトシン</div><div class="card-hd-sub">「聴く」ことが最強の恋愛武器である理由</div></div></div><div class="card-bd">
+      <div style="background:var(--indigo-xl);border:1px solid rgba(20,83,45,.12);border-radius:var(--r-md);padding:.9rem;margin-bottom:.75rem">
+        <div style="font-family:var(--fd);font-size:.92rem;font-style:italic;color:var(--txt);line-height:1.65;margin-bottom:.5rem">「人は自分の話を真剣に聞いてくれる人を、知らないうちに愛し始める。」</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3)">— 傾聴×恋愛心理学研究の統合知見</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">1</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">反復（Reflecting）：最後の言葉を繰り返す</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">「〜なんですね」と相手の言葉をそのまま繰り返す。「ちゃんと聞いている」という証明。オキシトシン分泌を直接促進する最速の傾聴テクニック。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--violet);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">2</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">感情の命名（Labeling）：感情を言語化する</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">「それは嬉しかったんですね」「大変でしたね」。相手の感情を代わりに言語化することで扁桃体の活動が鎮まり「安心できる人」という評価が固まる（FBI交渉術から）。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">3</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">オープンクエスチョン：深掘りする質問</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">「どんな時にそう感じたの？」などの開かれた質問が海馬の自己開示記憶と結びつく。「この人に話すと整理できる」という特別感を作る。36の質問実験（Aron 1997）の核心。</div></div></div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start"><div style="width:28px;height:28px;border-radius:50%;background:var(--rose);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--fu);font-size:.72rem;font-weight:700;flex-shrink:0">4</div><div><div style="font-family:var(--fu);font-size:.72rem;font-weight:600;color:var(--txt);margin-bottom:.2rem">名前を呼ぶ：最強のオキシトシントリガー</div><div style="font-family:var(--fu);font-size:.69rem;color:var(--txt2);line-height:1.65">人間の脳は自分の名前を聞いた時に固有のニューラル反応を示す。適切なタイミングで名前を呼ぶことがオキシトシン分泌を最も強く促進する単一の言語行動として実証されている。</div></div></div>
+      </div>
+    </div></div>
+
+    <!-- 音楽×恋愛 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--violet-xl)">🎸</div><div><div class="card-hd-title">音楽 × 恋愛科学</div><div class="card-hd-sub">デートBGM・音楽の好み・演奏能力の恋愛効果</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🎵 音楽の好みの共有 → オキシトシン最速分泌</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">「音楽の趣味が合う」という体験が海馬に「この人は自分と同じ価値観を持つ」という強い記憶を残す。音楽の同期体験（コンサート・カラオケ・ドライブ中の音楽）が最速でオキシトシンを分泌させる活動の一つ（Launay 2015）。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🎸 演奏能力 → 遺伝的知性のシグナル</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">Geoff Miller（1999）の進化心理学研究で楽器演奏は「前頭前野の高い認知能力・感情表現力・社会的協調性」の複合シグナルとして機能することが示された。「楽器が弾ける」という事実だけで魅力度評価が有意に上昇。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.3rem">🎵 デートBGMの科学（テンポ×感情×行動）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">BPM60〜80の音楽が最もオキシトシン分泌を促す（心拍数との同期効果）。食事中の低音量BGMが会話量を30%増加させる研究も。プレイリストの選択が「この人はセンスがいい」という認知を作り会話の糸口にもなる。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 36の質問 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">💬</div><div><div class="card-hd-title">「36の質問」実験 × 恋愛科学</div><div class="card-hd-sub">Aron et al. (1997) — 会話で恋愛感情を作る方法</div></div></div><div class="card-bd">
+      <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.15);border-radius:var(--r-md);padding:.9rem;margin-bottom:.7rem">
+        <div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--rose);margin-bottom:.4rem">📚 研究概要（Aron et al. 1997, Personality and Social Psychology Bulletin）</div>
+        <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.7">初対面の2人が36の質問を段階的に答え合うだけで<strong style="color:var(--txt)">45分後に強い親密感が形成</strong>されることを実証。「相互的な自己開示の漸進的深化」がオキシトシン×バソプレシンの連鎖分泌を引き起こすメカニズム。</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.45rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .8rem"><div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--indigo);margin-bottom:.25rem">Level 1（浅い自己開示）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6">「もし選べるなら誰を夕食に招きたい？」「自分の人生で最高の出来事は？」→ 心理的安全性を確立しオキシトシン系を徐々に活性化</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .8rem"><div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--violet);margin-bottom:.25rem">Level 2（中程度の自己開示）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6">「自分の人生に変えたいことがあるとしたら？」→ 扁桃体の防衛機制が緩み「この人は信頼できる」という海馬への記録が始まる</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .8rem"><div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--rose);margin-bottom:.25rem">Level 3（深い自己開示）</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.6">「この人に言いたくても言えなかったことは？」→ バソプレシン絆形成が急速に進行。「この人だけが知っている私」という特別感がロック</div></div>
+      </div>
+    </div></div>
+
+    <!-- 夜の聴覚科学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">🌙</div><div><div class="card-hd-title">夜の聴覚科学 — 声・呼吸・言葉の完全版</div><div class="card-hd-sub">囁き声×ASMR×性的覚醒中の音声×呼吸同期</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose);margin-bottom:.3rem">🌬 囁き声（ウィスパーボイス）× ASMR × 耳介CT繊維</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">耳介・耳の後ろはCT繊維（C触覚求心性線維）が密集する部位。囁き声の<strong>空気の振動が耳介CT繊維を直接刺激</strong>しHAPTOS（触覚）と同じ島皮質→視床下部→オキシトシン経路を聴覚経由で活性化させる。ASMR（自律感覚絶頂反応）として知られる「頭皮がゾワッとする快感」の神経解剖学的根拠がここにある。囁き声は「声+触覚予測+CT繊維刺激」の三重効果。</div></div>
+        <div style="background:var(--amber-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--amber);margin-bottom:.3rem">🎚 性的覚醒中の声のピッチ変化 × テストステロン（Pipitone 2008）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">Pipitone & Gallup（2008, Evolution and Human Behavior）の研究で女性の声は<strong>排卵期にピッチが高くなり男性のテストステロンを最も上昇させる</strong>ことが確認された。性的覚醒状態の女性の声（呼吸の変化・声のトーン変化・声量の変化）が男性のノルアドレナリン+テストステロン分泌を加速させる相互フィードバック機構が存在する。声の変化を「神経系の状態の読み取り指標」として活用することの生理学的根拠。</div></div>
+        <div style="background:var(--indigo-xl);border:1px solid rgba(20,83,45,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo);margin-bottom:.3rem">💬 言葉×オルガズム — ブロッカ野・側坐核・感情語の神経科学</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">性的な言語刺激（エロティックな言葉・感情を直接表現する言葉・名前を呼ぶ）がブロッカ野（言語処理）×側坐核（報酬・快楽）×扁桃体（感情）を同時に活性化させる。<strong>「感じていることを言語化して伝える」</strong>という行為が相手の脳内でドーパミン急増を引き起こす。言葉の内容よりも「声のトーン+タイミング+名前の組み合わせ」がオキシトシン分泌を最大化させる。</div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet);margin-bottom:.3rem">🫁 呼吸の同期 × 迷走神経 × オキシトシン最大化</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">性的に親密な状況での呼吸同期→心拍同期→脳波同調という段階的な生理的共鳴が迷走神経（第10脳神経）を最大に活性化させる。迷走神経はオキシトシン産生ニューロンへの<strong>最も直接的な入力経路</strong>。「呼吸を合わせる」という意識的な実践が深い親密感とオキシトシン分泌を最大化させる科学的に最も支持された単一の行動。</div></div>
+        <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--teal);margin-bottom:.3rem">🔊 声を出すことの生理学的効果 — 性的快楽の増幅ループ</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">声を出す（呻き声・喘ぎ声・言葉）という行為が①横隔膜の収縮→全身への血流増加②声帯の振動→迷走神経の直接刺激③相手のミラーニューロン活性化→<strong>共鳴的なオキシトシン分泌</strong>という三重の経路を通じて性的快楽を増幅させる。「声を出す」ことを抑制すると生理的快楽反応が低下するという研究結果がある。相手が声を出しやすい環境（安心感・プライバシー）の確保が重要。</div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--gold);margin-bottom:.3rem">🌙 夜の聴覚統合戦略 — 声×呼吸×言葉の完全設計</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">①<strong>低く温かい囁き声</strong>（耳介CT繊維刺激）②<strong>呼吸を相手に合わせる</strong>（迷走神経×オキシトシン最大化）③<strong>感情を言語化して伝える</strong>（ドーパミン急増）④<strong>名前を呼ぶ</strong>（N200ニューラル反応×オキシトシン）⑤<strong>声を出すことを促す環境づくり</strong>（相互の生理的共鳴増幅）。EIDOS（香り）×FORMA（視覚）×HAPTOS（タッチ）と統合した時「一生忘れられない夜の記憶」の聴覚的完成形。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 声帯・喉頭の解剖学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--indigo-xl)">🔬</div><div><div class="card-hd-title">声帯・喉頭の解剖学 × テストステロン</div><div class="card-hd-sub">「なぜ低い声がテストステロンの証拠か」の完全な解剖学的説明</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.55rem">
+        <div style="background:var(--indigo-xl);border:1px solid rgba(20,83,45,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--indigo);margin-bottom:.3rem">① 喉頭の骨格解剖 — 甲状軟骨（アダムのリンゴ）</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">喉頭は甲状軟骨・輪状軟骨・披裂軟骨・会厭軟骨から構成される。<strong>甲状軟骨（アダムのリンゴ）は思春期にテストステロンが急増すると約60%も大きくなる</strong>（男性で特に顕著）。この軟骨の成長が声帯の長さを一気に引き伸ばし「声変わり」を引き起こす。甲状軟骨の大きさがテストステロンレベルの一生涯の指標になる。</div></div>
+        <div style="background:var(--violet-xl);border:1px solid rgba(109,40,217,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--violet);margin-bottom:.3rem">② 声帯ひだの解剖 — テストステロンが声を変える機構</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">声帯ひだ（真声帯）は粘膜・声帯筋（甲状披裂筋）・靭帯の三層構造。<strong>テストステロンが受容体に結合→声帯筋が肥厚（太くなる）・声帯ひだが伸長（長くなる）→振動数（Hz）が低下→低い声</strong>。成人男性の声帯は平均17〜25mm（女性12〜17mm）。この物理的差異がそのままピッチの差になる。</div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--gold);margin-bottom:.3rem">③ 反回神経（迷走神経枝）— 声帯の神経支配</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6"><strong>反回神経（下喉頭神経）</strong>が声帯の内転筋・外転筋・伸筋群を支配する。迷走神経（第10脳神経）の枝であることが重要——声帯の動きは迷走神経系と直結しており副交感神経優位（安心・リラックス）状態で声帯が最適な弛緩状態になる。緊張・不安→交感神経→声帯筋の過緊張→声が上ずる・震えるメカニズム。</div></div>
+        <div style="background:var(--rose-xl);border:1px solid rgba(190,18,60,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--rose);margin-bottom:.3rem">④ 共鳴腔の解剖 — 声の「温かさ・豊かさ」の正体</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">声帯が生成した音は<strong>咽頭・口腔・鼻腔・副鼻腔という共鳴腔</strong>で倍音が加わり「声の個性・温かさ・豊かさ」が形成される。胸声（胸部共鳴）は低周波を増幅し「腹から出る声」の物理的正体。「声の温かさ」は共鳴腔の形状（解剖的に個人差大）で決まるが腹式呼吸と姿勢で最大化できる。</div></div>
+        <div style="background:var(--teal-xl);border:1px solid rgba(15,118,110,.12);border-radius:var(--r-md);padding:.75rem .9rem"><div style="font-family:var(--fu);font-size:.7rem;font-weight:700;color:var(--teal);margin-bottom:.3rem">⑤ テストステロンと声の一生涯変化</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.6">幼少期：テストステロン低→声帯短・細→高い声。思春期：テストステロン急増→声帯肥厚・伸長→声変わり（1〜2オクターブ低下）。成人期：テストステロン安定→声帯成熟→最低音域。加齢期：テストステロン低下→声帯筋委縮→声が細くなる傾向。<strong>睡眠・亜鉛・運動によるテストステロン維持が声の質を一生維持する</strong>生理学的根拠（GEUSTOと統合）。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 腹式呼吸の解剖学 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--gold-xl)">🫁</div><div><div class="card-hd-title">腹式呼吸の解剖学 × 声の最適化</div><div class="card-hd-sub">横隔膜×肋間筋×声帯の協調メカニズム完全解説</div></div></div><div class="card-bd">
+      <div class="neuro-grid">
+        <div class="ng"><div class="ng-ico">🫁</div><div class="ng-name">横隔膜（主役）</div><div class="ng-chem" style="color:var(--indigo)">呼吸の80%</div><div class="ng-desc">ドーム状の筋肉が収縮→下降→胸腔拡大→肺に空気流入。腹式呼吸の解剖学的核心。横隔膜神経（C3-5）が支配。横隔膜を使うことで声帯下の声門下圧が安定し低く豊かな声が出る。</div></div>
+        <div class="ng"><div class="ng-ico">💪</div><div class="ng-name">肋間筋・腹筋</div><div class="ng-chem" style="color:var(--violet)">補助呼吸筋</div><div class="ng-desc">外肋間筋が吸気を補助。腹横筋・内腹斜筋が発声時に声門下圧を精密に調整。「腹から声を出す」の解剖学的正体は腹筋群が声門下圧を安定させること。</div></div>
+        <div class="ng"><div class="ng-ico">🔊</div><div class="ng-name">声門下圧</div><n class="ng-chem" style="color:var(--sonos)">音量・音質の鍵</div><div class="ng-desc">声帯下の空気圧（声門下圧）が声の音量・安定性を決定。腹式呼吸で横隔膜を使うと声門下圧が安定→声帯が規則的に振動→低く安定した豊かな声が実現。</div></div>
+        <div class="ng"><div class="ng-ico">😌</div><div class="ng-name">副交感神経との連動</div><div class="ng-chem" style="color:var(--teal)">VAGUS直結</div><div class="ng-desc">腹式呼吸が横隔膜の動き→迷走神経刺激→副交感神経優位→声帯筋の過緊張解除という経路で「声の緊張を解く」。声の震え＝交感神経過剰の解剖的症状。腹式呼吸が解消する。</div></div>
+        <div class="ng"><div class="ng-ico">📐</div><div class="ng-name">姿勢と声道</div><div class="ng-chem" style="color:var(--amber)">共鳴腔の形状</div><div class="ng-desc">背筋を伸ばした姿勢が気管→咽頭→口腔の声道を最大に広げ共鳴腔を最適化。「姿勢が良い人は声が良い」の解剖学的根拠。猫背は咽頭を圧迫し共鳴を減衰させる。</div></div>
+        <div class="ng"><div class="ng-ico">🏋</div><div class="ng-name">声帯筋のトレーニング</div><div class="ng-chem" style="color:var(--rose)">可塑性あり</div><div class="ng-desc">声帯ひだは骨格筋と同様にトレーニングで変化する。低音発声の習慣が声帯筋を適度に鍛え音域を広げる。ただし過剰使用は声帯ポリープの原因になる（適切な負荷が重要）。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 耳の解剖学精密版 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--rose-xl)">👂</div><div><div class="card-hd-title">耳の解剖学精密版 × 恋愛への応用</div><div class="card-hd-sub">外耳→中耳→内耳→CT繊維の完全経路と恋愛戦略</div></div></div><div class="card-bd">
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🦻 外耳（耳介+外耳道）— CT繊維の密集エリア</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">耳介（耳たぶ含む）の皮膚はCT繊維（C触覚求心性線維）が全身で最も密集するエリアの一つ。特に<strong>耳介甲介（concha）——耳の最も深い凹み部分</strong>が迷走神経（第10脳神経）の皮膚枝（耳介枝）によって直接支配される。これが経皮的迷走神経刺激（tVNS）の電極を耳介甲介に当てる理由。囁き声の空気振動がこの部位を刺激→迷走神経→副交感神経優位→オキシトシン産生という経路の解剖学的起点。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🥁 中耳（鼓膜+耳小骨）— 22倍の増幅装置</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">鼓膜が空気振動を機械振動に変換→ツチ骨→キヌタ骨→アブミ骨（最小の骨：約3mm）というレバー機構で<strong>音圧が約22倍に増幅</strong>される。低周波（低い声：80〜180Hz）は骨導でより効率的に伝達されるため囁き声の低周波成分が直接骨を通じて蝸牛に届く。「耳元の低い声」が特別な理由の物理・解剖学的根拠。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">🐚 内耳（蝸牛）— 周波数の神経変換</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">蝸牛基底膜上の約16,000個の有毛細胞が周波数ごとに担当エリアを持つ（基底部＝高音、頂部＝低音）。<strong>男性の低い声（80〜180Hz）は蝸牛頂部の有毛細胞が担当</strong>し最も豊かな神経応答パターンを生成する。囁き声の低周波成分が蝸牛頂部有毛細胞を選択的に最大刺激する。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--txt);margin-bottom:.25rem">⚡ 聴神経→脳幹→扁桃体への高速経路</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">蝸牛神経核→上オリーブ核→下丘→内側膝状体（視床）→一次聴覚野という通常経路に加えて<strong>内側膝状体→扁桃体への「高速感情ルート」</strong>が並行して存在。0.05秒で感情的評価が完了する。「この声が好き・嫌い」という反応が言語的な処理より先に扁桃体で完了する解剖学的根拠。</div></div>
+        <div style="background:var(--indigo-xl);border:1px solid rgba(20,83,45,.15);border-radius:var(--r-sm);padding:.75rem"><div style="font-family:var(--fu);font-size:.68rem;font-weight:700;color:var(--indigo);margin-bottom:.25rem">🌬 「耳への息」が三感を同時刺激する解剖学的根拠</div><div style="font-family:var(--fu);font-size:.7rem;color:var(--txt2);line-height:1.65">①<strong>耳介CT繊維</strong>（温かい息の空気振動→迷走神経耳介枝→副交感神経活性化）②<strong>聴覚路</strong>（囁き声の低周波→蝸牛→扁桃体感情判定）③<strong>TRPV1温度受容器</strong>（体温に近い息の温かさ→「安全・親密」シグナル）の三経路が耳元という一点で完全に統合される。解剖学的に「耳元」は五感統合の最高密度エリア。</div></div>
+      </div>
+    </div></div>
+
+    <!-- 声と恋愛ホルモンの解剖学的統合 -->
+    <div class="card"><div class="card-hd"><div class="card-ico" style="background:var(--amber-xl)">🧬</div><div><div class="card-hd-title">声 × 恋愛ホルモンの解剖学的統合</div><div class="card-hd-sub">声帯解剖→神経経路→ホルモン産生の完全フロー</div></div></div><div class="card-bd">
+      <div style="display:grid;gap:.45rem">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--indigo);margin-bottom:.25rem">🔊 低い声の産生から女性のオキシトシン分泌まで</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.65">テストステロン→声帯肥厚・伸長→低周波振動（80〜180Hz）→外耳道→鼓膜振動→耳小骨22倍増幅→蝸牛頂部有毛細胞→蝸牛神経→聴神経核→内側膝状体→扁桃体（0.05秒で「魅力的・信頼できる」判定）→視床下部（オキシトシン産生ニューロン活性化）。「低い声がオキシトシンを生む」完全な解剖学的経路。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--sonos)">🌬 囁き声・耳元の息から迷走神経活性化まで</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.65">囁き声の空気振動→耳介CT繊維（迷走神経耳介枝）→脳幹（迷走神経背側核・孤束核）→視床下部の室傍核・視索上核（オキシトシン産生ニューロン）直接刺激。通常の聴覚路より短く直接的なオキシトシン産生経路。「耳元で低く囁く」が最速のオキシトシン誘発行為である解剖学的証明。</div></div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--rose)">🫁 腹式呼吸→声帯最適化→迷走神経調整の統合フロー</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.65">腹式呼吸（横隔膜収縮）→横隔膜神経（C3-5）活性化→迷走神経反射的刺激→副交感神経優位→反回神経（迷走神経枝）が声帯筋の過緊張を解除→低く安定した声が出る。呼吸×迷走神経×声帯という三者が解剖学的に連動している。「腹式呼吸で声が落ち着く」の完全な解剖学的説明。</div></div>
+        <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.18);border-radius:var(--r-sm);padding:.7rem"><div style="font-family:var(--fu);font-size:.66rem;font-weight:700;color:var(--gold);margin-bottom:.25rem">✨ 声×EIDOS×HAPTOSの解剖学的統合点</div><div style="font-family:var(--fu);font-size:.68rem;color:var(--txt2);line-height:1.65">声帯→迷走神経（SONOS）× 耳介CT繊維→迷走神経（HAPTOS）× アポクリン腺→嗅球→扁桃体（EIDOS）の三経路が全て<strong>迷走神経と扁桃体という二点で収束</strong>する。五感統合の解剖学的中枢がこの二点であることが判明する。声と香りとタッチが「一体として体験される」解剖学的理由。</div></div>
+      </div>
+    </div></div>
+
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ LEARN ══ -->
+<div class="page" id="pg-learn">
+  <div class="sb">
+    <div class="learn-hd"><div class="pg-title">Voice Learn</div><div style="font-family:var(--fu);font-size:.76rem;color:var(--txt3)" id="deckCnt"></div></div>
+    <div class="deck-tabs">
+      <button class="dt on" onclick="loadDeck('neuro',this)">🧠 聴覚神経科学</button>
+      <button class="dt" onclick="loadDeck('voice',this)">🎚 声の科学</button>
+      <button class="dt" onclick="loadDeck('listen',this)">👂 傾聴の科学</button>
+      <button class="dt" onclick="loadDeck('scene',this)">📍 シーン戦略</button>
+      <button class="dt" onclick="loadDeck('humor',this)">😄 ユーモア科学</button>
+      <button class="dt" onclick="loadDeck('music',this)">🎵 音楽×恋愛</button>
+      <button class="dt" onclick="loadDeck('glossary',this)">📖 用語辞典</button>
+      <button class="dt" onclick="loadDeck('romance',this)">❤️ 恋愛心理</button>
+      <button class="dt" onclick="loadDeck('anatomy',this)">🔬 解剖学</button>
+      <button class="dt" onclick="loadDeck('night',this)">🌙 夜の聴覚</button>
+    </div>
+    <div class="pdots" id="pdots"></div>
+    <div class="card-box" id="cardBox">
+      <div class="card-face" id="cardFront">
+        <p class="cf-tag" id="cfTag"></p>
+        <p class="cf-q" id="cfQ"></p>
+        <p class="cf-hint">タップして答えを見る ✨</p>
+      </div>
+      <div class="card-face card-face-back hidden" id="cardBack">
+        <p class="cf-tag" style="color:var(--gold)">ANSWER</p>
+        <p class="cf-a" id="cfA"></p>
+        <p class="cf-src" id="cfSrc"></p>
+        <div class="cf-frags" id="cfFrags"></div>
+      </div>
+      <button class="flip-btn" id="flipBtn" onclick="flipCard()">答えを見る ✨</button>
+    </div>
+    <div class="ctrl-row">
+      <button class="ctrl-skip" onclick="nextCard()">スキップ</button>
+      <span class="ctrl-pg" id="ctrlPg">1 / 1</span>
+      <button class="ctrl-next" onclick="nextCard()">次へ →</button>
+    </div>
+    <p style="text-align:center;font-family:var(--fu);font-size:.66rem;color:var(--txt3);padding:.25rem">ボタンで答え確認 → 次のカードへ</p>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ BRANDS ══ -->
+<div class="page" id="pg-brands">
+  <div class="sb">
+    <div class="pg-hd"><div class="pg-title" style="color:var(--amber)">🎙 ボイス・トークライブラリ</div><div style="font-family:var(--fu);font-size:.78rem;color:var(--txt2);margin-top:.3rem">声×話し方×音楽 女性心理×脳科学をタップで確認</div></div>
+    <div class="brand-chips" id="brandChips"></div>
+    <!-- 比較モードボタン -->
+    <div style="display:flex;align-items:center;gap:.6rem;padding:.1rem .05rem .5rem">
+      <button id="compareToggleBtn" onclick="toggleCompareMode()" style="flex:1;padding:.6rem 1rem;border-radius:var(--r-full);background:var(--surface);border:1.5px solid var(--border);font-family:var(--fu);font-size:.74rem;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .18s">⚖️ 比較モード OFF</button>
+      <button id="compareGoBtn" onclick="openCompare()" style="display:none;padding:.6rem 1.2rem;border-radius:var(--r-full);background:var(--gold);border:none;font-family:var(--fu);font-size:.74rem;font-weight:700;color:#fff;cursor:pointer">比較する →</button>
+    </div>
+    <!-- 比較選択状況 -->
+    <div id="compareStatus" style="display:none;font-family:var(--fu);font-size:.68rem;color:var(--gold);font-weight:600;padding:.1rem .1rem .45rem;text-align:center"></div>
+    <div class="frag-grid" id="fragGrid"></div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- ══ COMPARE MODAL ══ -->
+<div id="compareModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)">
+  <div style="position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:var(--r-xl) var(--r-xl) 0 0;max-height:88vh;overflow-y:auto;padding:1.25rem 1.1rem 2.5rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-family:var(--fd);font-size:1.2rem;font-weight:700">⚖️ 香水比較</div>
+      <button onclick="closeCompare()" style="width:32px;height:32px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--txt2)">✕</button>
+    </div>
+    <div id="compareContent"></div>
+  </div>
+</div>
+  <div class="sb">
+    <div class="quiz-hd"><div class="pg-title">香水クイズ</div><div class="quiz-sc" id="qSc">0 / 0</div></div>
+    <div class="qprog"><div class="qprog-fi" id="qpFi"></div></div>
+    <div id="qArea"></div>
+    <div class="result" id="result">
+      <div class="res-em" id="rEm">🏆</div>
+      <div class="res-sc" id="rSc">0</div>
+      <div class="res-of">/ 10 問正解</div>
+      <div class="res-msg" id="rMsg"></div>
+      <button class="res-retry" onclick="startQuiz()">もう一度挑戦</button>
+    </div>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+    <!-- ══ AI PAGE ══ -->
+    <div class="page" id="pg-ai">
+      <div class="sb">
+        <div class="pg-hd">
+          <div class="pg-title" style="color:#16a34a">🤖 AI コーチ</div>
+          <div style="font-family:var(--fu);font-size:.73rem;color:var(--txt3);margin-top:.2rem">脳科学×神経科学 — 専門AIに相談</div>
+        </div>
+        <div id="aiMsgs" style="display:flex;flex-direction:column;gap:.65rem;margin-bottom:.6rem">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.82rem .92rem;font-family:var(--fu);font-size:.78rem;color:var(--txt);line-height:1.68;border-bottom-left-radius:4px">
+            こんにちは。専門AIコーチです。<br>状況を入力してください。具体的なアドバイスを返します。
+          </div>
+        </div>
+        <div id="aiQuickBtns" style="display:flex;gap:.38rem;flex-wrap:wrap;margin-bottom:.6rem"></div>
+        <div class="spacer"></div>
+      </div>
+      <!-- AI入力エリア（固定） -->
+      <div style="padding:.55rem .9rem calc(env(safe-area-inset-bottom)+4.2rem);background:var(--surface);border-top:1px solid var(--border);display:flex;gap:.45rem;align-items:flex-end">
+        <textarea id="aiInp" style="flex:1;background:var(--bg2);border:1.5px solid var(--border2);border-radius:var(--r-lg);padding:.6rem .75rem;font-family:var(--fu);font-size:.8rem;color:var(--txt);resize:none;min-height:42px;max-height:110px;outline:none;line-height:1.5"
+          placeholder="状況を入力..." rows="1"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px'"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend();}"></textarea>
+        <button id="aiSendBtn" onclick="aiSend()" style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#16a34a99);border:none;color:#fff;font-size:1.05rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">➤</button>
+      </div>
+    </div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="bni on" onclick="nav('home',0)"><span class="bni-ico">⬡</span><div class="bni-dot"></div><span class="bni-lbl">ホーム</span></button>
+  <button class="bni" onclick="nav('today',1)"><span class="bni-ico">🎯</span><div class="bni-dot"></div><span class="bni-lbl">今日</span></button>
+  <button class="bni" onclick="nav('scent',2)"><span class="bni-ico">🧠</span><div class="bni-dot"></div><span class="bni-lbl">科学</span></button>
+  <button class="bni" onclick="nav('learn',3)"><span class="bni-ico">📚</span><div class="bni-dot"></div><span class="bni-lbl">学習</span></button>
+  <button class="bni" onclick="nav('brands',4)"><span class="bni-ico">🎙</span><div class="bni-dot"></div><span class="bni-lbl">ライブラリ</span></button>
+  <button class="bni" onclick="nav('quiz',5)"><span class="bni-ico">⚡</span><div class="bni-dot"></div><span class="bni-lbl">クイズ</span></button>
+
+  <button class="bni" onclick="nav('ai',6)"><span class="bni-ico">🤖</span><div class="bni-dot"></div><span class="bni-lbl">AI</span></button>
+</nav>
+</div>
+
+<script>
+/* ════════════════════════════════
+   TODAY SELECTOR ENGINE
+════════════════════════════════ */
+const SEL_STATE={scene:null,mood:null,weather:null};
+
+// セレクターチップのクリック処理
+document.querySelectorAll('.sel-chip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const g=btn.dataset.group,v=btn.dataset.val;
+    document.querySelectorAll(`.sel-chip[data-group="${g}"]`).forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    SEL_STATE[g]=v;
+  });
+});
+
+// セレクションロジック: scene×mood×weather → 推奨香水リスト（スコアリング）
+const SEL_RULES=[
+  {n:'低音ボイス戦略',b:'声の使い方',e:'🔊',r:'低いピッチの声がテストステロン様シグナルを送り女性の扁桃体が「力強さ・信頼・健康」を即時判定。全シーン通用の最強基礎技術。',scene:['first','date2','night','casual','work','special'],mood:['clean','trust','sexy'],weather:['hot','mild','cold'],base:10},
+  {n:'沈黙・間（ポーズ）の戦略',b:'声の使い方',e:'⏸',r:'適切な間がドーパミン的予測を起動させ「自信のある男性」という評価を作る。質問後2〜3秒の沈黙が会話の質を劇的に上げる。',scene:['first','date2','night','special'],mood:['trust','deep'],weather:['hot','mild','cold'],base:9},
+  {n:'36の質問プロトコル',b:'話し方テクニック',e:'💬',r:'段階的な自己開示がオキシトシン→バソプレシンを連鎖分泌させ45分で親密感を形成する（Aron 1997）。',scene:['date2','casual'],mood:['trust','clean'],weather:['hot','mild','cold'],base:9},
+  {n:'ユーモア×エンドルフィン戦略',b:'話し方テクニック',e:'😄',r:'笑いがエンドルフィン×オキシトシンを二重放出。「面白い人がモテる」の神経科学的正体。カジュアルシーン最強。',scene:['casual','first','date2'],mood:['smart','clean'],weather:['hot','mild','cold'],base:9},
+  {n:'アクティブリスニング完全版',b:'聴く力',e:'💎',r:'傾聴が直接オキシトシン分泌を促進。「聴く80%・話す20%」で相手が自然に好意を持ち始める最強の受動的戦術。',scene:['date2','casual','special'],mood:['trust','clean'],weather:['hot','mild','cold'],base:9},
+  {n:'名前を呼ぶ戦略（ネーミング）',b:'聴く力',e:'📛',r:'名前を呼ぶことが単一の言語行動として最もオキシトシン分泌を促進することが実証されている。',scene:['first','date2','night','casual','work','special'],mood:['trust','clean'],weather:['hot','mild','cold'],base:9},
+  {n:'ミラーリング×ラポール形成',b:'話し方テクニック',e:'🔄',r:'相手の言葉・リズムを鏡のように反映することでオキシトシン系「同族認識」が活性化し「わかってくれる」感覚を作る。',scene:['first','date2','casual'],mood:['trust','clean'],weather:['hot','mild','cold'],base:8},
+  {n:'告白プロトコル',b:'状況別プロトコル',e:'🌙',r:'低く落ち着いた声で断言口調の告白。直前0.5秒の沈黙がドーパミン的予測を起動させ言葉のインパクトを最大化。',scene:['special','night'],mood:['trust','sexy'],weather:['mild','cold'],base:9},
+  {n:'デートプレイリスト戦略',b:'音楽×デート',e:'🎵',r:'BPM60〜80で副交感神経優位×オキシトシン分泌。音楽の好み共有が最速で絆を作る（Launay 2015）。',scene:['casual','date2','night'],mood:['trust','clean'],weather:['hot','mild','cold'],base:8},
+  {n:'初対面プロトコル',b:'状況別プロトコル',e:'🌸',r:'低い声×温かいトーン×名前2回で扁桃体の「安全判定」を最速クリア。コンテンツよりパラ言語が5倍重要。',scene:['first','work'],mood:['clean','trust'],weather:['hot','mild','cold'],base:10},
+];
+
+function runSelector(){
+  const s=SEL_STATE;
+  if(!s.scene||!s.mood||!s.weather){
+    alert('3つ全て選んでください'); return;
+  }
+  // スコアリング
+  const scored=SEL_RULES.map(r=>{
+    let score=r.base;
+    if(r.scene.includes(s.scene))score+=3;
+    if(r.mood.includes(s.mood))score+=3;
+    if(r.weather.includes(s.weather))score+=2;
+    return {...r,score};
+  }).sort((a,b)=>b.score-a.score).slice(0,3);
+
+  const colors=['var(--gold)','var(--teal)','var(--violet)'];
+  const ranks=['1st','2nd','3rd'];
+  const html=scored.map((r,i)=>`
+    <div class="sel-result-card" onclick="jumpToBrand('${r.n}')">
+      <div class="sel-rank" style="background:${colors[i]}">${ranks[i]}</div>
+      <div style="flex:1">
+        <div class="sel-r-brand">${r.b} ${r.e}</div>
+        <div class="sel-r-name">${r.n}</div>
+        <div class="sel-r-reason">${r.r}</div>
+        <div style="font-family:var(--fu);font-size:.6rem;color:var(--teal);margin-top:.35rem;font-weight:600">タップしてライブラリで詳細を見る →</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('selectorCard').style.display='none';
+  document.getElementById('selResult').style.display='block';
+  document.getElementById('selResultCards').innerHTML=html;
+}
+
+function resetSelector(){
+  SEL_STATE.scene=null;SEL_STATE.mood=null;SEL_STATE.weather=null;
+  document.querySelectorAll('.sel-chip').forEach(b=>b.classList.remove('on'));
+  document.getElementById('selectorCard').style.display='block';
+  document.getElementById('selResult').style.display='none';
+}
+
+/* ── MONTH CALENDAR ── */
+const MONTH_DATA=[
+  {m:'1月',emoji:'❄️',col:'#1e3a6e',frags:'低音ボイス×暖かい声 / 傾聴プロトコル',tip:'寒い季節。「温かい声・包む話し方」が最高の武器。室内での会話が増えるため傾聴力が最もよく機能する'},
+  {m:'2月',emoji:'💝',col:'#BE123C',frags:'告白プロトコル / 36の質問 / デートプレイリスト',tip:'バレンタイン月。告白の機会に最適。低く落ち着いた声で断言口調の告白が記憶に永遠に残る'},
+  {m:'3月',emoji:'🌸',col:'#be185d',frags:'初対面プロトコル / ユーモア戦略',tip:'出会いの季節。初対面の声と話し方が最重要。温かくゆっくりとした声で扁桃体の警戒心を解除'},
+  {m:'4月',emoji:'🌿',col:'#15803d',frags:'初対面プロトコル / ミラーリング',tip:'新学期・新出会い。初対面が多い月。名前を呼ぶ×笑顔のコンボが最速でオキシトシンを作る'},
+  {m:'5月',emoji:'☀️',col:'#b45309',frags:'ユーモア戦略 / デートプレイリスト',tip:'GW・アクティブな季節。ユーモアと明るい話し方が開放的な気分と相乗効果。楽しい記憶を作る月'},
+  {m:'6月',emoji:'🌊',col:'#0369a1',frags:'36の質問 / アクティブリスニング',tip:'梅雨。室内デートが増える→傾聴と自己開示の質問が輝く季節。雨音×低い声×傾聴の黄金コンボ'},
+  {m:'7月',emoji:'🏖',col:'#0891b2',frags:'ユーモア / デートプレイリスト / 声の抑揚',tip:'夏の開放感。明るく活発な話し方が季節と共鳴。感情のある声の抑揚が最大効果を発揮'},
+  {m:'8月',emoji:'⚡',col:'#7c3aed',frags:'ミラーリング / 名前を呼ぶ戦略',tip:'夏祭り・花火大会の出会いの季節。感情的な体験の共有が最速でオキシトシンを作る'},
+  {m:'9月',emoji:'🍂',col:'#92400e',frags:'36の質問 / 傾聴 / デートプレイリスト',tip:'秋の夜長。深い会話が最も映える季節。夕暮れ×低い声×深いテーマの会話が最強の組み合わせ'},
+  {m:'10月',emoji:'🍁',col:'#b45309',frags:'告白プロトコル / 沈黙の戦略 / 低音戦略',tip:'食欲の秋・夜のデートが増える。落ち着いた低い声と傾聴力が長い秋の夜を最高の時間にする'},
+  {m:'11月',emoji:'🌙',col:'#1e1b4b',frags:'告白プロトコル / 36の質問 / 傾聴',tip:'告白シーズン。クリスマスを見据えた関係深化に最適。深い会話×傾聴×告白の準備を整える'},
+  {m:'12月',emoji:'🔥',col:'#7e1d1d',frags:'告白プロトコル / デートプレイリスト / 低音戦略',tip:'年末の特別感。クリスマスの夜の低い声での告白は海馬に永遠に刻まれる。一年で最も声が輝く夜'},
+];
+
+function renderMonthCalendar(){
+  const el=document.getElementById('monthCalendar');
+  if(!el)return;
+  const now=new Date().getMonth(); // 0-indexed
+  el.innerHTML=MONTH_DATA.map((m,i)=>`
+    <div class="month-cell" style="${i===now?'border-color:'+m.col+';background:'+m.col+'12':''};padding:.65rem .7rem">
+      <div class="month-num" style="color:${m.col}">${m.emoji} ${m.m}${i===now?' ← 今月':''}</div>
+      <div class="month-frag" style="font-size:.66rem">${m.frags}</div>
+      <div class="month-tip">${m.tip}</div>
+    </div>
+  `).join('');
+}
+
+/* ════════════════════════════════
+   COMPARE ENGINE
+════════════════════════════════ */
+let compareMode=false;
+let compareList=[];
+
+function toggleCompareMode(){
+  compareMode=!compareMode;
+  compareList=[];
+  const btn=document.getElementById('compareToggleBtn');
+  const goBtn=document.getElementById('compareGoBtn');
+  const status=document.getElementById('compareStatus');
+  if(compareMode){
+    btn.style.background='var(--teal)';btn.style.borderColor='var(--teal)';btn.style.color='#fff';
+    btn.textContent='⚖️ 比較モード ON';
+    status.style.display='block';status.textContent='比較したい香水を2本タップで選択';
+  }else{
+    btn.style.background='';btn.style.borderColor='';btn.style.color='';
+    btn.textContent='⚖️ 比較モード OFF';
+    goBtn.style.display='none';status.style.display='none';
+    document.querySelectorAll('.fc').forEach(c=>c.classList.remove('compare-on'));
+  }
+  renderFrags('すべて');
+}
+
+function handleCompareSelect(fragName){
+  if(!compareMode)return;
+  const idx=compareList.indexOf(fragName);
+  if(idx>-1){
+    compareList.splice(idx,1);
+  }else{
+    if(compareList.length>=2){alert('2本まで選択できます');return;}
+    compareList.push(fragName);
+  }
+  document.getElementById('compareStatus').textContent=
+    compareList.length===0?'比較したい香水を2本タップで選択':
+    compareList.length===1?`✓ ${compareList[0]} — あと1本選択`:
+    `✓ ${compareList[0]}  vs  ${compareList[1]}`;
+  document.getElementById('compareGoBtn').style.display=compareList.length===2?'block':'none';
+  // カードのハイライト更新
+  document.querySelectorAll('.fc').forEach(card=>{
+    const nm=card.querySelector('.fc-name');
+    if(nm)card.classList.toggle('compare-on',compareList.includes(nm.textContent.trim()));
+  });
+}
+
+function openCompare(){
+  if(compareList.length<2){alert('2本選んでください');return;}
+  const f1=BD.find(b=>b.name===compareList[0]);
+  const f2=BD.find(b=>b.name===compareList[1]);
+  if(!f1||!f2)return;
+  const axes=[
+    {k:'清潔感',ico:'✨'},
+    {k:'色気',ico:'🔥'},
+    {k:'信頼感',ico:'🤝'},
+    {k:'初対面',ico:'🌸'},
+    {k:'年齢幅',ico:'👥'}
+  ];
+  const barColor1='#B8860B';const barColor2='#0F766E';
+  const rows=axes.map(ax=>{
+    const v1=f1.rating[ax.k]||0,v2=f2.rating[ax.k]||0;
+    const w1=f1.rating&&f2.rating?v1>=v2:'';
+    const w2=f2.rating&&f1.rating?v2>=v1:'';
+    return `
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+        <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.4rem;text-align:center">${ax.ico} ${ax.k}</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:.5rem;align-items:center">
+          <div>
+            <div class="cmp-bar-wrap"><div class="cmp-bar" style="width:${v1}%;background:${barColor1}"></div></div>
+            <div class="cmp-val" style="color:${barColor1}">${v1}${w1&&v1>v2?' 👑':''}</div>
+          </div>
+          <div style="font-family:var(--fu);font-size:.6rem;color:var(--txt3)">vs</div>
+          <div>
+            <div class="cmp-bar-wrap"><div class="cmp-bar" style="width:${v2}%;background:${barColor2}"></div></div>
+            <div class="cmp-val" style="color:${barColor2}">${v2}${w2&&v2>v1?' 👑':''}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // シーン比較
+  const sceneCmp=`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+      <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.5rem;text-align:center">📍 ベストシーン</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.6">${(f1.good_scenes||[]).map(s=>`<span style="display:block">✓ ${s}</span>`).join('')}</div>
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2);line-height:1.6">${(f2.good_scenes||[]).map(s=>`<span style="display:block">✓ ${s}</span>`).join('')}</div>
+      </div>
+    </div>
+  `;
+
+  // 季節比較
+  const seasonCmp=f1.season&&f2.season?`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.65rem .75rem;margin-bottom:.4rem">
+      <div style="font-family:var(--fu);font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);margin-bottom:.5rem;text-align:center">🗓 季節適性</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2)">${f1.season.join(' / ')}</div>
+        <div style="font-family:var(--fu);font-size:.65rem;color:var(--txt2)">${f2.season.join(' / ')}</div>
+      </div>
+    </div>
+  `:'';
+
+  document.getElementById('compareContent').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem">
+      <div class="cmp-head" style="border-top:3px solid ${barColor1}">
+        <span class="cmp-emoji">${f1.emoji}</span>
+        <div class="cmp-brand-lbl">${f1.brand}</div>
+        <div class="cmp-name-lbl">${f1.name}</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.3rem">${f1.type}</div>
+      </div>
+      <div class="cmp-head" style="border-top:3px solid ${barColor2}">
+        <span class="cmp-emoji">${f2.emoji}</span>
+        <div class="cmp-brand-lbl">${f2.brand}</div>
+        <div class="cmp-name-lbl">${f2.name}</div>
+        <div style="font-family:var(--fu);font-size:.62rem;color:var(--txt3);margin-top:.3rem">${f2.type}</div>
+      </div>
+    </div>
+    ${rows}${sceneCmp}${seasonCmp}
+    <div style="background:var(--gold-xl);border:1px solid rgba(184,134,11,.2);border-radius:var(--r-sm);padding:.75rem .85rem;margin-top:.3rem">
+      <div style="font-family:var(--fu);font-size:.62rem;font-weight:700;color:var(--gold);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.06em">💡 総合判定</div>
+      <div style="font-family:var(--fu);font-size:.72rem;color:var(--txt2);line-height:1.65">${generateVerdict(f1,f2)}</div>
+    </div>
+  `;
+  document.getElementById('compareModal').style.display='block';
+}
+
+function generateVerdict(f1,f2){
+  const sum1=Object.values(f1.rating||{}).reduce((a,b)=>a+b,0);
+  const sum2=Object.values(f2.rating||{}).reduce((a,b)=>a+b,0);
+  const winner=sum1>=sum2?f1.name:f2.name;
+  const loser=sum1>=sum2?f2.name:f1.name;
+  const diff=Math.abs(sum1-sum2);
+  if(diff<20)return `両作は甲乙つけがたい実力派。シーンで使い分けることが理想。${f1.name}は「${(f1.good_scenes||[])[0]||'-'}」、${f2.name}は「${(f2.good_scenes||[])[0]||'-'}」で特に輝く。`;
+  return `総合評価では <strong>${winner}</strong> が優位。ただし <strong>${loser}</strong> が得意とするシーンでは逆転する場面も多い。両方持つことが最強の戦略。`;
+}
+
+function closeCompare(){document.getElementById('compareModal').style.display='none';}
+
+/* ── SVG レーダーチャート生成 ── */
+function buildRadar(rating){
+  const keys=['誠実さ','色気','信頼感','初対面','汎用性'];
+  const vals=keys.map(k=>(rating[k]||0)/100);
+  const cx=80,cy=80,r=60;
+  const angles=keys.map((_,i)=>((i*72)-90)*Math.PI/180);
+  const points=vals.map((v,i)=>({
+    x:cx+r*v*Math.cos(angles[i]),
+    y:cy+r*v*Math.sin(angles[i])
+  }));
+  const poly=points.map(p=>`${p.x},${p.y}`).join(' ');
+  // グリッド円
+  const grids=[.25,.5,.75,1].map(g=>`<circle cx="${cx}" cy="${cy}" r="${r*g}" fill="none" stroke="var(--border)" stroke-width="1"/>`).join('');
+  // 軸
+  const axes=angles.map((a,i)=>`<line x1="${cx}" y1="${cy}" x2="${cx+r*Math.cos(a)}" y2="${cy+r*Math.sin(a)}" stroke="var(--border)" stroke-width="1"/>`).join('');
+  // ラベル
+  const labels=keys.map((k,i)=>{
+    const lx=cx+(r+14)*Math.cos(angles[i]);
+    const ly=cy+(r+14)*Math.sin(angles[i]);
+    return `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="7" fill="var(--txt3)" font-family="DM Sans,sans-serif">${k}</text>`;
+  }).join('');
+  return `<svg width="160" height="160" viewBox="0 0 160 160">${grids}${axes}<polygon points="${poly}" fill="rgba(184,134,11,.25)" stroke="var(--gold)" stroke-width="2"/>${labels}</svg>`;
+}
+
+/* ── 用語辞典デッキ（DECKS追加） ── */
+
+const TIPS=[
+  {ico:'🔊',txt:'「女性は男性の声から0.05秒で5つの情報を処理している。テストステロン量・健康度・社会的地位・感情状態・誠実さ。この5つ全てが恋愛感情の形成に関与する。」'},
+  {ico:'🧠',txt:'「メラビアンの法則：コミュニケーションの印象は言語内容7%・声のトーン38%・非言語55%で決まる。「何を話すか」より「どう話すか」が5倍重要だ。」'},
+  {ico:'😄',txt:'「笑わせることよりも「一緒に笑えること（shared laughter）」の方がカップル形成に強く相関する。「私たちだけがわかるユーモア」がバソプレシン絆形成を最速で進める。」'},
+  {ico:'📛',txt:'「人間の脳は自分の名前を聞いた時に固有のニューラル反応を示す。名前を適切なタイミングで呼ぶことが単一の言語行動として最もオキシトシン分泌を促進することが実証されている。」'},
+  {ico:'⏸',txt:'「適切な「間」が相手の扁桃体にドーパミン的予測を作る。焦って沈黙を埋めようとする行動は「不安・自信のなさ」として評価される。沈黙は「落ち着いた自信のある男性」の最強シグナル。」'},
+  {ico:'💬',txt:'「36の質問実験（Aron 1997）：段階的に深まる相互的自己開示が45分で強い親密感を形成する。「内容」ではなく「漸進的深化のリズム」がオキシトシン×バソプレシンを連鎖分泌させる。」'},
+  {ico:'👂',txt:'「傾聴は話すことより恋愛形成に貢献する場合が多い。「聴く80%・話す20%」を実践するだけで相手が自然に好意を持ち始める。「聴く力」が最強の恋愛武器。」'},
+  {ico:'✨',txt:'「声・話し方・香り・ファッションの一貫性が完成した時、女性の扁桃体に「矛盾のない信頼できる男性」という最高評価が処理される。EIDOS×FORMA×SONOSの三感統合が全てを最大化する。」'},
+];
+let tipIdx=Math.floor(Math.random()*TIPS.length);
+function rotateTip(){
+  tipIdx=(tipIdx+1)%TIPS.length;
+  const t=TIPS[tipIdx];
+  document.getElementById('tipIco').textContent=t.ico;
+  document.getElementById('tipTxt').textContent=t.txt;
+}
+
+/* ── BOOT ─── */
+function boot(){
+  const sp=document.getElementById('splash');
+  sp.style.cssText='opacity:0;transition:opacity .45s;pointer-events:none';
+  setTimeout(()=>{
+    sp.style.display='none';
+    document.getElementById('app').classList.add('on');
+    // 初期Tip設定
+    const t=TIPS[tipIdx];
+    document.getElementById('tipIco').textContent=t.ico;
+    document.getElementById('tipTxt').textContent=t.txt;
+    loadDeck('neuro',document.querySelector('.dt'));
+    startQuiz();
+    // 今日ページ初期化
+    renderMonthCalendar();
+    initAI_sonos();
+    // 用語辞典タブを追加
+    const tabs=document.querySelector('.deck-tabs');
+    if(tabs&&!tabs.querySelector('[data-deck="glossary"]')){
+      const btn=document.createElement('button');
+      btn.className='dt';btn.textContent='📖 用語辞典';
+      btn.dataset.deck='glossary';
+      btn.onclick=()=>loadDeck('glossary',btn);
+      tabs.appendChild(btn);
+    }
+  },450);
+}
+
+/* ── NAV ─── */
+const PGS=['home','today','scent','learn','brands','quiz','ai'];;
+function nav(id,bIdx){
+  PGS.forEach(p=>{const el=document.getElementById('pg-'+p);if(el)el.classList.remove('on')});
+  document.querySelectorAll('.bni').forEach(b=>b.classList.remove('on'));
+  const pg=document.getElementById('pg-'+id);
+  if(pg){pg.classList.add('on');const sb=pg.querySelector('.sb');if(sb)sb.scrollTop=0}
+  const btns=document.querySelectorAll('.bni');
+  if(btns[bIdx])btns[bIdx].classList.add('on');
+}
+
+/* ── WEATHER ─── */
+const WD={
+  sunny:'<strong>☀️ 晴れ・低湿度：</strong>香りの拡散が速い。プッシュ数は標準×1.2倍。シトラス・アクア系が最も映える。手首と鎖骨に各1プッシュが理想。',
+  cloudy:'<strong>☁️ 曇り・中湿度：</strong>最も安定した条件。全系統が標準通りに機能する。ウッディ・ムスク系の本領発揮日。',
+  rain:'<strong>🌧 雨・高湿度：</strong>香りがこもりやすい危険日。プッシュ数60%に減らし<strong>足首か膝裏</strong>に付けて下から立ち上がらせる。シトラスは避けること。',
+  night:'<strong>🌙 夜・室内：</strong>密閉空間で香りが凝縮。プッシュ数は1〜2回のみ。アンバー・ムスクを耳の後ろに半プッシュが理想。',
+  summer:'<strong>🌡 真夏・高温：</strong>重い香りが体臭と混合する危険。シトラス系1プッシュのみ。<strong>清潔感に全振り</strong>が最善。',
+  winter:'<strong>❄️ 冬・乾燥：</strong>揮発が遅く香りが長持ちする。ウッディ・スパイス・アンバー系の本領発揮。プッシュ数は標準×0.8倍に抑えてOK。',
+};
+function setW(btn,key){
+  document.querySelectorAll('.wc').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('wRes').innerHTML=WD[key];
+}
+
+/* ════════════════════════════════════
+   FLASHCARD DECKS — 香水専門 7デッキ
+════════════════════════════════════ */
+const DECKS={
+  neuro:[
+    {tag:'🧠 聴覚神経科学 #1',q:'声が扁桃体に届くまでの神経経路と時間は？',a:'蝸牛→蝸牛神経核→上オリーブ核→下丘→内側膝状体（視床）→聴覚野→扁桃体という経路で0.05秒。視覚と同様に感情系への高速副経路が存在し「この声は安全か・魅力的か」が即時判定される。「声が好き」という感覚は高精度な神経処理の結果。',src:'AUDITORY NEUROSCIENCE',frags:['低音ボイス戦略','初対面プロトコル']},
+    {tag:'🧠 聴覚神経科学 #2',q:'低い声（ピッチ）が女性の魅力評価を上げる神経内分泌学的根拠は？',a:'テストステロンが声帯を肥厚・伸長させ低い声を生成する（思春期の声変わりがその証拠）。女性の蝸牛有毛細胞が低周波域（80〜150Hz）に最もリッチに反応し扁桃体が「健康・力強さ・高テストステロン」として判定。Journal of Evolutionary Biology（2013）で性的魅力・支配性・健康度全て高評価が実証。',src:'J EVOLUTIONARY BIOLOGY 2013',frags:['低音ボイス戦略']},
+    {tag:'🧠 聴覚神経科学 #3',q:'「メラビアンの法則」とは何か？恋愛に与える影響は？',a:'感情・態度を伝えるコミュニケーションの印象は言語内容7%・声のトーン38%・非言語（表情・姿勢・身振り）55%で決まる（Albert Mehrabian）。特に初対面では「何を話すか」より「どう話すか（声・速さ・温かさ・間）」が5倍以上重要。',src:'MEHRABIAN 1967',frags:['初対面プロトコル','低音ボイス戦略']},
+    {tag:'🧠 聴覚神経科学 #4',q:'笑いがエンドルフィンとオキシトシンを同時に分泌させる神経科学的なメカニズムは？',a:'笑いの発生時に扁桃体と報酬回路（側坐核）が同時に活性化し①エンドルフィン（快楽・幸福感）②オキシトシン（絆・親密感）が同時分泌される。「この人といると気持ちいい＋一緒にいたい」という快楽と絆の感情が同時に形成されるのがユーモアがモテる神経科学的正体。',src:'DUNBAR 2012',frags:['ユーモア×エンドルフィン戦略']},
+    {tag:'🧠 聴覚神経科学 #5',q:'アクティブリスニングが直接オキシトシン分泌を促進する研究根拠は？',a:'神経内分泌学研究で真剣に聴かれる体験が視床下部のオキシトシン産生ニューロンを活性化させることが確認されている。「話を聴いてもらえた記憶」は海馬に「この人は特別・安全・信頼できる」として強く長期保存される。',src:'NEUROHORMONE RESEARCH',frags:['アクティブリスニング完全版']},
+    {tag:'🧠 聴覚神経科学 #6',q:'「名前を呼ぶ」ことへの脳の固有反応（N200成分）とは何か？',a:'ERP（事象関連電位）研究で人間は自分の名前を聞いた時に他の言葉と異なる固有のニューラルパターン（N200成分）を示すことが確認されている。名前が「自己への言及」として脳の最も根源的な自己認識回路を活性化させオキシトシン分泌を引き起こす。',src:'ERP N200 RESEARCH',frags:['名前を呼ぶ戦略（ネーミング）']},
+  ],
+  voice:[
+    {tag:'🎚 声の科学 #1',q:'腹式呼吸が声を低くする神経生理学的な理由は？',a:'横隔膜を使った深い呼吸で声帯の緊張が解放され声帯を最適な太さ・長さで振動させられる。胸式呼吸（緊張時）は声帯を硬直させ高音になる。緊張すると声が高くなる理由はこれ。腹式呼吸の練習が最もコスパの高い「声の改善」。',src:'RESPIRATORY PHYSIOLOGY',frags:['低音ボイス戦略']},
+    {tag:'🎚 声の科学 #2',q:'語尾を下げる（断言口調）が信頼感を生む理由は？',a:'語尾が上がる話し方（疑問形・確認形）は「自信のなさ・不安・承認欲求」として扁桃体が処理。語尾が下がる断言口調は「自信・確信・安定」のシグナル。「好きです↘」と「好きです↗」では相手の脳の処理が全く異なる。',src:'PROSODY RESEARCH',frags:['低音ボイス戦略','告白プロトコル']},
+    {tag:'🎚 声の科学 #3',q:'「笑顔で話すと声が変わる」神経科学的な理由は？',a:'笑顔は顔の表情筋（頬骨筋・眼輪筋）を動かし声帯周辺の筋肉の緊張を緩和する。同時に笑顔が脳にポジティブな感情のフィードバックを送り（フェイシャルフィードバック仮説）声のトーンが自然に「温かく・明るく」なる。「笑顔で話す」が最も簡単な声改善方法。',src:'FACIAL FEEDBACK',frags:['初対面プロトコル']},
+    {tag:'🎚 声の科学 #4',q:'「適切なスピード」が知性評価に影響する研究とは？',a:'話すスピードが知性・信頼性・社会的魅力の評価に影響することが確認されている。「少し早め（1分150〜180語）」が最高評価。速すぎ（不安・焦り）→評価低下。遅すぎ（退屈・自信なし）→評価低下。「普段より気持ち早め＋適切な間」が黄金比。',src:'SPEECH RATE RESEARCH',frags:['声の抑揚・リズム戦略']},
+  ],
+  listen:[
+    {tag:'👂 傾聴 #1',q:'反復（リフレクティング）がオキシトシン分泌を最速で促進する理由は？',a:'相手の最後の言葉をそのまま繰り返すことで「ちゃんと聞いている・自分の言葉を受け取ってもらえた」という「傾聴された感覚」が視床下部のオキシトシン産生を直接活性化させる。FBIの交渉術でも「最後の3語を繰り返す」が最強のラポール形成技術として使用されている。',src:'FBI TACTICAL EMPATHY',frags:['アクティブリスニング完全版','ミラーリング×ラポール形成']},
+    {tag:'👂 傾聴 #2',q:'感情の命名（ラベリング）が扁桃体を鎮静させる神経科学的根拠は？',a:'「怖い・悲しい」などの感情を言語で命名する（ラベリング）と扁桃体の活性が下がり前頭前野が優位になることがfMRI研究で確認されている（affect labeling）。相手の感情を代わりに言語化することで「この人は私の気持ちをわかってくれる」という扁桃体の鎮静×信頼感形成が同時に起きる。',src:'LIEBERMAN AFFECT LABELING',frags:['アクティブリスニング完全版']},
+    {tag:'👂 傾聴 #3',q:'「36の質問」実験が証明した自己開示の漸進的深化とオキシトシンの関係は？',a:'Aron et al.（1997）でLevel1（浅い）→Level2（中程度）→Level3（深い）という段階的自己開示のリズムがオキシトシン→バソプレシンの連鎖分泌を引き起こし45分で強い親密感が形成されることが実証された。「内容」より「深化していくリズム」が鍵。',src:'ARON ET AL 1997',frags:['36の質問プロトコル']},
+    {tag:'👂 傾聴 #4',q:'ミラーニューロンが「ミラーリング」を恋愛形成に有効にする仕組みは？',a:'ミラーニューロンは他者の行動・感情を「自分のこと」として処理する神経機構。意識的に相手の言葉・リズム・感情トーンを鏡のように反映するとミラーニューロンが「同族認識（この人は自分に似ている）」を発動させオキシトシン系の「わかり合っている」感覚を作る。',src:'MIRROR NEURON',frags:['ミラーリング×ラポール形成']},
+  ],
+  humor:[
+    {tag:'😄 ユーモア #1',q:'「面白い人がモテる」の進化心理学的な根拠は？',a:'Miller（1999）の性的選択理論でユーモアの能力は「前頭前野の高い認知機能・複数情報の並列処理・社会的知性・感情表現力」の複合シグナルとして機能する。これが「面白い男性＝賢い男性」という女性の評価の根拠。ユーモアは遺伝的知性のシグナルとして進化的に機能する。',src:'MILLER 1999',frags:['ユーモア×エンドルフィン戦略','楽器演奏×性的選択理論']},
+    {tag:'😄 ユーモア #2',q:'「笑わせる」より「一緒に笑える」が恋愛形成に強い理由は？',a:'Shared laughter（共有された笑い）が片方向的なユーモアよりカップル形成に強く相関することが確認されている。「私たちだけがわかるユーモア・内輪の笑い」がバソプレシンの絆形成を最速で進める。「一緒に笑った記憶」が海馬に「特別な体験」として最強に保存される。',src:'SHARED LAUGHTER',frags:['ユーモア×エンドルフィン戦略']},
+    {tag:'😄 ユーモア #3',q:'自己開示型ユーモア（失敗談）が最も効果的な理由は？',a:'自分の失敗・欠点を笑いに変える自己開示型ユーモアが①オキシトシン（自己開示の返報性）②エンドルフィン（笑い）③ドーパミン（意外な展開の発見）を同時に分泌させる。「弱みを見せられる強さ」として扁桃体が「この人は安全で自信がある」と処理するため逆説的に信頼感が上がる。',src:'SELF-DISCLOSURE HUMOR',frags:['ユーモア×エンドルフィン戦略','36の質問プロトコル']},
+  ],
+  music:[
+    {tag:'🎵 音楽 #1',q:'音楽の同期体験（コンサート・ドライブ等）がオキシトシンを分泌させる神経科学的根拠は？',a:'Launay et al.（2015）の研究で同じ音楽に合わせて身体を同期させる体験（演奏・歌唱・リズムへの反応）がオキシトシン分泌を有意に促進することが確認された。「音楽の趣味が合う」という体験の恋愛形成への貢献の神経科学的根拠。',src:'LAUNAY ET AL 2015',frags:['デートプレイリスト戦略']},
+    {tag:'🎵 音楽 #2',q:'楽器演奏が性的魅力評価を上げる進化心理学的な理由は？',a:'Miller（1999）の性的選択理論で楽器演奏は「前頭前野の高い認知能力・継続的な練習による自己管理能力・感情表現力・社会的協調性」の複合遺伝的シグナルとして機能する。「楽器が弾ける」という情報だけで性的魅力評価が有意に上昇する実験結果がある。',src:'MILLER 1999',frags:['楽器演奏×性的選択理論']},
+    {tag:'🎵 音楽 #3',q:'BPM60〜80の音楽がデートに最適な生理学的理由は？',a:'人間の安静時心拍数（60〜80bpm）と同じテンポの音楽が心拍数と同期し副交感神経を優位にする（リラクゼーション反応）。セロトニン系が活性化し「この場所は安全・心地よい・リラックスできる」という感覚を作る。食事中の低音量BPM70程度の音楽が会話量を30%増加させる研究（North et al.）がある。',src:'NORTH ET AL',frags:['デートプレイリスト戦略']},
+  ],
+  scene:[
+    {tag:'📍 シーン戦略 #1',q:'初対面での声と話し方の最優先事項は何か？',a:'コンテンツ（内容）よりパラ言語（声のトーン・速さ・温かさ・間）。メラビアンの法則で言語内容は7%しか印象に影響しない。低く温かい声×ゆっくりとしたペース×笑顔が「安全・信頼できる・話しやすい」を同時に伝達する。名前を2回呼ぶだけでオキシトシンが分泌され始める。',src:'FIRST IMPRESSION',frags:['初対面プロトコル','低音ボイス戦略']},
+    {tag:'📍 シーン戦略 #2',q:'告白の直前に「間」を置くべき理由と最適な長さは？',a:'ピーク・エンドの法則（Kahneman）でピーク（告白の瞬間）が最も強く記憶に残る。直前0.5秒の沈黙が相手のドーパミン的予測（「次に何を言うのか」）を起動させ告白の言葉のインパクトを最大化する。音楽のシンコペーション効果と同じ神経機構。',src:'PEAK-END RULE',frags:['告白プロトコル','沈黙・間（ポーズ）の戦略']},
+    {tag:'📍 シーン戦略 #3',q:'「三感一致戦略（声×香り×ファッション）」が最強な理由は？',a:'視覚（服装）・嗅覚（香り）・聴覚（声と話し方）の3感覚情報が一致すると女性の脳の認知的不協和がゼロになり扁桃体が「矛盾のない信頼できる男性」として最高評価を処理する。どれか一つが欠けると無意識の違和感が発生し全体評価が下がる。EIDOS×FORMA×SONOSの統合が完成形。',src:'TRIPLE CONSISTENCY',frags:['初対面プロトコル','低音ボイス戦略']},
+    {tag:'📍 シーン戦略 #4',q:'「ピーク・エンドの法則」をデートの会話設計に活用する方法は？',a:'人は体験の最も感情的なピークと最後の印象（エンド）を記憶する（Kahneman）。デートの「エンド（別れ際）」に名前+感情を伝える（「〇〇さん、今日楽しかった」）ことで記憶の強度が2〜3倍になる。最も印象的な会話（ピーク）は意図的に中盤以降に設計する。',src:'PEAK-END RULE',frags:['名前を呼ぶ戦略（ネーミング）','告白プロトコル']},
+  ],
+  glossary:[
+    {tag:'📖 用語 #1',q:'「韻律（プロソディ）」とは何か？',a:'声のリズム・アクセント・強弱・速さ・音の高低変化など「言語の音楽的特性」の総称。言語内容とは独立して感情・意図・社会的地位を伝達する。単調な韻律は「退屈・感情がない」として処理され適切な韻律は「感情豊か・知性・魅力的」と評価される。',src:'PROSODY GLOSSARY',frags:['声の抑揚・リズム戦略']},
+    {tag:'📖 用語 #2',q:'「パラ言語（パラバーバル）」とは何か？',a:'声のトーン・速さ・間・音量・明瞭さなど言語の「内容以外の音声的要素」の総称。メラビアンの法則で感情伝達の38%を担う。「何を言うか」ではなく「どう言うか」がコミュニケーションの本質的な部分を構成する要素群。',src:'PARALANGUAGE',frags:['低音ボイス戦略','初対面プロトコル']},
+    {tag:'📖 用語 #3',q:'「ラポール（rapport）」とは何か？どう形成するか？',a:'心理学用語で「信頼と共感に基づく良好な関係・波長が合っている状態」。ミラーリング・傾聴・名前の使用・共通点の強調によって形成される。扁桃体が「この人は安全で同族だ」と判定した状態。ラポール形成後はあらゆるコミュニケーションの効果が倍増する。',src:'RAPPORT',frags:['ミラーリング×ラポール形成','アクティブリスニング完全版']},
+    {tag:'📖 用語 #4',q:'「オープンクエスチョン」と「クローズドクエスチョン」の違いと使い分けは？',a:'オープン：「どんな時に楽しいと感じる？」→自由な回答を引き出す・自己開示を促す・オキシトシン分泌。クローズド：「楽しかった？」→はい/いいえ→会話が終わる危険。デートでは7〜8割オープンクエスチョンを使い相手が話す状況を維持することが傾聴の基本戦略。',src:'QUESTIONING TYPES',frags:['36の質問プロトコル','アクティブリスニング完全版']},
+    {tag:'📖 用語 #5',q:'「フェイシャルフィードバック仮説」とは何か？実践的な意味は？',a:'笑顔を作ると脳がポジティブな感情を感じる（顔→脳へのフィードバック）という仮説（Strack et al.）。笑顔で話すだけで声が温かくなり相手への感情移入が増す。「楽しいから笑う」だけでなく「笑うから楽しくなる」という双方向性。',src:'FACIAL FEEDBACK',frags:['初対面プロトコル']},
+    {tag:'📖 用語 #6',q:'「認知的不協和（コグニティブ・ディソナンス）」が聴覚で起きる場合とは？',a:'声のトーン（誠実そう）と言語内容（ネガティブな言葉）が一致しない時に相手の脳が「何かおかしい」という違和感を感じる。逆に三感（声×香り×ファッション）が一致すると認知的不協和ゼロ→最高評価。',src:'COGNITIVE DISSONANCE',frags:['初対面プロトコル','低音ボイス戦略']},
+  ],
+  night:[
+    {tag:'🌙 夜の聴覚 #1',q:'囁き声が「ASMR的快感」を生む神経解剖学的根拠は？',a:'耳介・耳の後ろはCT繊維（C触覚求心性線維）が密集する部位。囁き声の空気振動が耳介CT繊維を直接刺激しHAPTOSと同じ「島皮質→視床下部→オキシトシン産生ニューロン」経路を聴覚経由で活性化させる。ASMR（自律感覚絶頂反応）の「頭皮がゾワッとする快感」の神経解剖学的正体がこれ。囁き声は声+触覚予測+CT繊維刺激の三重効果を持つ唯一の音声行為。',src:'ASMR CT FIBER',frags:['低音ボイス戦略']},
+    {tag:'🌙 夜の聴覚 #2',q:'性的覚醒状態の女性の声変化が男性のテストステロンを上昇させる研究は？',a:'Pipitone & Gallup（2008, Evolution and Human Behavior）の研究で排卵期の女性の声はピッチが高くなり男性のテストステロンを最も強く上昇させることが確認された。性的覚醒状態の呼吸変化・声のトーン変化・声量変化が男性のノルアドレナリン+テストステロン分泌を加速させる相互フィードバック機構が存在する。「相手の声の変化を読む」ことの生理学的根拠。',src:'PIPITONE GALLUP 2008',frags:['低音ボイス戦略']},
+    {tag:'🌙 夜の聴覚 #3',q:'「感じていることを言語化して伝える」ことがドーパミン急増を引き起こす神経科学的根拠は？',a:'感情・快楽を言語化する行為がブロッカ野（言語処理）×側坐核（報酬・快楽）×扁桃体（感情）を同時に活性化させる。言葉の内容よりも「声のトーン+タイミング+名前の組み合わせ」がオキシトシン分泌を最大化させる研究結果がある。感情を声に出して伝えることが相手の脳内でドーパミン×オキシトシンを同時に活性化させ「また聞きたい」という報酬記憶を形成する。',src:'VERBAL EMOTION',frags:['名前を呼ぶ戦略（ネーミング）','アクティブリスニング完全版']},
+    {tag:'🌙 夜の聴覚 #4',q:'呼吸の同期が迷走神経経由でオキシトシンを最大化させる生理学的根拠は？',a:'呼吸同期→心拍同期→脳波同調という段階的生理的共鳴が迷走神経（第10脳神経）を最大に活性化させる。迷走神経はオキシトシン産生ニューロンへの最も直接的な入力経路であり「呼吸を合わせる」という意識的実践が深い親密感とオキシトシン分泌を最大化させる。HAPTOSの迷走神経経路（子宮頸部→迷走神経→オキシトシン）と同じ回路を呼吸だけで活性化できる唯一の聴覚的行為。',src:'VAGUS NERVE BREATH',frags:['告白プロトコル','アクティブリスニング完全版']},
+    {tag:'🌙 夜の聴覚 #5',q:'声を出すことが横隔膜×迷走神経×ミラーニューロンを通じて快楽を増幅させる仕組みは？',a:'声を出す行為が①横隔膜収縮→全身血流増加②声帯振動→迷走神経直接刺激③相手のミラーニューロン活性化→共鳴的オキシトシン分泌という三経路を同時に活性化させる。声を出すことを抑制すると生理的快楽反応が低下するという研究結果もある。「声を出しやすい環境」すなわちプライバシーと安心感の確保が相手の神経系を最大に解放させる前提条件。',src:'VOCALIZATION AMPLIFICATION',frags:['アクティブリスニング完全版']},
+    {tag:'🌙 夜の聴覚 #6',q:'「耳元への息」が触覚×聴覚×温度感覚を同時に刺激する唯一の行為である理由は？',a:'耳介周辺のCT繊維が温かい息の空気振動により刺激される（触覚経路）。同時に囁き声の低周波成分が鼓膜→蝸牛→聴神経→扁桃体への高速経路を活性化させる（聴覚経路）。さらに体温に近い息の温かさが皮膚温度受容器（TRPV1受容体）を刺激し「安全・温かさ・親密さ」の複合シグナルを送る（温度経路）。三感の同時刺激がオキシトシン分泌の三重経路を同時に活性化させる。',src:'EAR BREATH TRIPLE',frags:['低音ボイス戦略','沈黙・間（ポーズ）の戦略']},
+    {tag:'🌙 夜の聴覚 #7',q:'「静寂と音のコントラスト」が親密な状況での緊張と快楽を最大化させる聴覚心理学的根拠は？',a:'脳の聴覚野は変化（コントラスト）に最も強く反応する。静寂の中の囁き声・低い声・息の音は通常の音量の声より側頭葉上部の聴覚野への刺激強度が相対的に最大化される。「シーンとした空間での小さな声」が「うるさい場所での大きな声」よりはるかに強く脳に届く神経科学的根拠。静かな環境の選択が聴覚戦略の最重要インフラ。',src:'AUDITORY CONTRAST',frags:['沈黙・間（ポーズ）の戦略','デートプレイリスト戦略']},
+    {tag:'🌙 夜の聴覚 #8',q:'夜の「五感統合聴覚戦略」の完成形とは？',a:'①低く温かい囁き声（耳介CT繊維刺激×ASMR）②呼吸を相手に合わせる（迷走神経×オキシトシン最大化）③感情を言語化して伝える（ドーパミン急増）④名前を呼ぶ（N200ニューラル反応×オキシトシン）⑤相手が声を出しやすい環境づくり（相互生理的共鳴増幅）という5要素が揃った時、EIDOS（香り）×FORMA（視覚）×HAPTOS（タッチ）×GEUSTO（キス×呼吸）と統合され海馬に「一生忘れられない夜の記憶」が刻まれる聴覚的完成形。',src:'NIGHT HEARING INTEGRATION',frags:['低音ボイス戦略','名前を呼ぶ戦略（ネーミング）']},
+  ],
+  anatomy:[
+    {tag:'🔬 解剖学 #1',q:'「思春期の声変わり」の完全な解剖学的メカニズムは？',a:'テストステロン急増→①甲状軟骨（アダムのリンゴ）が約60%肥大②声帯ひだが伸長（平均12mm→17〜25mmに）③声帯筋（甲状披裂筋）が肥厚→声帯の振動数（Hz）が低下→1〜2オクターブの声域低下（「声変わり」）。成人後のテストステロンレベルが声の低さの継続的な指標になる。睡眠×亜鉛×運動によるテストステロン維持が声の質を一生維持する根拠。',src:'VOCAL CORD TESTOSTERONE ANATOMY',frags:['低音ボイス戦略']},
+    {tag:'🔬 解剖学 #2',q:'反回神経（迷走神経枝）が声帯を支配することの恋愛への意味は？',a:'声帯の運動神経である反回神経（下喉頭神経）は迷走神経（第10脳神経）の枝。迷走神経は副交感神経の75%を担う幹神経。副交感神経優位（安心・リラックス・信頼）→反回神経が声帯筋の過緊張を解除→低く安定した声。交感神経優位（緊張・不安・不信感）→声帯筋過緊張→声が上ずる・震える。「安心できる環境で声が自然と低くなる」の神経解剖学的根拠。',src:'RECURRENT LARYNGEAL NERVE',frags:['低音ボイス戦略','初対面プロトコル']},
+    {tag:'🔬 解剖学 #3',q:'耳介甲介（concha）が「経皮的迷走神経刺激（tVNS）」の標的になる解剖学的理由は？',a:'耳介甲介（耳の最も深い凹み部分）は迷走神経の皮膚枝（耳介枝・アーノルド神経）によって直接支配される全身で数少ない体表部位の一つ。医療的なtVNSでは電極をこの部位に当て迷走神経を直接刺激する。囁き声の空気振動がこの部位のCT繊維を刺激→迷走神経耳介枝→脳幹（孤束核）→視床下部→オキシトシン産生ニューロン直接活性化。「耳元で囁く」が医療的なVNSと同じ神経経路を使う。',src:'AURICULAR VAGUS NERVE',frags:['初対面プロトコル','告白プロトコル']},
+    {tag:'🔬 解剖学 #4',q:'腹式呼吸が「低く安定した声」を作る横隔膜×声帯の解剖学的連携は？',a:'横隔膜（横隔神経C3-5支配）の収縮→胸腔拡大→肺への空気流入。呼気時に腹筋群（腹横筋・内腹斜筋）が声門下圧を精密調整→声帯が規則的に振動→低く安定した声が実現。さらに横隔膜の規則的な動きが迷走神経を反射的に刺激→副交感神経優位→反回神経が声帯筋の過緊張を解除。腹式呼吸が「声・神経系・ホルモン」を同時に最適化する解剖学的根拠。',src:'DIAPHRAGM VOCAL CORD ANATOMY',frags:['低音ボイス戦略','沈黙・間（ポーズ）の戦略']},
+    {tag:'🔬 解剖学 #5',q:'「低い声（80〜180Hz）が蝸牛頂部で最大応答を引き起こす」蝸牛の解剖学的根拠は？',a:'蝸牛基底膜は「場所の原理（tonotopy）」で周波数を処理する：基底部（入口付近）が高音（高Hz）担当、頂部が低音（低Hz）担当。男性の声域（80〜180Hz）は蝸牛頂部の有毛細胞が担当し最も豊かな神経発火パターンを生成する。蝸牛神経→聴神経→内側膝状体（視床）→一次聴覚野という主経路と内側膝状体→扁桃体の高速感情経路が並行。「低い声が0.05秒で感情的に届く」蝸牛解剖の根拠。',src:'COCHLEA TONOTOPY',frags:['低音ボイス戦略']},
+    {tag:'🔬 解剖学 #6',q:'耳小骨が「22倍の増幅」を行う機械的解剖とその恋愛への意味は？',a:'ツチ骨（鼓膜付着）→キヌタ骨→アブミ骨（蝸牛窓付着）というレバー機構が音圧を約22倍に増幅。アブミ骨は人体最小の骨（約3mm）。低周波音（低い声）は高周波より骨導（骨を通じた振動伝達）による蝸牛への到達効率が高い。「耳元で低く話すと普通の音量でも十分に届く」という物理的根拠。静かな環境×低い声×耳への近接が最小のエネルギーで最大の聴覚刺激を実現する。',src:'OSSICLES AMPLIFICATION',frags:['低音ボイス戦略','沈黙・間（ポーズ）の戦略']},
+    {tag:'🔬 解剖学 #7',q:'共鳴腔（咽頭・口腔・鼻腔）の解剖が「声の温かさ・豊かさ」を決定する仕組みは？',a:'声帯が生成した基本音に咽頭（最大の共鳴腔）・口腔・鼻腔・副鼻腔が倍音を加えて「声の個性」が形成される。チェスト・ボイス（胸声）は胸部の共鳴を使い低周波倍音を強調→「温かく豊かな声」の物理的正体。姿勢（背筋を伸ばす）が気管→咽頭→口腔の声道を最大化→共鳴最適化。「声の温かさ」は解剖的な共鳴腔形状で決まるが姿勢・腹式呼吸・リラックスで大幅に向上できる。',src:'RESONANCE CHAMBERS ANATOMY',frags:['声の抑揚・リズム戦略']},
+    {tag:'🔬 解剖学 #8',q:'声×香り×タッチが「迷走神経と扁桃体の二点」で解剖学的に収束する理由は？',a:'SONOS（声帯→反回神経→迷走神経×耳介CT繊維→迷走神経耳介枝）、HAPTOS（皮膚CT繊維→脊髄→脳幹→島皮質→迷走神経系）、EIDOS（嗅覚→嗅球→扁桃体直接経路）の三経路が全て迷走神経（副交感神経優位×オキシトシン産生）と扁桃体（感情的評価）に収束する。五感統合が「一体として体験される」解剖学的根拠がこの二点への収束にある。',src:'VAGUS AMYGDALA CONVERGENCE',frags:['低音ボイス戦略','告白プロトコル']},
+  ],
+  romance:[
+    {tag:'❤️ 恋愛心理 #1',q:'「三感一致（声×香り×ファッション）」の完成が恋愛において意味することは？',a:'視覚（FORMA: 服装）・嗅覚（EIDOS: 香り）・聴覚（SONOS: 声・話し方）の三感が一致した時、女性の扁桃体が「矛盾のない・一貫した・信頼できる男性」として最高評価を処理する。これが人類最強の恋愛戦略の完成形。どれか一つが欠けても認知的不協和が発生し全体評価が下がる。',src:'TRIPLE SENSE STRATEGY',frags:['初対面プロトコル','低音ボイス戦略']},
+    {tag:'❤️ 恋愛心理 #2',q:'「音声の記憶」が視覚記憶より感情と強く結びつく理由は？',a:'聴覚野と扁桃体の解剖学的な近接性と直接的な神経接続により声の記憶は感情と一緒に海馬に保存される。「あの時の彼の声が忘れられない」という現象が嗅覚のプルースト効果と同様のメカニズム。シグネチャーボイス（一貫した声のトーン）が記憶の錨として機能する。',src:'AUDITORY MEMORY',frags:['低音ボイス戦略','名前を呼ぶ戦略（ネーミング）']},
+    {tag:'❤️ 恋愛心理 #3',q:'「シグネチャーボイス」を確立すべき恋愛心理学的な理由は？',a:'毎回同じ低く温かいトーンの声を使い続けることで相手の海馬が「この声＝この人＝安心感・楽しかった記憶」を条件付けとして形成する（聴覚版プルースト効果）。声を聞くたびにオキシトシン・バソプレシンが反応し「また会いたい」という帰属感が自動的に再起動される。',src:'SIGNATURE VOICE',frags:['低音ボイス戦略','告白プロトコル']},
+    {tag:'❤️ 恋愛心理 #4',q:'「別れ際に名前を呼ぶ」ことの記憶強化効果の根拠は？',a:'ピーク・エンドの法則でデートの「エンド（別れ際）」が最も強く記憶に残る。名前+感情（「〇〇さん、今日本当に楽しかった」）の組み合わせが①名前のニューラル活性②感情記憶の強化③オキシトシン分泌を同時に引き起こし記憶の強度を2〜3倍にする最強のエンディング技術。',src:'PEAK-END RULE',frags:['名前を呼ぶ戦略（ネーミング）','告白プロトコル']},
+    {tag:'❤️ 恋愛心理 #5',q:'「声の一貫性」と「ファッション・香りの一貫性」が組み合わさると何が起きるか？',a:'嗅覚（プルースト効果）・視覚（シグネチャースタイル）・聴覚（シグネチャーボイス）の三感全てに一貫したシグナルが積み重なると、会うたびにオキシトシン・バソプレシン・セロトニンが同時活性化する「恋愛感情の自動再起動システム」が相手の脳内に形成される。これが三感統合戦略の最終形。',src:'TRIPLE INTEGRATION',frags:['低音ボイス戦略','初対面プロトコル']},
+  ],
+};
+
+/* ── FLASHCARD ENGINE ─── */
+let curDeck=[],cIdx=0;
+function loadDeck(name,btn){
+  document.querySelectorAll('.dt').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  curDeck=[...DECKS[name]];cIdx=0;
+  document.getElementById('deckCnt').textContent=curDeck.length+'枚';
+  showCard();
+}
+function showCard(){
+  if(!curDeck.length)return;
+  const c=curDeck[cIdx];
+  document.getElementById('cfTag').textContent=c.tag;
+  document.getElementById('cfQ').textContent=c.q;
+  document.getElementById('cfA').textContent=c.a;
+  document.getElementById('cfSrc').textContent=c.src;
+  // 関連香水セクション
+  const fragEl=document.getElementById('cfFrags');
+  if(c.frags&&c.frags.length){
+    const chips=c.frags.map(f=>{
+      const bd=BD.find(b=>b.name===f||b.name.includes(f)||f.includes(b.name.split(' ')[0]&&b.name.split(' ')[1]?b.name.split(' ').slice(0,2).join(' '):b.name));
+      const emoji=bd?bd.emoji:'🧴';
+      const brand=bd?bd.brand:'';
+      return `<span class="cf-frag-chip" onclick="jumpToBrand('${f}')"><span class="chip-emoji">${emoji}</span>${brand?brand+' ':''}<strong>${f}</strong></span>`;
+    }).join('');
+    fragEl.innerHTML=`<div class="cf-frags-lbl">この効果がある香水</div><div class="cf-frag-chips">${chips}</div>`;
+    fragEl.style.display='block';
+  }else{
+    fragEl.style.display='none';
+  }
+  document.getElementById('cardFront').classList.remove('hidden');
+  document.getElementById('cardBack').classList.add('hidden');
+  document.getElementById('flipBtn').textContent='答えを見る ✨';
+  document.getElementById('ctrlPg').textContent=(cIdx+1)+' / '+curDeck.length;
+  updateDots();
+}
+
+function jumpToBrand(fragName){
+  // ブランドライブラリページに移動して該当カードを開く
+  nav('brands',3);
+  setTimeout(()=>{
+    // 全ブランド表示
+    document.querySelectorAll('.bc').forEach(b=>b.classList.remove('on'));
+    const allBtn=document.querySelector('.bc');
+    if(allBtn)allBtn.classList.add('on');
+    renderFrags('すべて');
+    // 該当カードを探して開く
+    setTimeout(()=>{
+      const cards=document.querySelectorAll('.fc');
+      cards.forEach(card=>{
+        const nameEl=card.querySelector('.fc-name');
+        if(nameEl&&(nameEl.textContent.includes(fragName)||fragName.includes(nameEl.textContent.split(' ')[0]))){
+          card.classList.add('open');
+          card.scrollIntoView({behavior:'smooth',block:'center'});
+        }
+      });
+    },200);
+  },100);
+}
+function flipCard(){
+  const front=document.getElementById('cardFront');
+  const back=document.getElementById('cardBack');
+  const btn=document.getElementById('flipBtn');
+  if(!front.classList.contains('hidden')){
+    front.classList.add('hidden');back.classList.remove('hidden');
+    btn.textContent='質問に戻る ↩';
+  }else{
+    front.classList.remove('hidden');back.classList.add('hidden');
+    btn.textContent='答えを見る ✨';
+  }
+}
+function nextCard(){cIdx=(cIdx+1)%curDeck.length;showCard()}
+function updateDots(){
+  const el=document.getElementById('pdots');el.innerHTML='';
+  const total=curDeck.length;
+  const show=Math.min(total,12);
+  const start=Math.max(0,Math.min(cIdx-5,total-show));
+  for(let i=start;i<start+show;i++){
+    const d=document.createElement('div');
+    d.className='pd'+(i<cIdx?' done':i===cIdx?' cur':'');
+    el.appendChild(d);
+  }
+}
+
+/* ════════════════════════════════════
+   BRANDS DATA — 35+ 香水
+════════════════════════════════════ */
+
+const BD=[
+  // ── 声の使い方 ──
+  {brand:'声の使い方',color:'#14532d',emoji:'🔊',name:'低音ボイス戦略',type:'声のピッチ×テストステロン',notes:'基礎：腹式呼吸で声帯を太く使う\n中級：意識的に1〜2トーン下げる\n応用：語尾を下げて話す（断言）',neuro:'低いピッチの声（80〜150Hz）はテストステロンレベルの高さを示す生物学的シグナル。女性の蝸牛有毛細胞が最もリッチに反応し扁桃体が「力強さ・信頼・健康」を即時判定する。Journal of Evolutionary Biology（2013）で性的魅力・支配性・健康度評価全てで高評価が実証済み。',hormones:['テストステロン様','ノルアドレナリン'],hormone_detail:[{ico:'💪',name:'テストステロン様シグナル — 低音の生物学',desc:'テストステロンが声帯を肥厚・伸長させ低い声を生成する。思春期の声変わりはテストステロン急増による。女性の脳は低音を「健康な遺伝子・高いテストステロン」の証として無意識に評価する進化的メカニズムが働く。'},{ico:'🔊',name:'ノルアドレナリン×覚醒 — 「気になる」反応',desc:'低い響く声がノルアドレナリン系を軽度に刺激し「心地よい覚醒・生理的な興味」を生む。「声が好き」という感覚の神経科学的正体。コルチゾールの軽度上昇も伴いときめき感が発生する。'}],note_science:'腹式呼吸の練習が最も効果的。横隔膜を使った深い呼吸で声帯を最適な状態に保つ。緊張すると声が高くなるのは浅い呼吸で声帯が硬直するため。',good_scenes:['初対面デート','大切な告白','グループでの会話','重要な話し合い'],bad_scenes:['カラオケ（無理に低くするのはNG）'],season:['通年'],rating:{誠実さ:85,色気:95,信頼感:90,初対面:92,汎用性:95},tip:'語尾を下げる。「〜ですね↗」ではなく「〜ですね↘」。これだけで印象が激変する。',pairing:'視覚神経科学デッキ「声のピッチの科学」カード参照'},
+  {brand:'声の使い方',color:'#14532d',emoji:'⏸',name:'沈黙・間（ポーズ）の戦略',type:'沈黙×期待感×自信シグナル',notes:'基礎：質問後2〜3秒待つ\n中級：重要な発言前に0.5秒のポーズ\n応用：沈黙を埋めようとしない',neuro:'適切な「間」が相手の扁桃体に「次の言葉への期待感（ドーパミン的予測）」を作る。「落ち着いた自信のある男性」というシグナルとして処理される。焦って沈黙を埋めようとする行動は「不安・自信のなさ」として評価される。',hormones:['ドーパミン'],hormone_detail:[{ico:'⚡',name:'ドーパミン×期待感 — 「間」の報酬機構',desc:'脳は「次に何が来るか」という予測の瞬間にドーパミンを放出する（予測誤差報酬機構）。適切なポーズがこの予測を活性化させ「次の言葉が楽しみ」という期待感を生む。音楽のシンコペーションと同じ原理。'}],note_science:'FBIの交渉官が最も重要とする技術のひとつ。沈黙は「答えを求める圧力」として機能し相手が自然に話し続ける状況を作る。',good_scenes:['重要な発言の前後','質問した後','相手に考えさせたい時','告白のタイミング'],bad_scenes:['雑談中（長すぎる沈黙はNG）'],season:['通年'],rating:{誠実さ:88,色気:85,信頼感:90,初対面:82,汎用性:90},tip:'「え、えーっと」という埋め草を全て「間」に変える。即座に会話の質が上がる。',pairing:'話し方テクニックデッキ「沈黙の科学」カード参照'},
+  {brand:'声の使い方',color:'#14532d',emoji:'〽️',name:'声の抑揚・リズム戦略',type:'韻律×ドーパミン×感情表現',notes:'基礎：感情のある話し方\n中級：大事な言葉を少し遅く・大きく\n応用：話題の転換に声のトーンを変える',neuro:'単調すぎる声はドーパミン刺激がゼロ。適切な抑揚が「興味深い・感情がある・生き生きしている」という評価を生む。声の音楽性（韻律）が聴覚野で音楽と同様に処理されドーパミン放出を誘発する。',hormones:['ドーパミン','セロトニン'],hormone_detail:[{ico:'⚡',name:'ドーパミン — 音楽性の報酬回路',desc:'声の抑揚は聴覚野で音楽的な「変化のパターン」として処理される。予測可能な抑揚（音楽のリズムのように）がドーパミン放出型の快楽を生む。「この人の話し方が好き」という感覚の正体。'},{ico:'😌',name:'セロトニン — 感情の共鳴',desc:'感情のある話し方が相手の島皮質（感情共鳴の中枢）を活性化させセロトニンを分泌させる。「この人と話すと温かい気持ちになる」という感覚の神経科学的根拠。'}],note_science:'アナウンサーの話し方ではなく「感情がのった自然な話し方」が目標。プロのコメディアンは声のテンポ・高さ・間を精密にコントロールしてドーパミンを誘発している。',good_scenes:['ストーリーを話す時','楽しい話題','感情を伝えたい時'],bad_scenes:['ビジネス的な交渉（抑揚が邪魔になる場合も）'],season:['通年'],rating:{誠実さ:82,色気:80,信頼感:85,初対面:85,汎用性:88},tip:'「話す」ではなく「演じる」。感情を10%大きく表現するだけで聞き手のエンゲージメントが劇的に変わる。',pairing:'視覚神経科学デッキ「声の抑揚と感情伝達」カード参照'},
+
+  // ── 話し方テクニック ──
+  {brand:'話し方テクニック',color:'#1a5276',emoji:'💬',name:'36の質問プロトコル',type:'自己開示×オキシトシン誘発',notes:'Level1：浅い自己開示の質問\nLevel2：中程度の価値観の質問\nLevel3：深い感情・夢の質問',neuro:'Aron et al.（1997）が実証した「相互的な自己開示の漸進的深化」がオキシトシン→バソプレシンの連鎖分泌を引き起こす。初対面から45分で強い親密感が形成される。「聞いてもらえた記憶」が海馬に「この人は特別」として長期保存される。',hormones:['オキシトシン','バソプレシン'],hormone_detail:[{ico:'🤝',name:'オキシトシン — 自己開示の双方向効果',desc:'自己開示を受けると脳は「信頼された→信頼を返す」という返報性の反応でオキシトシンを分泌する。これが「話すと楽になる・この人なら話せる」という感覚の正体。自己開示を促す質問が最速のオキシトシン誘発技術。'},{ico:'🔒',name:'バソプレシン — 「特別な記憶」の形成',desc:'深い自己開示の共有体験が「この人だけが知っている私の秘密」という特別な記憶として海馬とバソプレシン系に刻まれる。これが後に「この人だけ」という独占感・絆感に変換される。'}],note_science:'36の質問の本質は「内容」ではなく「漸進的深化のリズム」。軽い話から徐々に深い話へという流れ自体がオキシトシンを段階的に積み上げる設計。',good_scenes:['2回目以降のデート','ゆったりしたカフェ','ドライブ中','散歩デート'],bad_scenes:['初対面（いきなり深い質問はNG）','騒がしい場所'],season:['通年'],rating:{誠実さ:95,色気:80,信頼感:97,初対面:72,汎用性:88},tip:'質問の後は必ず「自分も答える」。一方的な尋問にしない。相互開示がオキシトシンの鍵。',pairing:'傾聴デッキ「オープンクエスチョンの科学」カード参照'},
+  {brand:'話し方テクニック',color:'#1a5276',emoji:'😄',name:'ユーモア×エンドルフィン戦略',type:'笑い×エンドルフィン×オキシトシン',notes:'基礎：自分の失敗談を笑いに変える\n中級：観察系ユーモア（共通の状況への気づき）\n応用：タイミングとテンポのコントロール',neuro:'笑いがエンドルフィン×オキシトシンの二重放出を引き起こす最強の社会的行動。Miller（1999）の研究でユーモアは前頭前野の高い認知機能の証明として機能し「賢い男性」という遺伝的知性シグナルを送ることが示された。',hormones:['エンドルフィン','オキシトシン','ドーパミン'],hormone_detail:[{ico:'😄',name:'エンドルフィン×オキシトシン — 笑いの二重効果',desc:'笑うとエンドルフィンが分泌され「この人といると気持ちいい」という快楽記憶が形成される。同時にオキシトシンも分泌し「一緒にいたい」という絆感情が強化される。「面白い人がモテる」の神経科学的正体。'},{ico:'🧠',name:'ドーパミン×知性シグナル — ユーモアの認知機能',desc:'ユーモアの生成には複数の情報を同時に処理し予想外の結びつきを見つける前頭前野の高い実行機能が必要。これが「面白い＝賢い」という女性の評価の神経科学的根拠。'}],note_science:'「笑わせる」より「一緒に笑える（shared laughter）」が恋愛形成により強く相関することが確認されている。共通の笑いがバソプレシン絆形成を最速で進める。',good_scenes:['カジュアルデート全般','会話が弾んでいる時','緊張をほぐしたい時'],bad_scenes:['告白の瞬間','深刻な話中'],season:['通年'],rating:{誠実さ:80,色気:82,信頼感:88,初対面:90,汎用性:95},tip:'自分の失敗談が最強の素材。自己開示+ユーモアの組み合わせでオキシトシン+エンドルフィン+ドーパミンが同時放出される。',pairing:'ユーモアデッキ「笑いとエンドルフィン」カード参照'},
+  {brand:'話し方テクニック',color:'#1a5276',emoji:'🔄',name:'ミラーリング×ラポール形成',type:'模倣×同期×親密感',notes:'基礎：相手の言葉を少し繰り返す\n中級：話すリズム・速さを合わせる\n応用：感情のトーンをミラーする',neuro:'ミラーリングはミラーニューロンが引き起こす無意識の同期行動を意識的に活用した技術。相手の言葉・リズム・感情トーンを鏡のように反映することでオキシトシン系の「同族認識」が活性化し「この人は私に似ている・わかってくれる」という感覚を作る。',hormones:['オキシトシン'],hormone_detail:[{ico:'🤝',name:'オキシトシン×同期 — ミラーニューロンの社会性',desc:'人間のミラーニューロンは他者の行動・感情を「自分のこと」として処理する神経機構。意識的なミラーリングがこのシステムを活性化させ「わかり合っている・つながっている」という強いオキシトシン的体験を作る。'}],note_science:'FBIの交渉術で「最後の3語」をそのまま繰り返す技術（ミラーリング）が相手の自己開示を促す最も強力な単一技術として確認されている。',good_scenes:['初対面から全シーン','緊張している相手への対応','共感を伝えたい時'],bad_scenes:['なし（全シーン有効）'],season:['通年'],rating:{誠実さ:92,色気:72,信頼感:95,初対面:88,汎用性:97},tip:'「最後の3語を繰り返す」だけで始められる。「楽しかったんです」→「楽しかったんですね」これだけ。',pairing:'傾聴デッキ「反復（リフレクティング）の科学」カード参照'},
+
+  // ── 聴く力 ──
+  {brand:'聴く力',color:'#7c3aed',emoji:'💎',name:'アクティブリスニング完全版',type:'傾聴×オキシトシン分泌',notes:'基礎：相手の話を遮らない\n中級：感情に名前をつける（ラベリング）\n応用：沈黙後にオープンクエスチョン',neuro:'アクティブリスニングが直接オキシトシン分泌を促進することが神経内分泌学研究で確認されている。「話を聴いてもらえた体験」は海馬に「この人は特別・安全・信頼できる」として強く保存される。聴くことが話すことより恋愛形成に貢献する場合が多い。',hormones:['オキシトシン','セロトニン'],hormone_detail:[{ico:'🤝',name:'オキシトシン — 傾聴の直接効果',desc:'真剣に聴かれる体験が視床下部のオキシトシン産生ニューロンを活性化させる。「この人に話すと楽になる・安心できる」という感覚がオキシトシンの神経科学的正体。恋愛において「聴く能力」が「話す能力」より重要とされる理由。'},{ico:'😌',name:'セロトニン×安心感 — 「安全な場所」の形成',desc:'傾聴により相手の扁桃体の防衛機制が緩み前頭前野が優位になる。「この人と話すと頭が整理できる・落ち着く」という感覚がセロトニン系の活性化によって生まれる。「この人の前では本当の自分でいられる」という最高の評価への道。'}],note_science:'「ちゃんと聴いている」を示す最強の証拠は「相手の言葉（特に感情語）をそのまま繰り返すこと」。これだけで相手のオキシトシン分泌が有意に増加する実験結果がある。',good_scenes:['全シーン（特に相手が悩んでいる時）','2回目以降のデート','関係を深めたい時'],bad_scenes:['なし（常に有効）'],season:['通年'],rating:{誠実さ:97,色気:72,信頼感:99,初対面:85,汎用性:99},tip:'「聴く80%、話す20%」を目標に。話したい衝動を抑えて聴き続けると相手が自然と好意を持ち始める。',pairing:'傾聴デッキ「ラベリング（感情の命名）の科学」カード参照'},
+  {brand:'聴く力',color:'#7c3aed',emoji:'📛',name:'名前を呼ぶ戦略（ネーミング）',type:'固有名詞×ニューラル覚醒×オキシトシン',notes:'基礎：会話中に2〜3回名前を呼ぶ\n中級：重要な発言の前後に名前を使う\n応用：感情表現と組み合わせる',neuro:'人間の脳は自分の名前を聞いた時に独自のニューラルパターン（N200成分）を示すことがERP研究で確認されている。名前を適切なタイミングで呼ぶことが単一の言語行動として最もオキシトシン分泌を促進することが実証されている。',hormones:['オキシトシン'],hormone_detail:[{ico:'🤝',name:'オキシトシン×固有名詞 — 「特別な自分」の感覚',desc:'自分の名前は脳内で「自己への言及」として処理される最も根源的な刺激。名前を呼ばれることで「この人は私のことを個人として認識している」という特別感が生まれオキシトシンが分泌される。カーネギー「人を動かす」の核心の神経科学的根拠。'}],note_science:'「田中さんはどう思いますか」と「あなたはどう思いますか」では相手の注意・関与度が劇的に変わる。特に女性は名前を呼ばれることへのオキシトシン反応が強い傾向がある。',good_scenes:['全シーン（特に重要な発言前後）','感情を伝える時','別れ際'],bad_scenes:['頻度が多すぎると不自然（会話中5〜6回を上限に）'],season:['通年'],rating:{誠実さ:90,色気:78,信頼感:92,初対面:88,汎用性:97},tip:'別れ際に「〇〇さん、今日楽しかったです」と名前+感情。これだけで記憶の強度が2〜3倍になる。',pairing:'傾聴デッキ「名前の神経科学」カード参照'},
+
+  // ── 音楽×デート ──
+  {brand:'音楽×デート',color:'#B45309',emoji:'🎵',name:'デートプレイリスト戦略',type:'BGM×BPM×感情誘導',notes:'場面：BPM60〜80の落ち着いた音楽\n食事中：低音量BGMで会話量+30%\n移動中：ドライブ音楽で共感×オキシトシン',neuro:'BPM60〜80の音楽が心拍数と同期し副交感神経優位の状態（リラックス・親密感）を作る。食事中の低音量BGMが会話量を増加させる研究（North et al.）がある。音楽の好みの共有体験が海馬にオキシトシン的な「同じ価値観を持つ人」という記憶を形成する。',hormones:['オキシトシン','セロトニン'],hormone_detail:[{ico:'🤝',name:'オキシトシン — 音楽同期体験',desc:'同じ音楽を一緒に聴く体験（特にリアルタイムの同期）がオキシトシン分泌を促進することがLaunay et al.（2015）で確認された。「音楽の趣味が合う」という体験の恋愛形成への寄与の神経科学的根拠。'},{ico:'😌',name:'セロトニン — 副交感神経優位化',desc:'BPM60〜80（心拍安静時に近い）の音楽が副交感神経を優位にしセロトニン系を活性化する。「この空間にいると落ち着く・心地よい」という感覚がセロトニンによって生まれ、その体験がデートの記憶と結びつく。'}],note_science:'プレイリストの選択自体が「この人はセンスがいい・私の好みをわかってくれる」という認知を作る。事前に相手の好みを少し調べてそれに近い音楽を流すだけで評価が大幅に上がる。',good_scenes:['ドライブデート','食事中のBGM','家でのデート'],bad_scenes:['うるさい場所（意味がない）'],season:['通年'],rating:{誠実さ:85,色気:80,信頼感:88,初対面:78,汎用性:88},tip:'「この曲好きなんだけど知ってる？」という質問が音楽→自己開示→共感という黄金の会話フローを作る。',pairing:'音楽デッキ「デートBGMの科学」カード参照'},
+  {brand:'音楽×デート',color:'#B45309',emoji:'🎸',name:'楽器演奏×性的選択理論',type:'演奏能力×遺伝的知性シグナル',notes:'基礎：楽器が弾ける事実を自然に言及\n中級：演奏する場面（カラオケ・弾き語り）\n応用：音楽の感情体験を共有する',neuro:'Miller（1999）の性的選択理論で楽器演奏は「前頭前野の高い認知能力・感情表現力・社会的協調性・粘り強さ（練習の継続）」の複合シグナルとして機能することが示された。「楽器が弾ける」という情報だけで性的魅力評価が有意に上昇する実験がある。',hormones:['ドーパミン'],hormone_detail:[{ico:'⚡',name:'ドーパミン — 才能の発見による報酬',desc:'「この人にこんな才能がある」という発見が予測誤差報酬機構を通じてドーパミンを放出させる。「思ったより魅力的な人だ」という認知のアップデートが恋愛感情の加速に最もよく寄与するイベントの一つ。'}],note_science:'演奏能力がない場合でも「音楽への深い知識・感情表現」が同様の評価を生む。「この曲のこの部分が好きな理由は…」という音楽への感情的なコメントが知性シグナルとして機能する。',good_scenes:['音楽の話題になった時','カラオケデート','ライブ・コンサートデート'],bad_scenes:['なし（言及するだけでも効果がある）'],season:['通年'],rating:{誠実さ:82,色気:88,信頼感:85,初対面:80,汎用性:82},tip:'「弾いてみようか」と提案することより「弾いてほしい」と言わせる文脈を作ることの方が効果が高い。',pairing:'音楽デッキ「演奏能力と性的選択理論」カード参照'},
+
+  // ── 状況別プロトコル ──
+  {brand:'状況別プロトコル',color:'#0c1a0e',emoji:'🌸',name:'初対面プロトコル',type:'初対面×扁桃体ジャッジ×信頼確立',notes:'開始：ゆっくりとした低い声で自己紹介\n5分：相手の名前を2回呼ぶ\n10分：Level1の質問で自己開示を促す',neuro:'初対面の3〜30秒で扁桃体の「安全判定」が完了する。低い声×ゆっくりしたペース×温かいトーンが「危険なし・信頼できる・話しやすい」を同時に伝達。初対面で最も重要なのはコンテンツ（何を話すか）よりパラ言語（どう話すか）。',hormones:['セロトニン','オキシトシン'],hormone_detail:[{ico:'😌',name:'セロトニン — 「安全」の即時確立',desc:'ゆっくりとした低い声と温かいトーンが相手の扁桃体に「危険なし」というセロトニン信号を送る。初対面の警戒心を0.05秒から徐々に解除するプロセスの起動。'},{ico:'🤝',name:'オキシトシン — 名前×笑顔の効果',desc:'名前を呼ぶ×笑顔の組み合わせが最速でオキシトシン系を活性化させる。初対面で名前を2回呼ぶだけで「私のことをちゃんと見ている」という特別感が形成される。'}],note_science:'メラビアンの法則：コミュニケーションの印象は言語情報7%・声のトーン38%・非言語55%で決まる。初対面では「何を話すか」より「どう話すか」が5倍重要。',good_scenes:['初対面全般','合コン','ビジネスデート','友人の紹介'],bad_scenes:['なし'],season:['通年'],rating:{誠実さ:92,色気:78,信頼感:93,初対面:97,汎用性:90},tip:'自己紹介の時だけでいい。いつもより少しだけゆっくり、少しだけ低く話す。その差が全てを決める。',pairing:'状況別プロトコルデッキ「初対面の神経科学」カード参照'},
+  {brand:'状況別プロトコル',color:'#0c1a0e',emoji:'🌙',name:'告白プロトコル',type:'告白×ピーク・エンド×感情記憶',notes:'環境：静かで二人の世界を作れる場所\n直前：低く落ち着いた声でゆっくり話す\n核心：断言口調で短くはっきり伝える',neuro:'ピーク・エンドの法則（Kahneman）で告白の瞬間（ピーク）と別れ際（エンド）が長期記憶に最も強く残る。断言口調が「揺るぎない気持ち」として扁桃体に伝わりオキシトシン×バソプレシンの絆ホルモンを同時に分泌させる。',hormones:['オキシトシン','バソプレシン','ノルアドレナリン'],hormone_detail:[{ico:'🤝',name:'オキシトシン×バソプレシン — 告白の絆形成',desc:'真剣な告白がオキシトシン（親密感）とバソプレシン（独占感・絆維持）を同時に分泌させる。「この人だけに言われた言葉」として海馬が永久保存する神経生物学的メカニズムが発動する。'},{ico:'💓',name:'ノルアドレナリン — ときめきの生理的根拠',desc:'告白を受ける瞬間のノルアドレナリン上昇が「心拍数増加・体温上昇・鮮明な記憶形成」を引き起こす。「あの時の彼の声が忘れられない」という現象の神経科学的根拠。'}],note_science:'「好きです」の一言を低く・ゆっくり・落ち着いて言えた人が強い。感情が高ぶって声が上ずると不安・緊張として処理され印象が弱まる。',good_scenes:['2人きりの静かな場所','特別な夜の終わり','歩きながら'],bad_scenes:['騒がしい場所','大勢の前'],season:['通年'],rating:{誠実さ:95,色気:88,信頼感:97,初対面:70,汎用性:80},tip:'「好きです」の直前に0.5秒の沈黙を置く。その間のドーパミン的期待感が告白の効果を何倍にもする。',pairing:'恋愛心理デッキ「告白のタイミングと神経科学」カード参照'},
+];
+
+const QS=[
+  {q:'低い声の男性が女性から高く評価される科学的根拠は？',opts:['声が聞き取りやすいから','テストステロンが声帯を肥厚させ低い声を生成し女性の蝸牛有毛細胞が最もリッチに反応する。Journal of Evolutionary Biology（2013）で性的魅力・支配性・健康度全てで高評価が実証された。','男性らしいと思うから'],ans:1,exp:'思春期の声変わりはテストステロン急増による声帯の肥厚・伸長。女性の脳は低音を「健康な遺伝子・高いテストステロン」の証として進化的に評価する。腹式呼吸を意識するだけで声が自然に低くなる。',frags:['低音ボイス戦略']},
+  {q:'「メラビアンの法則」が示すコミュニケーションの印象の内訳は？',opts:['言語内容50%・声30%・見た目20%','言語内容7%・声のトーン38%・非言語（表情・姿勢等）55%','言語内容30%・声40%・見た目30%'],ans:1,exp:'Albert Mehrabianの研究。特に感情・態度を伝える場面でこの比率が強く現れる。「何を話すか」より「どう話すか（声・トーン・テンポ・間）」が5倍重要。初対面で特に顕著。',frags:['初対面プロトコル','低音ボイス戦略']},
+  {q:'「36の質問」実験（Aron et al. 1997）が実証したことは？',opts:['36問を全部聞くと必ず恋人になれる','初対面の2人が段階的に深まる質問を答え合うと45分後に強い親密感が形成される（自己開示の漸進的深化×オキシトシン分泌）','36の質問が最高の会話テクニックである'],ans:1,exp:'Personality and Social Psychology Bulletinに掲載。「内容」ではなく「段階的に深まる相互開示のリズム」がオキシトシン→バソプレシンの連鎖分泌を引き起こす。',frags:['36の質問プロトコル','アクティブリスニング完全版']},
+  {q:'笑いがエンドルフィンとオキシトシンを同時に放出させる恋愛的な意味は？',opts:['楽しいから好きになる','「この人といると気持ちいい（エンドルフィン）」＋「一緒にいたい（オキシトシン）」という快楽と絆の感情が同時に形成される。これが「面白い人がモテる」の神経科学的正体。','笑顔が魅力的になるから'],ans:1,exp:'Miller（1999）の研究でユーモア能力は前頭前野の高い認知機能の証明として機能し遺伝的知性シグナルとなる。「面白い＝賢い」という女性の評価は神経科学的に正確。',frags:['ユーモア×エンドルフィン戦略']},
+  {q:'「名前を呼ぶ」ことがオキシトシン分泌を最も強く促進する理由は？',opts:['丁寧だから','人間の脳は自分の名前を聞いた時に固有のニューラル反応（N200成分）を示し「この人は私を個人として認識している」という特別感がオキシトシン系を最速で活性化させるから','記憶に残りやすいから'],ans:1,exp:'ERP（事象関連電位）研究で名前への固有のニューラル反応が確認されている。「田中さんはどう思いますか」と「あなたはどう思いますか」では相手の脳の活性パターンが明確に異なる。',frags:['名前を呼ぶ戦略（ネーミング）']},
+  {q:'「沈黙・間（ポーズ）」が恋愛において「自信のシグナル」として機能する神経科学的理由は？',opts:['考えているように見えるから','適切な間が相手の扁桃体にドーパミン的予測（次の言葉への期待感）を作り「落ち着いた自信のある男性」という判定を生む。焦って沈黙を埋める行動は「不安・緊張」として評価される。','沈黙が深刻に見えるから'],ans:1,exp:'FBIの交渉官が最も重要とする技術のひとつ。沈黙は「答えを求める圧力」として機能し相手が自然に話し続ける状況を作る。質問後2〜3秒待つだけで会話の質が劇的に変わる。',frags:['沈黙・間（ポーズ）の戦略']},
+  {q:'アクティブリスニング（傾聴）が直接オキシトシン分泌を促進するメカニズムは？',opts:['相手が満足するから','真剣に聴かれる体験が視床下部のオキシトシン産生ニューロンを活性化させ「この人に話すと楽になる・安心できる」という感覚を作るから','会話が盛り上がるから'],ans:1,exp:'神経内分泌学研究で傾聴体験がオキシトシン分泌を有意に増加させることが確認されている。「聴く80%・話す20%」を実践するだけで相手が自然に好意を持ち始める理由がここにある。',frags:['アクティブリスニング完全版','ミラーリング×ラポール形成']},
+  {q:'音楽の好みの共有が恋愛形成に強く寄与する神経科学的根拠は？',opts:['共通の話題になるから','同じ音楽を一緒に聴く同期体験がオキシトシン分泌を促進し（Launay 2015）「この人は自分と同じ価値観を持つ」という記憶が海馬に形成されるから','楽しいから'],ans:1,exp:'音楽的同期体験（コンサート・カラオケ・ドライブ）が最速でオキシトシンを分泌させる社会的活動の一つ。「共に笑う（shared laughter）」と同様に「共に音楽を聴く」が絆形成を加速させる。',frags:['デートプレイリスト戦略','楽器演奏×性的選択理論']},
+  {q:'告白の直前に「0.5秒の沈黙」を置くべき神経科学的理由は？',opts:['緊張を落ち着けるため','告白直前の沈黙が相手の扁桃体にドーパミン的予測（次に何を言うか）を起動させ告白の言葉が最大のインパクトで届くから','間を持たせるため'],ans:1,exp:'ピーク・エンドの法則でピークの瞬間（告白の言葉）が最も強く記憶に残る。その直前の予測的ドーパミン放出が告白の言葉の感情的インパクトを増幅させる音楽のシンコペーション効果と同じ神経機構。',frags:['告白プロトコル','沈黙・間（ポーズ）の戦略']},
+  {q:'「声・話し方・香り・ファッション」の一貫性が「三感一致の最強戦略」として機能する理由は？',opts:['全部良ければ当然良い','視覚（服装）・嗅覚（香り）・聴覚（声と話し方）の情報が一致する時、女性の扁桃体に「認知的不協和ゼロ＝矛盾のない信頼できる男性」という最高評価が処理されるから','印象が強くなるから'],ans:1,exp:'脳は複数の感覚情報を統合評価する際に「一貫性＝安全・信頼」という原則で処理する。ファッションが良くても声がおかしいと違和感が生じ全体評価が下がる。三感一致がEIDOS×FORMA×SONOSの統合戦略の完成形。',frags:['初対面プロトコル','低音ボイス戦略']},
+];
+
+let qIdx=0,score=0;
+function startQuiz(){
+  qIdx=0;score=0;
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('qArea').style.display='block';
+  renderQ();
+}
+function renderQ(){
+  if(qIdx>=QS.length){showResult();return}
+  const q=QS[qIdx];
+  document.getElementById('qpFi').style.width=((qIdx/QS.length)*100)+'%';
+  document.getElementById('qSc').textContent=score+' / '+qIdx;
+  document.getElementById('qArea').innerHTML=`
+    <div class="qcard">
+      <div class="qc-n">問 ${String(qIdx+1).padStart(2,'0')} / ${String(QS.length).padStart(2,'0')}</div>
+      <div class="qc-q">${q.q}</div>
+      ${q.opts.map((o,i)=>`<button class="qopt" onclick="ansQ(this,${i},${q.ans})">${o}</button>`).join('')}
+      <div class="qexp" id="qexp">${q.exp}</div>
+      <div id="qfrags" style="display:none"></div>
+      <button class="qnxt" id="qnxt" onclick="nextQ()">次の問題へ →</button>
+    </div>`;
+}
+function ansQ(btn,chosen,correct){
+  document.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  if(chosen===correct){btn.classList.add('correct');score++}
+  else{btn.classList.add('wrong');document.querySelectorAll('.qopt')[correct].classList.add('correct')}
+  document.getElementById('qexp').classList.add('show');
+  document.getElementById('qnxt').classList.add('show');
+  document.getElementById('qSc').textContent=score+' / '+(qIdx+1);
+  // 関連香水チップ
+  const q=QS[qIdx];
+  if(q.frags&&q.frags.length){
+    const el=document.getElementById('qfrags');
+    if(el){
+      const chips=q.frags.map(f=>{
+        const bd=BD.find(b=>b.name===f||b.name.includes(f.split(' ')[0]));
+        const emoji=bd?bd.emoji:'🧴';
+        return `<span class="cf-frag-chip" onclick="jumpToBrand('${f}')"><span class="chip-emoji">${emoji}</span>${f}</span>`;
+      }).join('');
+      el.innerHTML=`<div class="cf-frags-lbl" style="margin-top:.7rem">🧴 関連する香水</div><div class="cf-frag-chips">${chips}</div>`;
+      el.style.display='block';
+    }
+  }
+}
+function nextQ(){qIdx++;renderQ()}
+function showResult(){
+  document.getElementById('qArea').innerHTML='';
+  document.getElementById('qpFi').style.width='100%';
+  document.getElementById('qSc').textContent=score+' / '+QS.length;
+  const pct=score/QS.length;
+  let em,msg;
+  if(pct>=.9){em='🏆';msg='完璧な香水マスター。全ての知識が実戦で使える武器となった。あなたの香りが、相手の脳に永遠に刻まれる。'}
+  else if(pct>=.7){em='⭐';msg='優秀な理解度。実戦で使える知識は十分揃っている。あと少しで完全マスター。弱点を重点学習せよ。'}
+  else if(pct>=.5){em='📚';msg='基礎は理解できている。学習カードで重点的に復習を。香水の知識は蓄積するほど強力な武器になる。'}
+  else{em='🌱';msg='ここからが出発点。香水の世界は奥深い。学習カードから始めて基礎を固めよう。'}
+  document.getElementById('rEm').textContent=em;
+  document.getElementById('rSc').textContent=score;
+  document.getElementById('rMsg').textContent=msg;
+  document.getElementById('result').classList.add('show');
+}
+
+/* ── AI CHAT: SONOS ── */
+const AI_ENDPOINT_sonos = 'https://us-central1-kensetsu-nippo-842a2.cloudfunctions.net/askAI';
+const AI_KEY_sonos = 'HeartsHouse2026Key';
+const AI_SYS_sonos = `あなたはSONOS声・会話専門AIコーチです。
+専門知識：声のHzと印象・VTC低音効果・囁き声CT繊維耳介枝→迷走神経→オキシトシン直達・傾聴80%話す20%黄金比・ポリヴェーガル理論VVC安全の神経学・笑いのミラーニューロン・沈黙4秒テクニック・感情ラベリング・質問の設計・36の質問プロトコル。
+回答：会話例・声の使い方を具体的に提示。日本語200〜400文字。`;
+const AI_QUICK_sonos = [`🌸 初対面の話し方`,`👂 傾聴テクニックを教えて`,`🗣 声の使い方のコツ`,`💬 会話が途切れた時`,`😄 笑いを生む会話術`];
+let aiHistory_sonos = [];
+let aiLoading_sonos = false;
+
+function initAI_sonos(){
+  // クイックボタン生成
+  const qc = document.getElementById('aiQuickBtns');
+  if(qc) qc.innerHTML = AI_QUICK_sonos.map(q=>
+    `<button onclick="aiQuick_sonos(this.textContent.replace(/^[^\s]+\s/,''))" style="padding:.38rem .72rem;border-radius:9999px;background:var(--surface2);border:1px solid var(--border2);font-family:var(--fu);font-size:.65rem;font-weight:600;color:var(--txt2);cursor:pointer;white-space:nowrap">${q}</button>`
+  ).join('');
+}
+
+function aiQuick_sonos(text){
+  document.getElementById('aiInp').value = text;
+  aiSend_sonos();
+}
+
+function aiAddMsg_sonos(text, role){
+  const msgs = document.getElementById('aiMsgs');
+  if(!msgs) return null;
+  const div = document.createElement('div');
+  const colors = {user:'linear-gradient(135deg,var(--eidos,#B8860B),var(--eidos-l,#D4A017))',ai:'var(--surface)',thinking:'var(--surface2)'};
+  div.style.cssText = `background:${colors[role]||colors.ai};border:1px solid var(--border);border-radius:var(--r-lg);padding:.78rem .9rem;font-family:var(--fu);font-size:.77rem;color:${role==='user'?'#fff':'var(--txt)'};line-height:1.68;align-self:${role==='user'?'flex-end':'flex-start'};max-width:90%;border-bottom-${role==='user'?'right':'left'}-radius:4px;font-style:${role==='thinking'?'italic':'normal'}`;
+  div.innerHTML = text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);
+  msgs.parentElement.scrollTop = msgs.parentElement.scrollHeight;
+  return div;
+}
+
+async function aiSend_sonos(){
+  if(aiLoading_sonos) return;
+  const inp = document.getElementById('aiInp');
+  const text = inp?.value?.trim();
+  if(!text) return;
+  aiAddMsg_sonos(text,'user');
+  inp.value=''; inp.style.height='auto';
+  const thinking = aiAddMsg_sonos('🧠 分析中...','thinking');
+  aiLoading_sonos=true;
+  const btn=document.getElementById('aiSendBtn');
+  if(btn)btn.disabled=true;
+  aiHistory_sonos.push({role:'user',parts:[{text}]});
+  try{
+    const prompt = AI_SYS_sonos+'\n\n【会話履歴】\n'+
+      aiHistory_sonos.slice(-6).map(h=>(h.role==='user'?'ユーザー: ':'AI: ')+h.parts[0].text).join('\n')+
+      '\n\n最後のユーザーの質問に答えてください。';
+    const res = await fetch(AI_ENDPOINT_sonos,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Access-Key':AI_KEY_sonos},
+      body:JSON.stringify({prompt,model:'gemini-2.0-flash',maxTokens:600})
+    });
+    const data = await res.json();
+    thinking?.remove();
+    const t = data?.data?.candidates?.[0]?.content?.parts?.[0]?.text||data?.data?.text||'';
+    if(t){aiAddMsg_sonos(t,'ai');aiHistory_sonos.push({role:'model',parts:[{text:t}]});}
+    else aiAddMsg_sonos('⚠️ 回答を取得できませんでした。','ai');
+  }catch(e){thinking?.remove();aiAddMsg_sonos('⚠️ 通信エラーです。','ai');}
+  aiLoading_sonos=false;
+  if(btn)btn.disabled=false;
+}
+
+// グローバル公開（onclickから呼べるように）
+window.aiSend = aiSend_sonos;
+window.aiQuick_sonos = aiQuick_sonos;
+
+window.aiSend = aiSend_sonos;
+
+</script>
+</body>
+</html>
